@@ -3,46 +3,25 @@ let documents = [];
 let selectedLocation = "WSZYSTKIE";
 
 
-
-
-
 const DEFAULT_LOCATIONS = [
 
-
 "WSZYSTKIE",
-
 "OKĘCIE",
-
 "RADOM",
-
 "MODLIN",
-
 "BYDGOSZCZ",
-
 "KRAKÓW",
-
 "POZNAŃ",
-
 "WROCŁAW",
-
 "ŚWINOUJŚCIE",
-
 "GDAŃSK",
-
 "GDYNIA",
-
 "ZIELONA GÓRA",
-
 "RZESZÓW",
-
 "FRANCJA",
-
 "KATOWICE"
 
-
 ];
-
-
 
 
 
@@ -58,11 +37,7 @@ loadDocuments();
 
 
 document
-
-.getElementById(
-"searchInput"
-)
-
+.getElementById("searchInput")
 ?.addEventListener(
 "input",
 render
@@ -70,13 +45,8 @@ render
 
 
 
-
 document
-
-.getElementById(
-"yearFilter"
-)
-
+.getElementById("yearFilter")
 ?.addEventListener(
 "change",
 render
@@ -84,14 +54,8 @@ render
 
 
 
-
-
 document
-
-.getElementById(
-"statusFilter"
-)
-
+.getElementById("statusFilter")
 ?.addEventListener(
 "change",
 render
@@ -109,26 +73,15 @@ render
 
 
 
-
-// =========================
-// POBIERANIE DOKUMENTÓW
-// =========================
-
-
 async function loadDocuments(){
 
 
 
 const {
-
 data,
-
 error
-
 }
-
 =
-
 await supabaseClient
 
 .from("dokumenty")
@@ -146,7 +99,6 @@ ascending:false
 
 
 
-
 if(error){
 
 console.error(error);
@@ -159,26 +111,16 @@ return;
 
 
 
-
-
 documents =
 data || [];
 
 
 
-
-
-
 createLocations();
-
-
 
 createYears();
 
-
-
 render();
-
 
 
 }
@@ -192,18 +134,11 @@ render();
 
 
 
-
-// =========================
-// LOKALIZACJE
-// =========================
-
-
 function createLocations(){
 
 
 
 const box =
-
 document.getElementById(
 "locationTabs"
 );
@@ -216,10 +151,7 @@ return;
 
 
 
-
-
 box.innerHTML="";
-
 
 
 
@@ -228,35 +160,25 @@ box.innerHTML="";
 DEFAULT_LOCATIONS.forEach(location=>{
 
 
-
-let count=0;
-
-
-
-
+let count;
 
 
 if(location==="WSZYSTKIE"){
 
-
 count =
 documents.length;
 
-
 }
-
 else{
-
 
 
 count =
 
 documents.filter(doc=>
 
-doc.lokalizacja === location
+doc.lokalizacja===location
 
 ).length;
-
 
 
 }
@@ -266,25 +188,20 @@ doc.lokalizacja === location
 
 
 
-
-
-const button =
-
+const btn =
 document.createElement(
 "button"
 );
 
 
 
-button.className =
+btn.className =
 "location-card";
 
 
 
 
-
-button.innerHTML =
-
+btn.innerHTML =
 
 `
 
@@ -296,16 +213,12 @@ ${location}
 ${count} dokumentów
 </span>
 
-
 `;
 
 
 
 
-
-
-
-button.onclick=()=>{
+btn.onclick=()=>{
 
 
 selectedLocation =
@@ -320,10 +233,7 @@ render();
 
 
 
-
-
-
-box.appendChild(button);
+box.appendChild(btn);
 
 
 
@@ -341,19 +251,11 @@ box.appendChild(button);
 
 
 
-
-
-// =========================
-// LATA
-// =========================
-
-
 function createYears(){
 
 
 
 const select =
-
 document.getElementById(
 "yearFilter"
 );
@@ -367,13 +269,10 @@ return;
 
 
 
-
-const years =
+let years =
 
 [
-
 ...
-
 new Set(
 
 documents
@@ -395,9 +294,7 @@ documents
 
 
 
-
-
-select.innerHTML =
+select.innerHTML=
 
 `
 
@@ -411,12 +308,10 @@ Wszystkie lata
 
 
 
-
 years.forEach(year=>{
 
 
 select.innerHTML +=
-
 
 `
 
@@ -431,7 +326,6 @@ ${year}
 });
 
 
-
 }
 
 
@@ -442,19 +336,11 @@ ${year}
 
 
 
-
-
-// =========================
-// RENDER
-// =========================
-
-
 function render(){
 
 
 
 const results =
-
 document.getElementById(
 "results"
 );
@@ -467,16 +353,12 @@ return;
 
 
 
-
 results.innerHTML="";
 
 
 
 
-
-
 let list =
-
 [...documents];
 
 
@@ -485,8 +367,7 @@ let list =
 
 
 
-
-if(selectedLocation !== "WSZYSTKIE"){
+if(selectedLocation!=="WSZYSTKIE"){
 
 
 
@@ -494,14 +375,13 @@ list =
 
 list.filter(doc=>
 
-doc.lokalizacja === selectedLocation
+doc.lokalizacja===selectedLocation
 
 );
 
 
 
 }
-
 
 
 
@@ -529,8 +409,8 @@ document
 
 
 
-
 if(search){
+
 
 
 list =
@@ -555,8 +435,6 @@ JSON.stringify(doc)
 
 
 
-
-
 const year =
 
 document
@@ -572,9 +450,7 @@ document
 
 
 
-
 if(year){
-
 
 list =
 
@@ -585,9 +461,7 @@ String(doc.rok)===year
 );
 
 
-
 }
-
 
 
 
@@ -613,7 +487,6 @@ document
 if(status){
 
 
-
 list =
 
 list.filter(doc=>
@@ -633,38 +506,7 @@ doc.status===status
 
 
 
-if(!list.length){
-
-
-
-results.innerHTML =
-
-
-`
-
-<div class="empty">
-
-Brak dokumentów
-
-</div>
-
-`;
-
-return;
-
-
-}
-
-
-
-
-
-
-
-
-
 const grouped={};
-
 
 
 
@@ -674,28 +516,16 @@ const grouped={};
 list.forEach(doc=>{
 
 
+if(!grouped[doc.lokalizacja]){
 
-const location =
-
-doc.lokalizacja ||
-
-"Brak lokalizacji";
-
-
-
-
-
-
-if(!grouped[location]){
-
-grouped[location]=[];
+grouped[doc.lokalizacja]=[];
 
 }
 
 
 
-
-grouped[location].push(doc);
+grouped[doc.lokalizacja]
+.push(doc);
 
 
 
@@ -708,44 +538,112 @@ grouped[location].push(doc);
 
 
 
-
 Object.entries(grouped)
 
-.forEach(
-([location,docs])=>{
+.forEach(([location,docs])=>{
 
 
 
-
-
-const box =
-
-document.createElement(
-"div"
+createLocationBox(
+location,
+docs,
+results
 );
 
 
 
-box.className =
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function createLocationBox(
+location,
+docs,
+container
+){
+
+
+
+const locationBox =
+document.createElement(
+"section"
+);
+
+
+
+locationBox.className =
 "archive-location";
 
 
 
 
 
-box.innerHTML =
 
+locationBox.innerHTML =
 
 `
 
 <div class="archive-header">
 
+<span>
+▼
+</span>
+
+<strong>
 ${location}
+</strong>
+
+
+</div>
+
+<div class="location-content">
 
 </div>
 
 `;
 
+
+
+
+
+
+const header =
+locationBox.querySelector(
+".archive-header"
+);
+
+
+
+const content =
+locationBox.querySelector(
+".location-content"
+);
+
+
+
+
+
+
+
+header.onclick=()=>{
+
+
+content.classList.toggle(
+"hidden"
+);
+
+
+};
 
 
 
@@ -759,10 +657,7 @@ const years={};
 
 
 
-
-
 docs.forEach(doc=>{
-
 
 
 if(!years[doc.rok]){
@@ -770,7 +665,6 @@ if(!years[doc.rok]){
 years[doc.rok]=[];
 
 }
-
 
 
 years[doc.rok].push(doc);
@@ -785,23 +679,17 @@ years[doc.rok].push(doc);
 
 
 
-
-
 Object.entries(years)
 
 .sort(
 (a,b)=>b[0]-a[0]
 )
 
-.forEach(
-([year,docs])=>{
-
-
+.forEach(([year,items])=>{
 
 
 
 const yearBox =
-
 document.createElement(
 "div"
 );
@@ -817,7 +705,6 @@ yearBox.className =
 
 yearBox.innerHTML =
 
-
 `
 
 <h3>
@@ -832,12 +719,11 @@ ${year}
 
 
 
-docs.forEach(doc=>{
+items.forEach(doc=>{
 
 
 
 const card =
-
 document.createElement(
 "div"
 );
@@ -850,20 +736,13 @@ card.className =
 
 
 
-
-
-
 card.innerHTML =
-
 
 `
 
 <h4>
-
 ${doc.nazwa}
-
 </h4>
-
 
 
 <p>
@@ -872,38 +751,21 @@ ${doc.numer_lokalu || "-"}
 </p>
 
 
-
 <p>
 Kontrahent:
 ${doc.nazwa_kontrahenta || "-"}
 </p>
 
 
-
 <p>
 Typ:
-${doc.typ}
+${doc.typ || "-"}
 </p>
-
-
-
-<p>
-Regał:
-${doc.regal}
-</p>
-
-
-
-<p>
-Półka:
-${doc.polka}
-</p>
-
 
 
 <p>
 Status:
-${doc.status}
+${doc.status || "-"}
 </p>
 
 
@@ -913,11 +775,9 @@ Edytuj
 </button>
 
 
-
 <button class="delete">
 Usuń
 </button>
-
 
 `;
 
@@ -926,19 +786,11 @@ Usuń
 
 
 
-
-
-
-card
-
-.querySelector(".edit")
-
+card.querySelector(".edit")
 .onclick=()=>{
-
 
 openEditModal(doc);
 
-
 };
 
 
@@ -946,19 +798,12 @@ openEditModal(doc);
 
 
 
-
-card
-
-.querySelector(".delete")
-
+card.querySelector(".delete")
 .onclick=()=>{
-
 
 deleteDocument(doc.id);
 
-
 };
-
 
 
 
@@ -976,7 +821,7 @@ yearBox.appendChild(card);
 
 
 
-box.appendChild(yearBox);
+content.appendChild(yearBox);
 
 
 
@@ -987,13 +832,7 @@ box.appendChild(yearBox);
 
 
 
-
-results.appendChild(box);
-
-
-
-});
-
+container.appendChild(locationBox);
 
 
 
@@ -1005,11 +844,6 @@ results.appendChild(box);
 
 
 
-
-
-// =========================
-// USUWANIE
-// =========================
 
 
 async function deleteDocument(id){
@@ -1022,22 +856,11 @@ if(
 )
 
 )
-
 return;
 
 
 
 
-
-
-
-const {
-
-error
-
-}
-
-=
 
 await supabaseClient
 
@@ -1049,21 +872,6 @@ await supabaseClient
 "id",
 id
 );
-
-
-
-
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
 
 
 
