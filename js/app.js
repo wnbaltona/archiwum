@@ -1,16 +1,26 @@
-console.log("APP.JS DZIAŁA");
-
 let documents = [];
 
+let selectedLocation = "WSZYSTKIE";
 
-const results = document.getElementById("results");
 
-const searchInput = document.getElementById("searchInput");
+const results =
+document.getElementById("results");
+
+
+const searchInput =
+document.getElementById("searchInput");
+
+
+const typeFilter =
+document.getElementById("typeFilter");
+
+
+const shelfFilter =
+document.getElementById("shelfFilter");
 
 
 
 const locations = [
-
 "WSZYSTKIE",
 "OKĘCIE",
 "RADOM",
@@ -24,17 +34,15 @@ const locations = [
 "BYDGOSZCZ",
 "POZNAŃ",
 "WROCŁAW"
-
 ];
 
 
 
-let selectedLocation = "WSZYSTKIE";
 
+// =====================
+// POBIERANIE DANYCH
+// =====================
 
-
-
-// pobieranie z Supabase
 
 async function loadDocuments(){
 
@@ -42,28 +50,28 @@ async function loadDocuments(){
 const {data,error}=await supabaseClient
 .from("dokumenty")
 .select("*")
-.order("created_at",{ascending:false});
+.order("lokalizacja");
 
 
 
 if(error){
 
-console.error(error);
-
-results.innerHTML=
-"❌ Błąd pobierania dokumentów";
+console.log(error);
 
 return;
 
 }
 
 
+
 documents=data || [];
 
 
-createLocationTabs();
+createLocations();
 
-renderDocuments();
+createFilters();
+
+render();
 
 
 }
@@ -72,56 +80,48 @@ renderDocuments();
 
 
 
-// zakładki lokalizacji
-
-function createLocationTabs(){
-
-
-const tabs =
-document.createElement("div");
+// =====================
+// ZAKŁADKI
+// =====================
 
 
-tabs.className="location-tabs";
+function createLocations(){
+
+
+const box =
+document.getElementById("locationTabs");
+
+
+box.innerHTML="";
 
 
 
 locations.forEach(loc=>{
 
 
-const button =
-document.createElement("button");
+let btn=document.createElement("button");
+
+btn.innerText=loc;
 
 
-button.innerText=loc;
 
-
-button.onclick=()=>{
+btn.onclick=()=>{
 
 
 selectedLocation=loc;
 
-
-renderDocuments();
+render();
 
 
 };
 
 
 
-tabs.appendChild(button);
+box.appendChild(btn);
 
 
 
 });
-
-
-
-document
-.querySelector("main")
-.insertBefore(
-tabs,
-results
-);
 
 
 }
@@ -129,27 +129,137 @@ results
 
 
 
-// wyświetlanie
 
 
-function renderDocuments(){
+// =====================
+// FILTRY
+// =====================
+
+
+function createFilters(){
+
+
+let types=[
+
+...new Set(
+documents.map(d=>d.typ)
+.filter(Boolean)
+)
+
+];
+
+
+let shelves=[
+
+...new Set(
+documents.map(d=>d.regal)
+.filter(Boolean)
+)
+
+];
+
+
+
+typeFilter.innerHTML=
+`
+<option value="">
+Wszystkie typy
+</option>
+`;
+
+
+
+types.forEach(t=>{
+
+
+typeFilter.innerHTML+=`
+
+<option value="${t}">
+${t}
+</option>
+
+`;
+
+});
+
+
+
+
+
+shelfFilter.innerHTML=
+`
+<option value="">
+Wszystkie regały
+</option>
+`;
+
+
+
+shelves.forEach(s=>{
+
+
+shelfFilter.innerHTML+=`
+
+<option value="${s}">
+${s}
+</option>
+
+`;
+
+});
+
+
+
+}
+
+
+
+
+
+typeFilter.onchange=render;
+
+shelfFilter.onchange=render;
+
+
+
+
+
+// =====================
+// WYŚWIETLANIE
+// =====================
+
+
+function render(){
 
 
 results.innerHTML="";
 
 
 
-let filtered =
-documents;
+let data=[...documents];
 
 
 
-if(selectedLocation!=="WSZYSTKIE"){
 
 
-filtered =
-filtered.filter(
+if(selectedLocation !== "WSZYSTKIE"){
+
+
+data=data.filter(
 d=>d.lokalizacja===selectedLocation
+);
+
+}
+
+
+
+
+
+if(typeFilter.value){
+
+
+data=data.filter(
+d=>d.typ===typeFilter.value
 );
 
 
@@ -158,124 +268,89 @@ d=>d.lokalizacja===selectedLocation
 
 
 
-if(filtered.length===0){
+
+if(shelfFilter.value){
 
 
-results.innerHTML=
+data=data.filter(
+d=>d.regal===shelfFilter.value
+);
 
-`
-<div class="card">
-
-Brak dokumentów
-
-</div>
-`;
-
-return;
 
 }
 
 
 
 
-filtered.forEach(doc=>{
-
-
-results.innerHTML+=`
-
-<div class="card">
-
-
-<h3>
-📄 ${doc.nazwa}
-</h3>
-
-
-<p>
-📍 ${doc.lokalizacja}
-</p>
-
-
-<p>
-🗄️ Regał:
-${doc.regal || "-"}
-</p>
-
-
-<p>
-📚 Półka:
-${doc.polka || "-"}
-</p>
-
-
-<p>
-📂 Segregator:
-${doc.segregator || "-"}
-</p>
-
-
-</div>
-
-`;
-
-
-});
-
-}
 
 
 
-
-// wyszukiwanie
-
-
-searchInput.addEventListener(
-"input",
-()=>{
-
-
-let value =
+let search =
 searchInput.value.toLowerCase();
 
 
 
-let filtered =
-documents.filter(doc=>
+if(search){
 
-JSON.stringify(doc)
+
+data=data.filter(d=>
+
+JSON.stringify(d)
 .toLowerCase()
-.includes(value)
+.includes(search)
 
 );
 
 
-
-results.innerHTML="";
-
+}
 
 
-filtered.forEach(doc=>{
+
+
+// grupowanie lokalizacjami
+
+
+let grouped={};
+
+
+
+data.forEach(doc=>{
+
+
+if(!grouped[doc.lokalizacja]){
+
+grouped[doc.lokalizacja]=[];
+
+}
+
+
+grouped[doc.lokalizacja].push(doc);
+
+
+});
+
+
+
+
+
+
+Object.keys(grouped).forEach(location=>{
+
 
 
 results.innerHTML+=`
 
-<div class="card">
+<div class="location">
 
 
-<h3>
-📄 ${doc.nazwa}
-</h3>
+<h2>
+📍 ${location}
+</h2>
 
 
-<p>
-📍 ${doc.lokalizacja}
-</p>
 
+${groupDocuments(grouped[location])}
 
-<p>
-🗄️ Regał:
-${doc.regal}
-</p>
 
 
 </div>
@@ -283,11 +358,130 @@ ${doc.regal}
 `;
 
 
-});
-
 
 });
 
+
+}
+
+
+
+
+
+
+
+function groupDocuments(docs){
+
+
+
+let locals={};
+
+
+
+docs.forEach(doc=>{
+
+
+let local =
+doc.numer_lokalu || "Brak numeru";
+
+
+
+if(!locals[local]){
+
+locals[local]=[];
+
+}
+
+
+locals[local].push(doc);
+
+
+
+});
+
+
+
+let html="";
+
+
+
+Object.keys(locals).forEach(local=>{
+
+
+html+=`
+
+<div class="card">
+
+
+<h3>
+🚪 Lokal: ${local}
+</h3>
+
+
+
+${locals[local].map(doc=>`
+
+<div>
+
+📄 <b>${doc.nazwa}</b>
+
+<br>
+
+🗂 Typ:
+${doc.typ || "-"}
+
+<br>
+
+🗄 Regał:
+${doc.regal || "-"}
+
+<br>
+
+📚 Półka:
+${doc.polka || "-"}
+
+<br>
+
+📂 Segregator:
+${doc.segregator || "-"}
+
+<br>
+
+📝 ${doc.uwagi || ""}
+
+
+</div>
+
+<hr>
+
+`).join("")}
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+return html;
+
+
+}
+
+
+
+
+
+
+searchInput.addEventListener(
+"input",
+render
+);
 
 
 
