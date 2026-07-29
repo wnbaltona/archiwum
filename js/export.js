@@ -24,11 +24,6 @@ document.getElementById(
 
 
 
-// =======================
-// EXPORT EXCEL
-// =======================
-
-
 if(excelBtn){
 
 
@@ -41,17 +36,12 @@ exportExcel();
 };
 
 
-
 }
 
 
 
 
 
-
-// =======================
-// EXPORT CSV
-// =======================
 
 
 if(csvBtn){
@@ -72,11 +62,6 @@ exportCSV();
 
 
 
-
-
-// =======================
-// RAPORT BRAKÓW
-// =======================
 
 
 if(missingBtn){
@@ -105,20 +90,15 @@ exportMissing();
 
 
 
-// =======================
-// EXCEL
-// =======================
-
-
 function exportExcel(){
 
 
 
-if(!documents || documents.length===0){
+if(!documents.length){
 
 
 alert(
-"Brak danych do eksportu"
+"Brak dokumentów do eksportu"
 );
 
 
@@ -132,9 +112,9 @@ return;
 
 
 
-const rows =
-documents.map(doc=>({
+const data =
 
+documents.map(doc=>({
 
 
 Lokalizacja:
@@ -145,7 +125,7 @@ doc.lokalizacja,
 doc.numer_lokalu,
 
 
-"Nazwa dokumentu":
+Dokument:
 doc.nazwa,
 
 
@@ -170,12 +150,7 @@ doc.status,
 
 
 Uwagi:
-doc.uwagi,
-
-
-"Data dodania":
-doc.created_at
-
+doc.uwagi
 
 
 }));
@@ -185,13 +160,14 @@ doc.created_at
 
 
 
+const sheet =
 
-const worksheet =
-XLSX.utils.json_to_sheet(rows);
+XLSX.utils.json_to_sheet(data);
 
 
 
 const workbook =
+
 XLSX.utils.book_new();
 
 
@@ -200,13 +176,11 @@ XLSX.utils.book_append_sheet(
 
 workbook,
 
-worksheet,
+sheet,
 
 "Archiwum"
 
 );
-
-
 
 
 
@@ -230,32 +204,19 @@ workbook,
 
 
 
-// =======================
-// CSV
-// =======================
-
-
 function exportCSV(){
 
 
 
-let csv="";
+let csv =
 
-
-
-
-csv +=
-
-"Lokalizacja;Lokal;Nazwa;Typ;Regal;Polka;Segregator;Status;Uwagi\n";
-
-
+"Lokalizacja;Lokal;Dokument;Typ;Regal;Polka;Segregator;Status;Uwagi\n";
 
 
 
 
 
 documents.forEach(doc=>{
-
 
 
 csv +=
@@ -274,6 +235,7 @@ csv +=
 
 
 const blob =
+
 new Blob(
 
 [csv],
@@ -288,19 +250,21 @@ type:"text/csv;charset=utf-8;"
 
 
 
-
 const link =
+
 document.createElement("a");
 
 
 
-link.href =
+link.href=
+
 URL.createObjectURL(blob);
 
 
 
-link.download =
-"archiwum_dokumentow.csv";
+link.download=
+
+"archiwum.csv";
 
 
 
@@ -316,11 +280,6 @@ link.click();
 
 
 
-
-
-// =======================
-// BRAKI
-// =======================
 
 
 function exportMissing(){
@@ -343,7 +302,8 @@ doc.status==="Brak dokumentu"
 
 
 
-if(missing.length===0){
+
+if(!missing.length){
 
 
 alert(
@@ -371,13 +331,13 @@ let text=
 
 
 
+
 missing.forEach(doc=>{
 
 
 text +=
 
 `
-
 Lokalizacja:
 ${doc.lokalizacja}
 
@@ -390,7 +350,8 @@ ${doc.nazwa}
 Status:
 ${doc.status}
 
-----------------------
+
+------------------
 
 `;
 
@@ -404,7 +365,8 @@ ${doc.status}
 
 
 
-const blob =
+const blob=
+
 new Blob(
 
 [text],
@@ -419,18 +381,20 @@ type:"text/plain"
 
 
 
+const link=
 
-const link =
 document.createElement("a");
 
 
 
-link.href =
+link.href=
+
 URL.createObjectURL(blob);
 
 
 
-link.download =
+link.download=
+
 "raport_brakow.txt";
 
 
