@@ -21,7 +21,9 @@
 
 
 <div class="logo">
+
 Archiwum Dokumentów
+
 </div>
 
 
@@ -30,24 +32,56 @@ Archiwum Dokumentów
 <div class="menu">
 
 
-<button id="menuBtn" class="menu-button">
+<button 
+class="menu-button"
+id="menuBtn">
+
 Menu
+
 </button>
 
 
 
 
-<div id="menuList" class="dropdown">
+<div 
+id="menuList"
+class="dropdown">
 
 
 <button id="addBtn">
+
 Dodaj dokument
+
 </button>
 
 
-<button id="allLocations">
-Wszystkie lokalizacje
+<button id="exportExcelBtn">
+
+Eksport Excel
+
 </button>
+
+
+<button id="exportCsvBtn">
+
+Eksport CSV
+
+</button>
+
+
+<button id="missingBtn">
+
+Raport brakujących
+
+</button>
+
+
+<button id="settingsBtn">
+
+Ustawienia
+
+</button>
+
 
 
 </div>
@@ -68,12 +102,124 @@ Wszystkie lokalizacje
 
 
 
+
+
+<!-- DASHBOARD -->
+
+
+<section class="dashboard">
+
+
+<div class="stat-card">
+
+
+<h3>
+
+Dokumenty
+
+</h3>
+
+
+<strong id="documentsCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<h3>
+
+Lokalizacje
+
+</h3>
+
+
+<strong id="locationsCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<h3>
+
+Dodane w tym miesiącu
+
+</h3>
+
+
+<strong id="monthCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<h3>
+
+Do uzupełnienia
+
+</h3>
+
+
+<strong id="missingCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- SZUKAJ -->
+
+
 <div class="search-box">
 
 
-<input 
+<input
+
 id="searchInput"
-placeholder="Wyszukaj dokument, lokal, regał..."
+
+placeholder="Szukaj dokumentu, lokalu, regału..."
+
 >
 
 
@@ -83,17 +229,25 @@ placeholder="Wyszukaj dokument, lokal, regał..."
 
 
 
+
+
+<!-- LOKALIZACJE -->
+
+
 <section class="location-section">
 
 
 <h3>
+
 Lokalizacje
+
 </h3>
 
 
 <div 
 id="locationTabs"
 class="location-tabs">
+
 </div>
 
 
@@ -104,6 +258,11 @@ class="location-tabs">
 
 
 
+
+
+<!-- FILTRY -->
+
+
 <div class="filters">
 
 
@@ -111,12 +270,13 @@ class="location-tabs">
 
 
 <option value="">
+
 Wszystkie typy
+
 </option>
 
 
 </select>
-
 
 
 
@@ -125,12 +285,56 @@ Wszystkie typy
 
 
 <option value="">
+
 Wszystkie regały
+
 </option>
 
 
 </select>
 
+
+
+
+<select id="statusFilter">
+
+
+<option value="">
+
+Wszystkie statusy
+
+</option>
+
+
+<option value="OK">
+
+OK
+
+</option>
+
+
+<option value="Do uzupełnienia">
+
+Do uzupełnienia
+
+</option>
+
+
+<option value="Brak dokumentu">
+
+Brak dokumentu
+
+</option>
+
+
+<option value="Nieaktualny">
+
+Nieaktualny
+
+</option>
+
+
+</select>
 
 
 </div>
@@ -141,7 +345,15 @@ Wszystkie regały
 
 
 
-<div id="results"></div>
+
+
+<!-- LISTA -->
+
+<div id="results">
+
+
+</div>
+
 
 
 
@@ -156,14 +368,11 @@ Wszystkie regały
 
 
 
-<!-- MODAL DODAWANIA / EDYCJI -->
-
+<!-- MODAL -->
 
 <div 
-id="modalOverlay" 
+id="modalOverlay"
 class="modal-overlay hidden">
-
-
 
 
 
@@ -173,8 +382,10 @@ class="modal-overlay hidden">
 
 
 
-<button 
+<button
+
 id="closeModal"
+
 class="close-modal">
 
 ×
@@ -213,21 +424,23 @@ Dodaj dokument
 
 
 
-
 <div class="form-group">
 
 
 <label>
-Lokalizacja *
-</label>
 
+Lokalizacja *
+
+</label>
 
 
 <select id="location">
 
 
 <option value="">
-Wybierz lokalizację
+
+Wybierz
+
 </option>
 
 
@@ -235,56 +448,45 @@ Wybierz lokalizację
 OKĘCIE
 </option>
 
-
 <option>
 RADOM
 </option>
-
 
 <option>
 MODLIN
 </option>
 
-
 <option>
 SONATA
 </option>
-
 
 <option>
 RZESZÓW
 </option>
 
-
 <option>
 KATOWICE
 </option>
-
 
 <option>
 KRAKÓW
 </option>
 
-
 <option>
 ZIELONA GÓRA
 </option>
-
 
 <option>
 FRANCJA
 </option>
 
-
 <option>
 BYDGOSZCZ
 </option>
 
-
 <option>
 POZNAŃ
 </option>
-
 
 <option>
 WROCŁAW
@@ -306,9 +508,10 @@ WROCŁAW
 
 
 <label>
-Numer lokalu *
-</label>
 
+Numer lokalu *
+
+</label>
 
 
 <input 
@@ -324,11 +527,14 @@ placeholder="np. 101">
 
 
 
-<div class="form-group full">
+
+<div class="form-group">
 
 
 <label>
+
 Nazwa dokumentu *
+
 </label>
 
 
@@ -345,11 +551,14 @@ placeholder="np. Umowa najmu">
 
 
 
+
 <div class="form-group">
 
 
 <label>
-Typ dokumentu *
+
+Typ *
+
 </label>
 
 
@@ -366,20 +575,24 @@ placeholder="np. Umowa">
 
 
 
+
 <div class="form-group">
 
 
 <label>
+
 Regał *
+
 </label>
 
 
 <input 
 id="shelf"
-placeholder="np. A12">
+placeholder="np. A3">
 
 
 </div>
+
 
 
 
@@ -391,16 +604,19 @@ placeholder="np. A12">
 
 
 <label>
+
 Półka *
+
 </label>
 
 
 <input 
 id="level"
-placeholder="np. 3">
+placeholder="np. 2">
 
 
 </div>
+
 
 
 
@@ -412,7 +628,9 @@ placeholder="np. 3">
 
 
 <label>
+
 Segregator *
+
 </label>
 
 
@@ -429,17 +647,74 @@ placeholder="np. Czerwony">
 
 
 
+<div class="form-group">
+
+
+<label>
+
+Status *
+
+</label>
+
+
+<select id="status">
+
+
+<option value="OK">
+
+OK
+
+</option>
+
+
+<option value="Do uzupełnienia">
+
+Do uzupełnienia
+
+</option>
+
+
+<option value="Brak dokumentu">
+
+Brak dokumentu
+
+</option>
+
+
+<option value="Nieaktualny">
+
+Nieaktualny
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
 <div class="form-group full">
 
 
 <label>
+
 Uwagi
+
 </label>
 
 
-<textarea 
+<textarea
+
 id="notes"
+
 placeholder="Dodatkowe informacje">
+
 </textarea>
 
 
@@ -447,8 +722,6 @@ placeholder="Dodatkowe informacje">
 
 
 
-
-
 </div>
 
 
@@ -457,10 +730,24 @@ placeholder="Dodatkowe informacje">
 
 
 
-<div 
-id="errorBox" 
+
+
+<div id="successBox"
+class="success hidden">
+
+
+Dokument zapisany.
+
+</div>
+
+
+
+<div id="errorBox"
 class="error hidden">
+
+
 </div>
+
 
 
 
@@ -471,8 +758,10 @@ class="error hidden">
 <div class="modal-buttons">
 
 
-<button 
+<button
+
 id="saveBtn"
+
 class="primary-btn">
 
 Zapisz dokument
@@ -481,33 +770,6 @@ Zapisz dokument
 
 
 </div>
-
-
-
-
-
-
-
-<div 
-id="successBox"
-class="success hidden">
-
-
-<p>
-Dokument został zapisany.
-</p>
-
-
-<button id="closeAfterSave">
-
-Zamknij
-
-</button>
-
-
-</div>
-
-
 
 
 
@@ -538,6 +800,9 @@ Zamknij
 
 
 <script src="./js/menu.js"></script>
+
+
+<script src="./js/export.js"></script>
 
 
 
