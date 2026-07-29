@@ -10,22 +10,50 @@ document.getElementById("menuList");
 
 
 
+if(menuBtn){
+
+
 menuBtn.onclick=()=>{
 
+
 menuList.classList.toggle("active");
+
 
 };
 
 
+}
 
 
 
-document.getElementById("addBtn").onclick=()=>{
+
+const addBtn =
+document.getElementById("addBtn");
+
+
+
+if(addBtn){
+
+
+addBtn.onclick=()=>{
 
 
 document
 .getElementById("modalOverlay")
 .classList.remove("hidden");
+
+
+
+document
+.getElementById("successBox")
+.classList.add("hidden");
+
+
+
+document
+.getElementById("modalTitle")
+.innerText="Dodaj dokument";
+
 
 
 menuList.classList.remove("active");
@@ -35,49 +63,22 @@ menuList.classList.remove("active");
 
 
 
-
-
-document.getElementById("closeModal").onclick=()=>{
-
-
-document
-.getElementById("modalOverlay")
-.classList.add("hidden");
-
-
-};
+}
 
 
 
 
 
-document.getElementById("closeAfterSave").onclick=()=>{
 
-
-document
-.getElementById("modalOverlay")
-.classList.add("hidden");
-
-
-};
+const allLocations =
+document.getElementById("allLocations");
 
 
 
+if(allLocations){
 
 
-document.getElementById("addAnother").onclick=()=>{
-
-
-document
-.getElementById("successBox")
-.classList.add("hidden");
-
-
-};
-
-
-
-document.getElementById("allLocations").onclick=()=>{
+allLocations.onclick=()=>{
 
 
 if(typeof selectedLocation !== "undefined"){
@@ -87,6 +88,7 @@ selectedLocation="WSZYSTKIE";
 }
 
 
+
 if(typeof render==="function"){
 
 render();
@@ -94,7 +96,18 @@ render();
 }
 
 
+
+menuList.classList.remove("active");
+
+
 };
+
+
+}
+
+
+
+
 
 
 });
