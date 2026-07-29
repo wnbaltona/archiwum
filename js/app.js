@@ -1,26 +1,17 @@
+// ===============================
+// APP.JS
+// ===============================
+
+
 let documents = [];
 
-let selectedLocation = "WSZYSTKIE";
+let selectedLocation = "";
+
+let openedLocations = [];
 
 
-const DEFAULT_LOCATIONS = [
 
-"OKĘCIE",
-"RADOM",
-"MODLIN",
-"BYDGOSZCZ",
-"KRAKÓW",
-"POZNAŃ",
-"WROCŁAW",
-"ŚWINOUJŚCIE",
-"GDAŃSK",
-"GDYNIA",
-"ZIELONA GÓRA",
-"RZESZÓW",
-"FRANCJA",
-"KATOWICE"
 
-];
 
 
 
@@ -32,34 +23,6 @@ document.addEventListener(
 loadDocuments();
 
 
-
-document
-.getElementById("searchInput")
-?.addEventListener(
-"input",
-render
-);
-
-
-
-document
-.getElementById("yearFilter")
-?.addEventListener(
-"change",
-render
-);
-
-
-
-document
-.getElementById("statusFilter")
-?.addEventListener(
-"change",
-render
-);
-
-
-
 });
 
 
@@ -68,13 +31,21 @@ render
 
 
 
+
+// ===============================
+// POBIERANIE DOKUMENTÓW
+// ===============================
+
+
 async function loadDocuments(){
 
 
-
 const {
+
 data,
+
 error
+
 }
 
 =
@@ -86,11 +57,9 @@ await supabaseClient
 .select("*")
 
 .order(
-"rok",
-{
-ascending:false
-}
+"lokalizacja"
 );
+
 
 
 
@@ -106,15 +75,18 @@ return;
 
 
 
+
 documents = data || [];
 
 
 
-createLocations();
+createLocationButtons();
 
-createYears();
 
-render();
+fillYearFilter();
+
+
+renderDocuments();
 
 
 
@@ -128,12 +100,15 @@ render();
 
 
 
-function createLocations(){
+// ===============================
+// LOKALIZACJE
+// ===============================
 
+
+function createLocationButtons(){
 
 
 const box =
-
 document.getElementById(
 "locationTabs"
 );
@@ -145,18 +120,19 @@ return;
 
 
 
+const locations =
 
-box.innerHTML="";
+[
 
+...new Set(
 
+documents.map(
 
+d=>d.lokalizacja
 
+)
 
-const allLocations = [
-
-"WSZYSTKIE",
-
-...DEFAULT_LOCATIONS
+)
 
 ];
 
@@ -164,42 +140,29 @@ const allLocations = [
 
 
 
-
-
-allLocations.forEach(location=>{
-
-
-
-let count;
+box.innerHTML="";
 
 
 
-if(location==="WSZYSTKIE"){
 
 
-count = documents.length;
+locations.forEach(location=>{
 
 
-}
+const count =
 
-else{
+documents.filter(
 
-
-count = documents.filter(doc=>
-
-doc.lokalizacja===location
+d=>d.lokalizacja===location
 
 ).length;
-
-
-}
-
 
 
 
 
 
 const button =
+
 document.createElement(
 "button"
 );
@@ -211,17 +174,13 @@ button.className =
 
 
 
-
-
 button.innerHTML =
-
 
 `
 
 <strong>
 ${location}
 </strong>
-
 
 <span>
 ${count} dokumentów
@@ -233,16 +192,57 @@ ${count} dokumentów
 
 
 
-
-button.onclick=()=>{
-
-
-selectedLocation =
-location;
+button.onclick = ()=>{
 
 
+if(selectedLocation===location){
 
-render();
+
+selectedLocation="";
+
+
+button.classList.remove(
+"active"
+);
+
+
+
+}
+
+else{
+
+
+selectedLocation=location;
+
+
+
+document
+
+.querySelectorAll(
+".location-card"
+)
+
+.forEach(
+
+b=>b.classList.remove(
+"active"
+)
+
+);
+
+
+
+button.classList.add(
+"active"
+);
+
+
+
+}
+
+
+
+renderDocuments();
 
 
 
@@ -269,98 +269,12 @@ box.appendChild(button);
 
 
 
-
-function createYears(){
-
-
-
-const select =
-
-document.getElementById(
-"yearFilter"
-);
+// ===============================
+// RENDER
+// ===============================
 
 
-
-if(!select)
-return;
-
-
-
-
-
-const years =
-
-[
-
-...
-
-new Set(
-
-documents
-
-.map(x=>x.rok)
-
-.filter(Boolean)
-
-)
-
-]
-
-.sort(
-(a,b)=>b-a
-);
-
-
-
-
-
-
-select.innerHTML =
-
-
-`
-
-<option value="">
-Wszystkie lata
-</option>
-
-`;
-
-
-
-
-
-years.forEach(year=>{
-
-
-select.innerHTML +=
-
-
-`
-
-<option value="${year}">
-${year}
-</option>
-
-`;
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-
-function render(){
+function renderDocuments(){
 
 
 
@@ -377,7 +291,10 @@ return;
 
 
 
-results.innerHTML="";
+
+
+
+let filtered = [...documents];
 
 
 
@@ -385,24 +302,19 @@ results.innerHTML="";
 
 
 
-let filtered =
-
-[...documents];
+// lokalizacja
 
 
+if(selectedLocation){
 
 
+filtered =
 
+filtered.filter(
 
+d=>
 
-if(
-selectedLocation !== "WSZYSTKIE"
-){
-
-
-filtered = filtered.filter(doc=>
-
-doc.lokalizacja === selectedLocation
+d.lokalizacja===selectedLocation
 
 );
 
@@ -415,6 +327,8 @@ doc.lokalizacja === selectedLocation
 
 
 
+// wyszukiwarka
+
 
 const search =
 
@@ -426,11 +340,7 @@ document
 
 ?.value
 
-.toLowerCase()
-
-|| "";
-
-
+.toLowerCase();
 
 
 
@@ -439,9 +349,13 @@ document
 if(search){
 
 
-filtered = filtered.filter(doc=>
+filtered =
 
-JSON.stringify(doc)
+filtered.filter(
+
+d=>
+
+JSON.stringify(d)
 
 .toLowerCase()
 
@@ -457,6 +371,9 @@ JSON.stringify(doc)
 
 
 
+
+
+// rok
 
 
 const year =
@@ -476,9 +393,13 @@ document
 if(year){
 
 
-filtered = filtered.filter(doc=>
+filtered =
 
-String(doc.rok)===year
+filtered.filter(
+
+d=>
+
+String(d.rok)===year
 
 );
 
@@ -491,6 +412,8 @@ String(doc.rok)===year
 
 
 
+
+// status
 
 
 const status =
@@ -507,14 +430,16 @@ document
 
 
 
-
-
 if(status){
 
 
-filtered = filtered.filter(doc=>
+filtered =
 
-doc.status===status
+filtered.filter(
+
+d=>
+
+d.status===status
 
 );
 
@@ -529,22 +454,14 @@ doc.status===status
 
 
 
-const grouped={};
+results.innerHTML="";
 
 
 
 
 
 
-
-DEFAULT_LOCATIONS.forEach(location=>{
-
-
-grouped[location]=[];
-
-
-});
-
+const grouped = {};
 
 
 
@@ -574,17 +491,20 @@ grouped[doc.lokalizacja].push(doc);
 
 
 
-Object.entries(grouped)
 
-.forEach(
-([location,docs])=>{
+Object.keys(grouped)
+
+.sort()
+
+.forEach(location=>{
 
 
+createLocationBlock(
 
-createLocationBox(
 location,
-docs,
-results
+
+grouped[location]
+
 );
 
 
@@ -603,15 +523,29 @@ results
 
 
 
-function createLocationBox(
+// ===============================
+// ROZWIJANE LOKALIZACJE
+// ===============================
+
+
+function createLocationBlock(
 location,
-docs,
-container
+docs
 ){
 
 
 
-const section =
+const results =
+
+document.getElementById(
+"results"
+);
+
+
+
+
+
+const wrapper =
 
 document.createElement(
 "div"
@@ -619,14 +553,29 @@ document.createElement(
 
 
 
-section.className =
+wrapper.className =
 "archive-location";
 
 
 
 
 
-section.innerHTML =
+
+
+const opened =
+
+openedLocations.includes(
+location
+);
+
+
+
+
+
+
+
+wrapper.innerHTML =
+
 
 
 `
@@ -634,35 +583,38 @@ section.innerHTML =
 <div class="archive-header">
 
 
-<span class="arrow">
-▶
-</span>
+<div class="arrow">
+
+${opened ? "▼" : "▶"}
+
+</div>
 
 
 
 <strong>
+
 ${location}
+
 </strong>
 
 
+<div class="counter">
 
-<span class="counter">
+${docs.length}
 
-${docs.length} dokumentów
-
-</span>
+</div>
 
 
 </div>
 
 
-<div class="location-content hidden">
+
+<div class="location-content ${opened ? "" : "hidden"}">
 
 </div>
+
 
 `;
-
-
 
 
 
@@ -671,28 +623,9 @@ ${docs.length} dokumentów
 
 const header =
 
-section.querySelector(
+wrapper.querySelector(
 ".archive-header"
 );
-
-
-
-const content =
-
-section.querySelector(
-".location-content"
-);
-
-
-
-const arrow =
-
-section.querySelector(
-".arrow"
-);
-
-
-
 
 
 
@@ -701,21 +634,19 @@ section.querySelector(
 header.onclick=()=>{
 
 
-content.classList.toggle(
-"hidden"
-);
-
-
-
 if(
-content.classList.contains(
-"hidden"
-)
-
+openedLocations.includes(location)
 ){
 
 
-arrow.textContent="▶";
+openedLocations =
+
+openedLocations.filter(
+
+x=>x!==location
+
+);
+
 
 
 }
@@ -723,10 +654,18 @@ arrow.textContent="▶";
 else{
 
 
-arrow.textContent="▼";
+openedLocations.push(
+location
+);
+
 
 
 }
+
+
+
+renderDocuments();
+
 
 
 };
@@ -737,36 +676,11 @@ arrow.textContent="▼";
 
 
 
+const content =
 
-
-const years={};
-
-
-
-
-
-docs.forEach(doc=>{
-
-
-const year =
-doc.rok || "Brak roku";
-
-
-
-if(!years[year]){
-
-
-years[year]=[];
-
-}
-
-
-
-years[year].push(doc);
-
-
-
-});
+wrapper.querySelector(
+".location-content"
+);
 
 
 
@@ -774,87 +688,47 @@ years[year].push(doc);
 
 
 
-
-Object.entries(years)
+docs
 
 .sort(
-(a,b)=>b[0]-a[0]
+
+(a,b)=>
+
+(b.rok||0)
+
+-
+
+(a.rok||0)
+
 )
 
-.forEach(
-([year,items])=>{
+.forEach(doc=>{
 
 
-
-
-
-const yearBox =
-
-document.createElement(
-"div"
-);
-
-
-
-yearBox.className =
-"year-box";
-
-
-
-
-
-yearBox.innerHTML =
+content.innerHTML +=
 
 
 `
 
-<h3>
-${year}
-</h3>
+<div class="document">
 
-`;
-
-
-
-
-
-
-
-items.forEach(doc=>{
-
-
-
-const card =
-
-document.createElement(
-"div"
-);
-
-
-
-card.className =
-"document";
-
-
-
-
-
-
-
-card.innerHTML =
-
-
-`
 
 <h4>
-${doc.nazwa || "-"}
+${doc.nazwa}
 </h4>
 
 
+
 <p>
-Lokal:
-${doc.numer_lokalu || "-"}
+Typ: ${doc.typ}
 </p>
+
+
+
+<p>
+Lokal: ${doc.numer_lokalu}
+</p>
+
 
 
 <p>
@@ -863,26 +737,111 @@ ${doc.nazwa_kontrahenta || "-"}
 </p>
 
 
-<p>
-Typ:
-${doc.typ || "-"}
-</p>
-
 
 <p>
 Status:
-${doc.status || "-"}
+${doc.status}
 </p>
 
 
-<button class="edit">
+
+<button 
+class="edit"
+onclick='openEditModal(${JSON.stringify(doc)})'>
+
 Edytuj
+
 </button>
 
 
-<button class="delete">
-Usuń
-</button>
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+
+
+
+
+results.appendChild(wrapper);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// LATA
+// ===============================
+
+
+function fillYearFilter(){
+
+
+
+const select =
+
+document
+
+.getElementById(
+"yearFilter"
+);
+
+
+
+if(!select)
+return;
+
+
+
+
+
+const years =
+
+[
+
+...new Set(
+
+documents
+
+.map(
+d=>d.rok
+)
+
+.filter(Boolean)
+
+)
+
+]
+
+.sort();
+
+
+
+
+
+
+select.innerHTML =
+
+
+`
+
+<option value="">
+Wszystkie lata
+</option>
 
 `;
 
@@ -891,57 +850,23 @@ Usuń
 
 
 
-
-card.querySelector(".edit")
-.onclick=()=>{
-
-openEditModal(doc);
-
-};
+years.forEach(year=>{
 
 
+select.innerHTML +=
 
 
+`
 
+<option value="${year}">
+${year}
+</option>
 
-
-card.querySelector(".delete")
-.onclick=()=>{
-
-deleteDocument(doc.id);
-
-};
-
-
-
-
-
-
-
-yearBox.appendChild(card);
+`;
 
 
 
 });
-
-
-
-
-
-
-
-content.appendChild(yearBox);
-
-
-
-});
-
-
-
-
-
-
-container.appendChild(section);
 
 
 
@@ -955,62 +880,53 @@ container.appendChild(section);
 
 
 
+// ===============================
+// FILTRY
+// ===============================
 
-async function deleteDocument(id){
 
+document.addEventListener(
+"input",
+e=>{
 
 
 if(
-!confirm(
-"Usunąć dokument?"
+
+e.target.id==="searchInput"
+
+)
+
+renderDocuments();
+
+
+
+});
+
+
+
+
+document.addEventListener(
+"change",
+e=>{
+
+
+if(
+
+[
+"yearFilter",
+"statusFilter"
+
+]
+
+.includes(
+e.target.id
+
 )
 
 )
-return;
+
+renderDocuments();
 
 
 
-
-
-
-
-const {
-
-error
-
-}
-
-=
-
-await supabaseClient
-
-.from("dokumenty")
-
-.delete()
-
-.eq(
-"id",
-id
-);
-
-
-
-
-
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-
-loadDocuments();
-
-
-
-}
+});
