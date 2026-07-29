@@ -18,11 +18,9 @@
 
 <header>
 
-
 <div class="logo">
 Archiwum Dokumentów
 </div>
-
 
 
 <div class="menu">
@@ -31,7 +29,6 @@ Archiwum Dokumentów
 <button id="menuBtn">
 Menu
 </button>
-
 
 
 <div id="menuList" class="dropdown">
@@ -98,7 +95,6 @@ Wszystkie regały
 
 
 
-
 <div id="results"></div>
 
 
@@ -108,7 +104,7 @@ Wszystkie regały
 
 
 
-<!-- OKNO DODAWANIA -->
+<!-- OKNO DODAWANIA / EDYCJI -->
 
 <div id="modalOverlay" class="modal-overlay hidden">
 
@@ -116,9 +112,10 @@ Wszystkie regały
 <div class="modal">
 
 
-<h2>
+<h2 id="modalTitle">
 Dodaj dokument
 </h2>
+
 
 
 
@@ -138,6 +135,7 @@ Dodaj dokument
 <option>WROCŁAW</option>
 
 </select>
+
 
 
 
@@ -163,13 +161,9 @@ Dodaj dokument
 
 
 
+
 <button id="saveBtn">
 Zapisz dokument
-</button>
-
-
-<button id="closeModal">
-Zamknij
 </button>
 
 
@@ -183,7 +177,21 @@ Dokument został dodany.
 </p>
 
 
+<button id="closeAfterSave">
+Zamknij
+</button>
+
+
 </div>
+
+
+
+</div>
+
+
+</div>
+
+
 
 
 
