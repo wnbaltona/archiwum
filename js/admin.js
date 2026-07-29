@@ -1,3 +1,4 @@
+let contractors = [];
 let editingDocumentId = null;
 
 
