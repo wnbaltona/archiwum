@@ -3,30 +3,21 @@ document.addEventListener(
 ()=>{
 
 
-const btn =
-document.getElementById(
-"exportBtn"
+document
+
+.getElementById("exportBtn")
+
+?.addEventListener(
+
+"click",
+
+exportDocuments
+
 );
 
 
-
-if(btn){
-
-
-btn.onclick=()=>{
-
-
-exportDocuments();
-
-
-};
-
-
-}
-
-
-
 });
+
 
 
 
@@ -52,22 +43,7 @@ await supabaseClient
 
 .from("dokumenty")
 
-.select(`
-
-*,
-
-lokale(
-mpk,
-nazwa,
-lokalizacja
-),
-
-kontrahenci(
-nazwa
-)
-
-`);
-
+.select("*");
 
 
 
@@ -77,7 +53,29 @@ if(error){
 
 
 alert(
-"Błąd eksportu"
+"Błąd eksportu: "
++
+error.message
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+if(
+!data ||
+data.length===0
+){
+
+
+alert(
+"Brak dokumentów do eksportu"
 );
 
 
@@ -92,10 +90,41 @@ return;
 
 
 
-let csv =
+const headers=[
 
-"Dokument,Lokalizacja,Lokal,MPK,Kontrahent,Rok,Typ,Regał,Półka,Status\n";
+"Lokalizacja",
 
+"Lokal",
+
+"Nazwa dokumentu",
+
+"Typ",
+
+"Rok",
+
+"Kontrahent",
+
+"Regał",
+
+"Półka",
+
+"Segregator",
+
+"Status",
+
+"Uwagi"
+
+];
+
+
+
+
+
+
+
+let csv=headers.join(";")
++
+"\n";
 
 
 
@@ -105,31 +134,56 @@ let csv =
 data.forEach(doc=>{
 
 
+
 csv +=
 
-`
+[
 
-"${doc.nazwa || ""}",
 
-"${doc.lokale?.lokalizacja || ""}",
+doc.lokalizacja,
 
-"${doc.lokale?.nazwa || ""}",
+doc.numer_lokalu,
 
-"${doc.lokale?.mpk || ""}",
+doc.nazwa,
 
-"${doc.kontrahenci?.nazwa || ""}",
+doc.typ,
 
-"${doc.rok || ""}",
+doc.rok,
 
-"${doc.typ || ""}",
+doc.nazwa_kontrahenta,
 
-"${doc.regal || ""}",
+doc.regal,
 
-"${doc.polka || ""}",
+doc.polka,
 
-"${doc.status || ""}"
+doc.segregator,
 
-\n`;
+doc.status,
+
+doc.uwagi
+
+
+]
+
+.map(value=>{
+
+
+if(value===null || value===undefined)
+
+return "";
+
+
+return String(value)
+.replaceAll(";"," ");
+
+
+})
+
+.join(";")
+
++
+
+"\n";
 
 
 
@@ -142,14 +196,28 @@ csv +=
 
 
 
+
 const blob =
+
 new Blob(
+
 [
+
+"\ufeff"
+
++
+
 csv
+
 ],
+
 {
-type:"text/csv;charset=utf-8;"
+
+type:
+"text/csv;charset=utf-8;"
+
 }
+
 );
 
 
@@ -159,16 +227,15 @@ type:"text/csv;charset=utf-8;"
 
 
 const url =
-URL.createObjectURL(
-blob
-);
 
+URL.createObjectURL(blob);
 
 
 
 
 
 const link =
+
 document.createElement(
 "a"
 );
@@ -178,8 +245,10 @@ document.createElement(
 link.href=url;
 
 
+
 link.download=
-"archiwum_dokumentow.csv";
+
+"dokumenty_export.csv";
 
 
 
@@ -188,9 +257,9 @@ link.click();
 
 
 
-URL.revokeObjectURL(
-url
-);
+
+
+URL.revokeObjectURL(url);
 
 
 
