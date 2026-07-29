@@ -69,7 +69,6 @@ Ustawienia
 </button>
 
 
-
 </div>
 
 
@@ -87,11 +86,6 @@ Ustawienia
 
 
 
-
-
-<!-- WYSZUKIWANIE -->
-
-
 <div class="search-box">
 
 
@@ -99,7 +93,7 @@ Ustawienia
 
 id="searchInput"
 
-placeholder="Szukaj dokumentu, lokalu, regału..."
+placeholder="Szukaj dokumentu, lokalu, kontrahenta..."
 
 >
 
@@ -110,9 +104,6 @@ placeholder="Szukaj dokumentu, lokalu, regału..."
 
 
 
-
-
-<!-- LOKALIZACJE -->
 
 
 <section class="location-section">
@@ -138,9 +129,6 @@ class="location-tabs">
 
 
 
-
-
-<!-- FILTRY -->
 
 
 <div class="filters">
@@ -215,9 +203,6 @@ Nieaktualny
 
 
 
-<!-- LISTA DOKUMENTÓW -->
-
-
 <div id="results">
 
 
@@ -237,7 +222,7 @@ Nieaktualny
 
 
 
-<!-- MODAL DODAWANIA / EDYCJI -->
+<!-- MODAL -->
 
 
 <div 
@@ -289,6 +274,7 @@ Lokalizacja *
 
 <select id="location">
 
+
 <option value="">
 Wybierz lokalizację
 </option>
@@ -310,11 +296,11 @@ Wybierz lokalizację
 <option>GDYNIA</option>
 <option>ŚWINOUJŚCIE</option>
 
+
 </select>
 
 
 </div>
-
 
 
 
@@ -336,7 +322,6 @@ placeholder="Numer lokalu">
 
 
 </div>
-
 
 
 
@@ -370,13 +355,56 @@ placeholder="Nazwa dokumentu">
 
 
 <label>
-Typ *
+Nazwa kontrahenta *
+</label>
+
+
+<input 
+id="contractor"
+placeholder="Nazwa kontrahenta">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+Typ dokumentu *
 </label>
 
 
 <input 
 id="type"
 placeholder="Typ dokumentu">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+Rok *
+</label>
+
+
+<input 
+id="year"
+type="number"
+placeholder="np. 2026">
 
 
 </div>
@@ -409,7 +437,6 @@ placeholder="Regał">
 
 
 
-
 <div class="form-group">
 
 
@@ -431,7 +458,6 @@ placeholder="Półka">
 
 
 
-
 <div class="form-group">
 
 
@@ -446,7 +472,6 @@ placeholder="Segregator">
 
 
 </div>
-
 
 
 
@@ -590,9 +615,9 @@ Zapisz dokument
 
 <script src="./js/menu.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script src="./js/export.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 
 </body>
