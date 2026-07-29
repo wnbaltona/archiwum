@@ -1,4 +1,3 @@
-let contractors = [];
 let editingDocumentId = null;
 
 
@@ -41,11 +40,9 @@ document
 "change",
 (e)=>{
 
-
 loadLocals(
 e.target.value
 );
-
 
 });
 
@@ -53,6 +50,8 @@ e.target.value
 
 loadDocumentLocations();
 
+loadContractors();
+
 
 });
 
@@ -61,16 +60,12 @@ loadDocumentLocations();
 
 
 
-
-
-
-// ==============================
+// =================================
 // LOKALIZACJE W FORMULARZU
-// ==============================
+// =================================
 
 
 function loadDocumentLocations(){
-
 
 
 const select =
@@ -85,14 +80,13 @@ return;
 
 
 
-select.innerHTML=
+
+select.innerHTML =
 
 `
-
 <option value="">
 Wybierz lokalizację
 </option>
-
 `;
 
 
@@ -105,17 +99,13 @@ LOCATIONS.forEach(location=>{
 select.innerHTML +=
 
 `
-
 <option value="${location}">
 ${location}
 </option>
-
 `;
 
 
-
 });
-
 
 
 }
@@ -126,18 +116,117 @@ ${location}
 
 
 
+// =================================
+// KONTRAHENCI
+// =================================
 
 
-// ==============================
-// OTWÓRZ DODAWANIE
-// ==============================
+async function loadContractors(){
+
+
+
+const select =
+document.getElementById(
+"contractor"
+);
+
+
+
+if(!select)
+return;
+
+
+
+
+
+const {
+
+data,
+
+error
+
+}
+
+=
+
+await supabaseClient
+
+.from("kontrahenci")
+
+.select("*")
+
+.order(
+"nazwa"
+);
+
+
+
+
+
+
+
+if(error){
+
+console.error(
+"Błąd pobierania kontrahentów:",
+error
+);
+
+return;
+
+}
+
+
+
+
+
+select.innerHTML =
+
+`
+<option value="">
+Wybierz kontrahenta
+</option>
+`;
+
+
+
+
+
+
+data.forEach(item=>{
+
+
+select.innerHTML +=
+
+`
+<option value="${item.nazwa}">
+${item.nazwa}
+</option>
+`;
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+// =================================
+// OTWIERANIE DODAWANIA
+// =================================
 
 
 function openAddModal(){
 
 
 
-editingDocumentId=null;
+editingDocumentId = null;
 
 
 
@@ -146,26 +235,21 @@ clearForm();
 
 
 document
-
 .getElementById(
 "modalTitle"
 )
-
-.innerText=
-
+.innerText =
 "Dodaj dokument";
 
 
 
 
-document
 
+document
 .getElementById(
 "modalOverlay"
 )
-
 .classList
-
 .remove(
 "hidden"
 );
@@ -181,9 +265,9 @@ document
 
 
 
-// ==============================
-// POBIERANIE LOKALI
-// ==============================
+// =================================
+// LOKALE WG LOKALIZACJI
+// =================================
 
 
 async function loadLocals(location){
@@ -204,15 +288,15 @@ return;
 
 
 
-select.innerHTML=
+
+select.innerHTML =
 
 `
-
 <option>
 Ładowanie...
 </option>
-
 `;
+
 
 
 
@@ -250,13 +334,12 @@ location
 
 
 
-if(error){
 
+if(error){
 
 console.error(error);
 
 return;
-
 
 }
 
@@ -266,16 +349,13 @@ return;
 
 
 
-select.innerHTML=
+select.innerHTML =
 
 `
-
 <option value="">
 Wybierz lokal
 </option>
-
 `;
-
 
 
 
@@ -286,20 +366,19 @@ Wybierz lokal
 if(!data || data.length===0){
 
 
-select.innerHTML=
+select.innerHTML =
 
 `
-
 <option>
-Brak lokali
+Brak dodanych lokali
 </option>
-
 `;
 
 return;
 
 
 }
+
 
 
 
@@ -312,19 +391,14 @@ data.forEach(local=>{
 select.innerHTML +=
 
 `
-
 <option value="${local.nazwa}">
-
 ${local.nazwa} (${local.mpk})
-
 </option>
-
 `;
 
 
 
 });
-
 
 
 
@@ -338,27 +412,24 @@ ${local.nazwa} (${local.mpk})
 
 
 
-// ==============================
+// =================================
 // EDYCJA
-// ==============================
+// =================================
 
 
-window.openEditModal=function(doc){
+window.openEditModal = function(doc){
 
 
 
-editingDocumentId=doc.id;
+editingDocumentId = doc.id;
 
 
 
 document
-
 .getElementById(
 "modalOverlay"
 )
-
 .classList
-
 .remove(
 "hidden"
 );
@@ -367,18 +438,12 @@ document
 
 
 
-
 document
-
 .getElementById(
 "modalTitle"
 )
-
-.innerText=
-
+.innerText =
 "Edytuj dokument";
-
-
 
 
 
@@ -386,9 +451,9 @@ document
 
 document.getElementById(
 "location"
-).value=
+).value =
+doc.lokalizacja || "";
 
-doc.lokalizacja;
 
 
 
@@ -400,80 +465,70 @@ doc.lokalizacja
 
 document.getElementById(
 "local"
-).value=
-
-doc.numer_lokalu;
+).value =
+doc.numer_lokalu || "";
 
 
 
 document.getElementById(
 "name"
-).value=
-
-doc.nazwa;
+).value =
+doc.nazwa || "";
 
 
 
 document.getElementById(
 "type"
-).value=
-
-doc.typ;
+).value =
+doc.typ || "";
 
 
 
 document.getElementById(
 "year"
-).value=
-
+).value =
 doc.rok || "";
 
 
 
 document.getElementById(
 "contractor"
-).value=
-
+).value =
 doc.nazwa_kontrahenta || "";
 
 
 
 document.getElementById(
 "shelf"
-).value=
-
-doc.regal;
+).value =
+doc.regal || "";
 
 
 
 document.getElementById(
 "level"
-).value=
-
-doc.polka;
+).value =
+doc.polka || "";
 
 
 
 document.getElementById(
 "folder"
-).value=
-
-doc.segregator;
+).value =
+doc.segregator || "";
 
 
 
 document.getElementById(
 "status"
-).value=
-
+).value =
 doc.status || "OK";
 
 
 
 document.getElementById(
 "notes"
-).value=
-
+).value =
 doc.uwagi || "";
 
 
@@ -488,18 +543,16 @@ doc.uwagi || "";
 
 
 
-// ==============================
-// ZAPIS
-// ==============================
+// =================================
+// ZAPIS DOKUMENTU
+// =================================
 
 
 async function saveDocument(){
 
 
 
-
-
-const data={
+const documentData = {
 
 
 lokalizacja:
@@ -585,16 +638,16 @@ document.getElementById(
 rok:
 
 Number(
-
 document.getElementById(
 "year"
 ).value
-
-) || null
-
+)
+||
+null
 
 
 };
+
 
 
 
@@ -608,17 +661,18 @@ let result;
 
 
 
-
 if(editingDocumentId){
 
 
-result=
+result =
 
 await supabaseClient
 
 .from("dokumenty")
 
-.update(data)
+.update(
+documentData
+)
 
 .eq(
 "id",
@@ -628,11 +682,10 @@ editingDocumentId
 
 
 }
-
 else{
 
 
-result=
+result =
 
 await supabaseClient
 
@@ -640,7 +693,7 @@ await supabaseClient
 
 .insert(
 [
-data
+documentData
 ]
 );
 
@@ -654,18 +707,13 @@ data
 
 
 
-
 if(result.error){
 
 
 alert(
-
 "Błąd zapisu dokumentu: "
-
 +
-
 result.error.message
-
 );
 
 
@@ -697,9 +745,9 @@ loadDocuments();
 
 
 
-// ==============================
+// =================================
 // ZAMKNIĘCIE
-// ==============================
+// =================================
 
 
 function closeModal(){
@@ -728,7 +776,6 @@ document
 
 
 
-
 function clearForm(){
 
 
@@ -736,9 +783,7 @@ function clearForm(){
 document
 
 .querySelectorAll(
-
 "#modalOverlay input, #modalOverlay textarea"
-
 )
 
 .forEach(
@@ -761,16 +806,15 @@ document.getElementById(
 
 
 
+
 document.getElementById(
 "local"
-).innerHTML=
+).innerHTML =
 
 `
-
 <option>
 Najpierw wybierz lokalizację
 </option>
-
 `;
 
 
