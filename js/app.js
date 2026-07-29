@@ -2,9 +2,41 @@ let documents = [];
 
 let selectedLocation = "WSZYSTKIE";
 
+
+
+const results =
+document.getElementById("results");
+
+const searchInput =
+document.getElementById("searchInput");
+
+const typeFilter =
+document.getElementById("typeFilter");
+
+const shelfFilter =
+document.getElementById("shelfFilter");
+
+const statusFilter =
+document.getElementById("statusFilter");
+
+const locationTabs =
+document.getElementById("locationTabs");
+
+
+
+
+
+
+
+// =====================
+// ODMIANA
+// =====================
+
+
 function documentText(number){
 
 number = Number(number);
+
 
 
 if(number === 1){
@@ -14,10 +46,12 @@ return "dokument";
 }
 
 
+
 if(
 number % 10 >= 2 &&
-number % 10 <= 4 &&
-(number % 100 < 12 || number % 100 > 14)
+number % 10 <=4 &&
+(number %100 <12 || number %100 >14)
+
 ){
 
 return "dokumenty";
@@ -25,49 +59,14 @@ return "dokumenty";
 }
 
 
-return "dokumentów";
 
+return "dokumentów";
 
 }
 
 
 
-const results = document.getElementById("results");
 
-const searchInput = document.getElementById("searchInput");
-
-const typeFilter = document.getElementById("typeFilter");
-
-const shelfFilter = document.getElementById("shelfFilter");
-
-const statusFilter = document.getElementById("statusFilter");
-
-const locationTabs = document.getElementById("locationTabs");
-
-
-
-
-
-const locations = [
-
-"WSZYSTKIE",
-"OKĘCIE",
-"RADOM",
-"MODLIN",
-"SONATA",
-"RZESZÓW",
-"KATOWICE",
-"KRAKÓW",
-"ZIELONA GÓRA",
-"FRANCJA",
-"BYDGOSZCZ",
-"POZNAŃ",
-"WROCŁAW",
-"GDAŃSK",
-"GDYNIA",
-"ŚWINOUJŚCIE"
-
-];
 
 
 
@@ -78,7 +77,9 @@ document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
+
 loadDocuments();
+
 
 });
 
@@ -88,12 +89,15 @@ loadDocuments();
 
 
 
+
+
 // =====================
-// POBIERANIE DANYCH
+// POBIERANIE
 // =====================
 
 
 async function loadDocuments(){
+
 
 
 const {
@@ -109,11 +113,14 @@ error
 .select("*")
 
 .order(
-"created_at",
+"rok",
 {
 ascending:false
 }
 );
+
+
+
 
 
 
@@ -127,7 +134,9 @@ return;
 
 
 
+
 documents=data || [];
+
 
 
 createLocationTabs();
@@ -135,6 +144,7 @@ createLocationTabs();
 createFilters();
 
 render();
+
 
 
 }
@@ -155,7 +165,31 @@ render();
 function createLocationTabs(){
 
 
+
 locationTabs.innerHTML="";
+
+
+
+const locations=[
+
+"WSZYSTKIE",
+
+...
+
+new Set(
+
+documents
+
+.map(d=>d.lokalizacja)
+
+.filter(Boolean)
+
+)
+
+];
+
+
+
 
 
 
@@ -190,7 +224,8 @@ document.createElement("button");
 
 
 
-button.className="location-card";
+button.className=
+"location-card";
 
 
 
@@ -202,11 +237,13 @@ button.innerHTML=
 ${location}
 </strong>
 
+
 <span>
 ${count} ${documentText(count)}
 </span>
 
 `;
+
 
 
 
@@ -255,9 +292,13 @@ function createFilters(){
 
 
 
-let types = [
+let types =
 
-...new Set(
+[
+
+...
+
+new Set(
 
 documents
 
@@ -268,6 +309,7 @@ documents
 )
 
 ];
+
 
 
 
@@ -299,6 +341,7 @@ ${type}
 `;
 
 
+
 });
 
 
@@ -308,9 +351,14 @@ ${type}
 
 
 
-let shelves=[
 
-...new Set(
+let shelves =
+
+[
+
+...
+
+new Set(
 
 documents
 
@@ -354,11 +402,15 @@ ${shelf}
 `;
 
 
+
 });
 
 
 
 }
+
+
+
 
 
 
@@ -382,7 +434,7 @@ searchInput.oninput=render;
 
 
 // =====================
-// RENDER
+// WYŚWIETLANIE
 // =====================
 
 
@@ -400,19 +452,20 @@ let list=[...documents];
 
 
 
-if(selectedLocation!=="WSZYSTKIE"){
+
+if(selectedLocation !== "WSZYSTKIE"){
+
 
 
 list=list.filter(
 
-d=>
-
-d.lokalizacja===selectedLocation
+d=>d.lokalizacja===selectedLocation
 
 );
 
 
 }
+
 
 
 
@@ -425,16 +478,12 @@ if(typeFilter.value){
 
 list=list.filter(
 
-d=>
-
-d.typ===typeFilter.value
+d=>d.typ===typeFilter.value
 
 );
 
 
 }
-
-
 
 
 
@@ -445,15 +494,12 @@ if(shelfFilter.value){
 
 list=list.filter(
 
-d=>
-
-d.regal===shelfFilter.value
+d=>d.regal===shelfFilter.value
 
 );
 
 
 }
-
 
 
 
@@ -465,9 +511,7 @@ if(statusFilter.value){
 
 list=list.filter(
 
-d=>
-
-d.status===statusFilter.value
+d=>d.status===statusFilter.value
 
 );
 
@@ -480,11 +524,9 @@ d.status===statusFilter.value
 
 
 
-const search =
+const search=
 
-searchInput.value
-
-.toLowerCase();
+searchInput.value.toLowerCase();
 
 
 
@@ -492,6 +534,7 @@ searchInput.value
 
 
 if(search){
+
 
 
 list=list.filter(d=>
@@ -505,6 +548,7 @@ JSON.stringify(d)
 );
 
 
+
 }
 
 
@@ -513,7 +557,28 @@ JSON.stringify(d)
 
 
 
-if(list.length===0){
+// dodatkowe sortowanie po roku
+
+list.sort(
+
+(a,b)=>
+
+Number(b.rok || 0)
+
+-
+
+Number(a.rok || 0)
+
+);
+
+
+
+
+
+
+
+if(!list.length){
+
 
 
 results.innerHTML=
@@ -528,11 +593,11 @@ Brak dokumentów
 
 `;
 
-
 return;
 
-
 }
+
+
 
 
 
@@ -544,7 +609,10 @@ const grouped={};
 
 
 
+
+
 list.forEach(doc=>{
+
 
 
 if(!grouped[doc.lokalizacja]){
@@ -567,11 +635,10 @@ grouped[doc.lokalizacja].push(doc);
 
 
 
+
 Object.entries(grouped)
 
-.forEach(
-
-([location,docs])=>{
+.forEach(([location,docs])=>{
 
 
 
@@ -581,7 +648,8 @@ document.createElement("div");
 
 
 
-archive.className="archive-location";
+archive.className=
+"archive-location";
 
 
 
@@ -595,7 +663,8 @@ document.createElement("div");
 
 
 
-header.className="archive-header";
+header.className=
+"archive-header";
 
 
 
@@ -609,11 +678,9 @@ header.innerHTML=
 ${location}
 </strong>
 
-
 <span>
 ${docs.length} ${documentText(docs.length)}
 </span>
-
 
 </div>
 
@@ -635,11 +702,11 @@ const content=
 
 document.createElement("div");
 
-
-
 content.className=
 
 "archive-content hidden";
+
+
 
 
 
@@ -671,17 +738,22 @@ header.classList.toggle(
 
 
 
-const locals={};
 
+// grupowanie lokali
+
+
+const locals={};
 
 
 
 docs.forEach(doc=>{
 
 
-let nr=
+
+const nr=
 
 doc.numer_lokalu || "Brak numeru";
+
 
 
 
@@ -693,8 +765,8 @@ locals[nr]=[];
 }
 
 
-
 locals[nr].push(doc);
+
 
 
 });
@@ -705,11 +777,11 @@ locals[nr].push(doc);
 
 
 
+
+
 Object.entries(locals)
 
-.forEach(
-
-([nr,docs])=>{
+.forEach(([nr,docs])=>{
 
 
 
@@ -719,9 +791,8 @@ document.createElement("div");
 
 
 
-localBox.className="local-box";
-
-
+localBox.className=
+"local-box";
 
 
 
@@ -740,6 +811,9 @@ Lokal ${nr}
 
 
 
+
+
+
 docs.forEach(doc=>{
 
 
@@ -750,7 +824,8 @@ document.createElement("div");
 
 
 
-card.className="document";
+card.className=
+"document";
 
 
 
@@ -766,30 +841,44 @@ ${doc.nazwa}
 
 
 <p>
-Typ: ${doc.typ || "-"}
+Kontrahent:
+${doc.nazwa_kontrahenta || "-"}
 </p>
 
 
 <p>
-Regał: ${doc.regal || "-"}
+Rok:
+${doc.rok || "-"}
 </p>
 
 
 <p>
-Półka: ${doc.polka || "-"}
+Typ:
+${doc.typ || "-"}
 </p>
 
 
 <p>
-Segregator: ${doc.segregator || "-"}
+Regał:
+${doc.regal || "-"}
+</p>
+
+
+<p>
+Półka:
+${doc.polka || "-"}
+</p>
+
+
+<p>
+Segregator:
+${doc.segregator || "-"}
 </p>
 
 
 <p>
 Status:
-<span class="status">
-${doc.status || "OK"}
-</span>
+${doc.status || "-"}
 </p>
 
 
@@ -817,8 +906,8 @@ Usuń
 
 
 
-card
-.querySelector(".edit")
+card.querySelector(".edit")
+
 .onclick=()=>{
 
 
@@ -832,9 +921,8 @@ openEditModal(doc);
 
 
 
+card.querySelector(".delete")
 
-card
-.querySelector(".delete")
 .onclick=()=>{
 
 
@@ -842,8 +930,6 @@ deleteDocument(doc.id);
 
 
 };
-
-
 
 
 
@@ -881,10 +967,7 @@ results.appendChild(archive);
 
 
 
-}
-
-);
-
+});
 
 
 
@@ -909,12 +992,13 @@ async function deleteDocument(id){
 
 if(
 !confirm(
-"Czy na pewno usunąć dokument?"
+"Czy usunąć dokument?"
 )
 
 )
 
 return;
+
 
 
 
@@ -937,22 +1021,20 @@ id
 
 
 
+
 if(error){
 
-
-alert(
-"Błąd usuwania"
-);
-
+alert(error.message);
 
 return;
-
 
 }
 
 
 
+
 loadDocuments();
+
 
 
 }
