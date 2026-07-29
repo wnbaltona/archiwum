@@ -6,6 +6,48 @@ let selectedLocation = "WSZYSTKIE";
 
 
 
+const DEFAULT_LOCATIONS = [
+
+
+"WSZYSTKIE",
+
+"OKĘCIE",
+
+"RADOM",
+
+"MODLIN",
+
+"BYDGOSZCZ",
+
+"KRAKÓW",
+
+"POZNAŃ",
+
+"WROCŁAW",
+
+"ŚWINOUJŚCIE",
+
+"GDAŃSK",
+
+"GDYNIA",
+
+"ZIELONA GÓRA",
+
+"RZESZÓW",
+
+"FRANCJA",
+
+"KATOWICE"
+
+
+];
+
+
+
+
+
+
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -16,7 +58,11 @@ loadDocuments();
 
 
 document
-.getElementById("searchInput")
+
+.getElementById(
+"searchInput"
+)
+
 ?.addEventListener(
 "input",
 render
@@ -24,8 +70,13 @@ render
 
 
 
+
 document
-.getElementById("yearFilter")
+
+.getElementById(
+"yearFilter"
+)
+
 ?.addEventListener(
 "change",
 render
@@ -33,8 +84,14 @@ render
 
 
 
+
+
 document
-.getElementById("statusFilter")
+
+.getElementById(
+"statusFilter"
+)
+
 ?.addEventListener(
 "change",
 render
@@ -51,12 +108,15 @@ render
 
 
 
-// ==========================
+
+
+// =========================
 // POBIERANIE DOKUMENTÓW
-// ==========================
+// =========================
 
 
 async function loadDocuments(){
+
 
 
 const {
@@ -89,10 +149,7 @@ ascending:false
 
 if(error){
 
-console.error(
-"Błąd pobierania dokumentów:",
-error
-);
+console.error(error);
 
 return;
 
@@ -102,7 +159,12 @@ return;
 
 
 
-documents=data || [];
+
+
+documents =
+data || [];
+
+
 
 
 
@@ -111,9 +173,7 @@ createLocations();
 
 
 
-
-createYearFilter();
-
+createYears();
 
 
 
@@ -131,15 +191,19 @@ render();
 
 
 
-// ==========================
+
+
+// =========================
 // LOKALIZACJE
-// ==========================
+// =========================
 
 
 function createLocations(){
 
 
+
 const box =
+
 document.getElementById(
 "locationTabs"
 );
@@ -152,6 +216,8 @@ return;
 
 
 
+
+
 box.innerHTML="";
 
 
@@ -159,72 +225,42 @@ box.innerHTML="";
 
 
 
-let locations=[
+DEFAULT_LOCATIONS.forEach(location=>{
 
-"WSZYSTKIE",
 
-...LOCATIONS
 
-];
+let count=0;
 
 
 
 
 
 
-documents.forEach(doc=>{
+if(location==="WSZYSTKIE"){
 
 
-if(doc.lokalizacja){
+count =
+documents.length;
 
-locations.push(
-doc.lokalizacja
-);
 
 }
 
-
-});
-
+else{
 
 
 
+count =
 
+documents.filter(doc=>
 
-locations=[
-
-...new Set(locations)
-
-];
-
-
-
-
-
-
-
-locations.forEach(location=>{
-
-
-
-const count =
-
-
-location==="WSZYSTKIE"
-
-?
-
-documents.length
-
-:
-
-documents.filter(
-
-doc=>
-
-doc.lokalizacja===location
+doc.lokalizacja === location
 
 ).length;
+
+
+
+}
+
 
 
 
@@ -233,34 +269,22 @@ doc.lokalizacja===location
 
 
 const button =
+
 document.createElement(
 "button"
 );
 
 
 
-button.className=
+button.className =
 "location-card";
 
 
 
 
 
-if(
-selectedLocation===location
-){
+button.innerHTML =
 
-button.classList.add(
-"active"
-);
-
-}
-
-
-
-
-
-button.innerHTML=
 
 `
 
@@ -269,10 +293,12 @@ ${location}
 </strong>
 
 <span>
-${count} ${documentText(count)}
+${count} dokumentów
 </span>
 
+
 `;
+
 
 
 
@@ -282,16 +308,15 @@ ${count} ${documentText(count)}
 button.onclick=()=>{
 
 
-selectedLocation=location;
+selectedLocation =
+location;
 
 
 render();
 
 
-createLocations();
-
-
 };
+
 
 
 
@@ -316,15 +341,19 @@ box.appendChild(button);
 
 
 
-// ==========================
-// FILTR LAT
-// ==========================
 
 
-function createYearFilter(){
+// =========================
+// LATA
+// =========================
+
+
+function createYears(){
+
 
 
 const select =
+
 document.getElementById(
 "yearFilter"
 );
@@ -338,13 +367,18 @@ return;
 
 
 
-const years=[
 
-...new Set(
+const years =
+
+[
+
+...
+
+new Set(
 
 documents
 
-.map(doc=>doc.rok)
+.map(x=>x.rok)
 
 .filter(Boolean)
 
@@ -361,7 +395,9 @@ documents
 
 
 
-select.innerHTML=
+
+
+select.innerHTML =
 
 `
 
@@ -375,10 +411,12 @@ Wszystkie lata
 
 
 
+
 years.forEach(year=>{
 
 
 select.innerHTML +=
+
 
 `
 
@@ -404,9 +442,11 @@ ${year}
 
 
 
-// ==========================
-// WYŚWIETLANIE
-// ==========================
+
+
+// =========================
+// RENDER
+// =========================
 
 
 function render(){
@@ -414,6 +454,7 @@ function render(){
 
 
 const results =
+
 document.getElementById(
 "results"
 );
@@ -433,27 +474,30 @@ results.innerHTML="";
 
 
 
-let list=[...documents];
+
+let list =
+
+[...documents];
 
 
 
 
 
-// lokalizacja
 
 
-if(
-selectedLocation !== "WSZYSTKIE"
-){
+
+if(selectedLocation !== "WSZYSTKIE"){
 
 
-list=list.filter(
 
-doc=>
+list =
 
-doc.lokalizacja===selectedLocation
+list.filter(doc=>
+
+doc.lokalizacja === selectedLocation
 
 );
+
 
 
 }
@@ -464,7 +508,6 @@ doc.lokalizacja===selectedLocation
 
 
 
-// wyszukiwarka
 
 
 const search =
@@ -479,7 +522,8 @@ document
 
 .toLowerCase()
 
-.trim();
+|| "";
+
 
 
 
@@ -489,10 +533,9 @@ document
 if(search){
 
 
+list =
 
-list=list.filter(
-
-doc=>
+list.filter(doc=>
 
 JSON.stringify(doc)
 
@@ -514,9 +557,6 @@ JSON.stringify(doc)
 
 
 
-// rok
-
-
 const year =
 
 document
@@ -531,16 +571,19 @@ document
 
 
 
+
+
 if(year){
 
 
-list=list.filter(
+list =
 
-doc=>
+list.filter(doc=>
 
 String(doc.rok)===year
 
 );
+
 
 
 }
@@ -550,10 +593,6 @@ String(doc.rok)===year
 
 
 
-
-
-
-// status
 
 
 const status =
@@ -570,13 +609,14 @@ document
 
 
 
+
 if(status){
 
 
 
-list=list.filter(
+list =
 
-doc=>
+list.filter(doc=>
 
 doc.status===status
 
@@ -593,15 +633,16 @@ doc.status===status
 
 
 
-
 if(!list.length){
 
 
-results.innerHTML=
+
+results.innerHTML =
+
 
 `
 
-<div class="document">
+<div class="empty">
 
 Brak dokumentów
 
@@ -610,6 +651,7 @@ Brak dokumentów
 `;
 
 return;
+
 
 }
 
@@ -621,34 +663,8 @@ return;
 
 
 
-
-// sortowanie
-
-
-list.sort(
-
-(a,b)=>
-
-Number(b.rok||0)
-
--
-
-Number(a.rok||0)
-
-);
-
-
-
-
-
-
-
-
-
-// grupowanie
-
-
 const grouped={};
+
 
 
 
@@ -659,7 +675,7 @@ list.forEach(doc=>{
 
 
 
-const location=
+const location =
 
 doc.lokalizacja ||
 
@@ -668,12 +684,15 @@ doc.lokalizacja ||
 
 
 
-if(!grouped[location]){
 
+
+if(!grouped[location]){
 
 grouped[location]=[];
 
 }
+
+
 
 
 grouped[location].push(doc);
@@ -693,14 +712,13 @@ grouped[location].push(doc);
 Object.entries(grouped)
 
 .forEach(
-
 ([location,docs])=>{
 
 
 
 
 
-const box=
+const box =
 
 document.createElement(
 "div"
@@ -708,17 +726,15 @@ document.createElement(
 
 
 
-box.className=
+box.className =
 "archive-location";
 
 
 
 
 
+box.innerHTML =
 
-
-
-box.innerHTML=
 
 `
 
@@ -728,45 +744,7 @@ ${location}
 
 </div>
 
-
-<div class="archive-content">
-
-</div>
-
 `;
-
-
-
-
-
-
-
-const content=
-
-box.querySelector(
-".archive-content"
-);
-
-
-
-
-
-
-box
-
-.querySelector(
-".archive-header"
-)
-
-.onclick=()=>{
-
-
-box.classList.toggle(
-"open"
-);
-
-
-};
 
 
 
@@ -781,22 +759,21 @@ const years={};
 
 
 
+
+
 docs.forEach(doc=>{
 
 
-const y=
-doc.rok || "Brak roku";
 
+if(!years[doc.rok]){
 
-if(!years[y]){
-
-years[y]=[];
+years[doc.rok]=[];
 
 }
 
 
 
-years[y].push(doc);
+years[doc.rok].push(doc);
 
 
 
@@ -807,23 +784,23 @@ years[y].push(doc);
 
 
 
+
+
+
 Object.entries(years)
 
 .sort(
-
-(a,b)=>Number(b[0])-Number(a[0])
-
+(a,b)=>b[0]-a[0]
 )
 
 .forEach(
-
-([year,yearDocs])=>{
-
+([year,docs])=>{
 
 
 
 
-const yearBox=
+
+const yearBox =
 
 document.createElement(
 "div"
@@ -831,13 +808,15 @@ document.createElement(
 
 
 
-yearBox.className=
+yearBox.className =
 "year-box";
 
 
 
 
-yearBox.innerHTML=
+
+yearBox.innerHTML =
+
 
 `
 
@@ -853,11 +832,11 @@ ${year}
 
 
 
-yearDocs.forEach(doc=>{
+docs.forEach(doc=>{
 
 
 
-const card=
+const card =
 
 document.createElement(
 "div"
@@ -865,25 +844,33 @@ document.createElement(
 
 
 
-card.className=
+card.className =
 "document";
 
 
 
 
-card.innerHTML=
+
+
+
+card.innerHTML =
+
 
 `
 
 <h4>
+
 ${doc.nazwa}
+
 </h4>
+
 
 
 <p>
 Lokal:
-${doc.numer_lokalu}
+${doc.numer_lokalu || "-"}
 </p>
+
 
 
 <p>
@@ -892,10 +879,12 @@ ${doc.nazwa_kontrahenta || "-"}
 </p>
 
 
+
 <p>
 Typ:
 ${doc.typ}
 </p>
+
 
 
 <p>
@@ -904,27 +893,17 @@ ${doc.regal}
 </p>
 
 
+
 <p>
 Półka:
 ${doc.polka}
 </p>
 
 
-<p>
-Segregator:
-${doc.segregator}
-</p>
-
 
 <p>
 Status:
 ${doc.status}
-</p>
-
-
-<p>
-Uwagi:
-${doc.uwagi || "-"}
 </p>
 
 
@@ -934,11 +913,17 @@ Edytuj
 </button>
 
 
+
 <button class="delete">
 Usuń
 </button>
 
+
 `;
+
+
+
+
 
 
 
@@ -950,9 +935,13 @@ card
 
 .onclick=()=>{
 
+
 openEditModal(doc);
 
+
 };
+
+
 
 
 
@@ -964,9 +953,13 @@ card
 
 .onclick=()=>{
 
+
 deleteDocument(doc.id);
 
+
 };
+
+
 
 
 
@@ -983,11 +976,12 @@ yearBox.appendChild(card);
 
 
 
-content.appendChild(yearBox);
+box.appendChild(yearBox);
 
 
 
 });
+
 
 
 
@@ -1002,47 +996,6 @@ results.appendChild(box);
 
 
 
-}
-
-
-
-
-
-
-
-
-
-// ==========================
-// ODMIANA
-// ==========================
-
-
-function documentText(number){
-
-
-if(number===1)
-
-return "dokument";
-
-
-
-if(
-
-number%10>=2 &&
-
-number%10<=4 &&
-
-(number%100<12 || number%100>14)
-
-)
-
-return "dokumenty";
-
-
-
-return "dokumentów";
-
-
 
 }
 
@@ -1054,9 +1007,9 @@ return "dokumentów";
 
 
 
-// ==========================
+// =========================
 // USUWANIE
-// ==========================
+// =========================
 
 
 async function deleteDocument(id){
@@ -1065,12 +1018,14 @@ async function deleteDocument(id){
 
 if(
 !confirm(
-"Czy usunąć dokument?"
+"Usunąć dokument?"
 )
 
 )
 
 return;
+
+
 
 
 
@@ -1107,6 +1062,8 @@ alert(error.message);
 return;
 
 }
+
+
 
 
 
