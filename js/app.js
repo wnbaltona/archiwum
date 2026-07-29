@@ -3,18 +3,11 @@ let documents = [];
 let selectedLocation = "WSZYSTKIE";
 
 
-
 const results = document.getElementById("results");
-
 const searchInput = document.getElementById("searchInput");
-
 const typeFilter = document.getElementById("typeFilter");
-
 const shelfFilter = document.getElementById("shelfFilter");
-
 const locationTabs = document.getElementById("locationTabs");
-
-
 
 
 const locations = [
@@ -35,19 +28,18 @@ const locations = [
 
 
 
+// ===============================
+// POBIERANIE DOKUMENTÓW
+// ===============================
 
-
-// =====================
-// POBIERANIE DANYCH
-// =====================
 
 async function loadDocuments(){
 
 
-    const {data,error} = await supabaseClient
-    .from("dokumenty")
-    .select("*")
-    .order("lokalizacja");
+    const { data, error } = await supabaseClient
+        .from("dokumenty")
+        .select("*")
+        .order("lokalizacja");
 
 
     if(error){
@@ -55,7 +47,7 @@ async function loadDocuments(){
         console.error(error);
 
         results.innerHTML =
-        "Nie udało się pobrać dokumentów.";
+        "Błąd pobierania dokumentów";
 
         return;
 
@@ -65,7 +57,7 @@ async function loadDocuments(){
     documents = data || [];
 
 
-    createLocationTabs();
+    createLocations();
 
     createFilters();
 
@@ -77,16 +69,16 @@ async function loadDocuments(){
 
 
 
-
-// =====================
-// ZAKŁADKI LOKALIZACJI
-// =====================
-
-
-function createLocationTabs(){
+// ===============================
+// LOKALIZACJE
+// ===============================
 
 
-    if(!locationTabs) return;
+function createLocations(){
+
+
+    if(!locationTabs)
+    return;
 
 
     locationTabs.innerHTML="";
@@ -102,7 +94,6 @@ function createLocationTabs(){
         button.textContent = location;
 
 
-
         button.onclick = ()=>{
 
 
@@ -112,7 +103,6 @@ function createLocationTabs(){
 
 
         };
-
 
 
         locationTabs.appendChild(button);
@@ -128,19 +118,22 @@ function createLocationTabs(){
 
 
 
-// =====================
+
+// ===============================
 // FILTRY
-// =====================
+// ===============================
 
 
 function createFilters(){
 
 
-    if(!typeFilter || !shelfFilter) return;
+    if(!typeFilter || !shelfFilter)
+    return;
 
 
 
-    const types = [
+    const types =
+    [
         ...new Set(
             documents
             .map(d=>d.typ)
@@ -150,7 +143,8 @@ function createFilters(){
 
 
 
-    const shelves = [
+    const shelves =
+    [
         ...new Set(
             documents
             .map(d=>d.regal)
@@ -160,11 +154,13 @@ function createFilters(){
 
 
 
-
     typeFilter.innerHTML =
-    `<option value="">
+    `
+    <option value="">
     Wszystkie typy
-    </option>`;
+    </option>
+    `;
+
 
 
     types.forEach(type=>{
@@ -185,9 +181,11 @@ function createFilters(){
 
 
     shelfFilter.innerHTML =
-    `<option value="">
+    `
+    <option value="">
     Wszystkie regały
-    </option>`;
+    </option>
+    `;
 
 
 
@@ -210,13 +208,12 @@ function createFilters(){
 
 
 
-
 if(typeFilter){
 
-    typeFilter.addEventListener(
-        "change",
-        render
-    );
+typeFilter.addEventListener(
+"change",
+render
+);
 
 }
 
@@ -224,10 +221,10 @@ if(typeFilter){
 
 if(shelfFilter){
 
-    shelfFilter.addEventListener(
-        "change",
-        render
-    );
+shelfFilter.addEventListener(
+"change",
+render
+);
 
 }
 
@@ -235,22 +232,27 @@ if(shelfFilter){
 
 
 
-// =====================
+
+
+// ===============================
 // WYŚWIETLANIE
-// =====================
+// ===============================
 
 
 function render(){
 
 
-    if(!results) return;
+    if(!results)
+    return;
+
 
 
     results.innerHTML="";
 
 
 
-    let filtered = [...documents];
+    let filtered =
+    [...documents];
 
 
 
@@ -328,14 +330,13 @@ function render(){
 
 
 
-
     if(filtered.length===0){
 
 
         results.innerHTML =
         `
         <div class="location">
-        Brak dokumentów.
+        Brak dokumentów
         </div>
         `;
 
@@ -343,6 +344,7 @@ function render(){
         return;
 
     }
+
 
 
 
@@ -357,12 +359,14 @@ function render(){
 
         if(!grouped[doc.lokalizacja]){
 
+
             grouped[doc.lokalizacja]=[];
 
         }
 
 
-        grouped[doc.lokalizacja].push(doc);
+        grouped[doc.lokalizacja]
+        .push(doc);
 
 
 
@@ -377,7 +381,7 @@ function render(){
     Object.keys(grouped).forEach(location=>{
 
 
-        const locationBox =
+        let locationBox =
         document.createElement("div");
 
 
@@ -394,18 +398,23 @@ function render(){
 
 
 
-        const locals = {};
+
+
+        const locals={};
 
 
 
-        grouped[location].forEach(doc=>{
+        grouped[location]
+        .forEach(doc=>{
 
 
             const local =
             doc.numer_lokalu || "Brak numeru";
 
 
+
             if(!locals[local]){
+
 
                 locals[local]=[];
 
@@ -424,10 +433,13 @@ function render(){
 
 
 
-        Object.keys(locals).forEach(local=>{
+
+        Object.keys(locals)
+        .forEach(local=>{
 
 
-            const localBox =
+
+            let localBox =
             document.createElement("div");
 
 
@@ -445,7 +457,10 @@ function render(){
 
 
 
-            locals[local].forEach(doc=>{
+
+
+            locals[local]
+            .forEach(doc=>{
 
 
                 localBox.innerHTML +=
@@ -453,44 +468,69 @@ function render(){
 
                 <div class="document">
 
+
                 <strong>
-                ${doc.nazwa || "Bez nazwy"}
+                ${doc.nazwa || "Brak nazwy"}
                 </strong>
+
+
 
                 <p>
                 Typ: ${doc.typ || "-"}
                 </p>
 
+
                 <p>
                 Regał: ${doc.regal || "-"}
                 </p>
+
 
                 <p>
                 Półka: ${doc.polka || "-"}
                 </p>
 
+
                 <p>
                 Segregator: ${doc.segregator || "-"}
                 </p>
+
 
                 <p>
                 Uwagi: ${doc.uwagi || "-"}
                 </p>
 
 
+
+                <button onclick="editDocument('${doc.id}')">
+                Edytuj
+                </button>
+
+
+
+                <button onclick="deleteDocument('${doc.id}')">
+                Usuń
+                </button>
+
+
                 </div>
 
+                <hr>
+
                 `;
+
 
 
             });
 
 
 
+
             locationBox.appendChild(localBox);
 
 
+
         });
+
 
 
 
@@ -508,16 +548,224 @@ function render(){
 
 
 
+
 if(searchInput){
 
-    searchInput.addEventListener(
-        "input",
-        render
-    );
+searchInput.addEventListener(
+"input",
+render
+);
 
 }
 
 
+
+
+
+
+
+// ===============================
+// USUWANIE
+// ===============================
+
+
+async function deleteDocument(id){
+
+
+    const confirmDelete =
+    confirm(
+    "Czy na pewno usunąć dokument?"
+    );
+
+
+    if(!confirmDelete)
+    return;
+
+
+
+
+    const {error}=await supabaseClient
+    .from("dokumenty")
+    .delete()
+    .eq("id",id);
+
+
+
+
+    if(error){
+
+        console.error(error);
+
+        alert("Nie udało się usunąć dokumentu");
+
+        return;
+
+    }
+
+
+
+    loadDocuments();
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// EDYCJA
+// ===============================
+
+
+async function editDocument(id){
+
+
+    const doc =
+    documents.find(
+        d=>d.id == id
+    );
+
+
+    if(!doc)
+    return;
+
+
+
+
+    document
+    .getElementById("modalOverlay")
+    .classList.remove("hidden");
+
+
+
+
+    document.getElementById("location").value =
+    doc.lokalizacja || "";
+
+
+    document.getElementById("number").value =
+    doc.numer_lokalu || "";
+
+
+    document.getElementById("name").value =
+    doc.nazwa || "";
+
+
+    document.getElementById("type").value =
+    doc.typ || "";
+
+
+    document.getElementById("shelf").value =
+    doc.regal || "";
+
+
+    document.getElementById("level").value =
+    doc.polka || "";
+
+
+    document.getElementById("folder").value =
+    doc.segregator || "";
+
+
+    document.getElementById("notes").value =
+    doc.uwagi || "";
+
+
+
+
+
+    const saveBtn =
+    document.getElementById("saveBtn");
+
+
+
+    saveBtn.onclick = async ()=>{
+
+
+        const updateData={
+
+
+            lokalizacja:
+            document.getElementById("location").value,
+
+
+            numer_lokalu:
+            document.getElementById("number").value,
+
+
+            nazwa:
+            document.getElementById("name").value,
+
+
+            typ:
+            document.getElementById("type").value,
+
+
+            regal:
+            document.getElementById("shelf").value,
+
+
+            polka:
+            document.getElementById("level").value,
+
+
+            segregator:
+            document.getElementById("folder").value,
+
+
+            uwagi:
+            document.getElementById("notes").value
+
+        };
+
+
+
+
+        const {error}=await supabaseClient
+
+        .from("dokumenty")
+
+        .update(updateData)
+
+        .eq("id",id);
+
+
+
+
+
+        if(error){
+
+            console.error(error);
+
+            alert("Błąd edycji");
+
+            return;
+
+        }
+
+
+
+
+        document
+        .getElementById("modalOverlay")
+        .classList.add("hidden");
+
+
+
+        loadDocuments();
+
+
+
+    };
+
+
+
+}
 
 
 loadDocuments();
