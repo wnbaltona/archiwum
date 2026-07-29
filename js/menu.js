@@ -2,24 +2,46 @@ const menuBtn =
 document.getElementById("menuBtn");
 
 
-const menuList =
-document.getElementById("menuList");
+const menuPanel =
+document.getElementById("menuPanel");
 
 
 
-menuBtn.addEventListener("click", ()=>{
+menuBtn.onclick = ()=>{
 
 
-menuList.classList.toggle("show");
+menuPanel.classList.toggle("show");
+
+
+};
+
+
+
+
+document
+.getElementById("addBtn")
+.onclick=()=>{
+
+
+document
+.getElementById("adminPanel")
+.classList.toggle("hidden");
+
+
+};
+
+
+
 
 document
 .getElementById("allLocations")
-.addEventListener(
-"click",
-()=>{
+.onclick=()=>{
+
 
 selectedLocation="WSZYSTKIE";
 
+
 render();
 
-});
+
+};
