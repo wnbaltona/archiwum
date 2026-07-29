@@ -3,20 +3,12 @@ document.addEventListener(
 ()=>{
 
 
-const settingsBtn =
-document.getElementById(
-"settingsBtn"
+document
+.getElementById("settingsBtn")
+?.addEventListener(
+"click",
+openSettings
 );
-
-
-
-if(settingsBtn){
-
-settingsBtn.onclick =
-openSettings;
-
-}
-
 
 
 
@@ -29,16 +21,12 @@ closeSettings
 
 
 
-
-
 document
 .getElementById("showAddContractor")
 ?.addEventListener(
 "click",
 showAddContractor
 );
-
-
 
 
 
@@ -51,16 +39,12 @@ loadContractors
 
 
 
-
-
 document
 .getElementById("showAddLocal")
 ?.addEventListener(
 "click",
 showAddLocal
 );
-
-
 
 
 
@@ -81,30 +65,39 @@ loadLocals
 
 
 
-
-// ========================
+// ============================
 // OTWIERANIE USTAWIEŃ
-// ========================
+// ============================
 
 
 function openSettings(){
 
 
-document
-
-.getElementById(
+const overlay =
+document.getElementById(
 "settingsOverlay"
-)
+);
 
-.classList
 
-.remove(
+if(!overlay)
+return;
+
+
+
+overlay.classList.remove(
 "hidden"
 );
 
 
-}
 
+
+document.getElementById(
+"settingsContent"
+).innerHTML="";
+
+
+
+}
 
 
 
@@ -127,6 +120,7 @@ document
 );
 
 
+
 }
 
 
@@ -137,25 +131,23 @@ document
 
 
 
-// ========================
-// DODAJ KONTRAHENTA
-// ========================
+// ============================
+// KONTRAHENCI - DODAJ
+// ============================
 
 
 function showAddContractor(){
 
 
-
 const box =
-
 document.getElementById(
 "settingsContent"
 );
 
 
 
-
 box.innerHTML =
+
 
 `
 
@@ -164,20 +156,18 @@ Dodaj kontrahenta
 </h3>
 
 
-<input 
+<input
 id="contractorName"
 placeholder="Nazwa kontrahenta">
 
 
+
 <button id="saveContractor">
-
 Zapisz
-
 </button>
 
 
 `;
-
 
 
 
@@ -188,14 +178,11 @@ document
 "saveContractor"
 )
 
-.onclick =
+.onclick = addContractor;
 
-addContractor;
 
 
 }
-
-
 
 
 
@@ -207,17 +194,17 @@ async function addContractor(){
 
 
 
-const input =
-
-document.getElementById(
-"contractorName"
-);
-
-
-
 const name =
-input.value.trim();
 
+document
+
+.getElementById(
+"contractorName"
+)
+
+.value
+
+.trim();
 
 
 
@@ -226,7 +213,7 @@ input.value.trim();
 if(!name){
 
 alert(
-"Wpisz nazwę kontrahenta"
+"Podaj nazwę kontrahenta"
 );
 
 return;
@@ -238,11 +225,8 @@ return;
 
 
 
-
 const {
-
 error
-
 }
 
 =
@@ -266,7 +250,6 @@ nazwa:name
 
 
 
-
 if(error){
 
 alert(error.message);
@@ -278,14 +261,13 @@ return;
 
 
 
-
 alert(
 "Dodano kontrahenta"
 );
 
 
 
-input.value="";
+loadContractors();
 
 
 
@@ -299,9 +281,9 @@ input.value="";
 
 
 
-// ========================
+// ============================
 // LISTA KONTRAHENTÓW
-// ========================
+// ============================
 
 
 async function loadContractors(){
@@ -309,7 +291,6 @@ async function loadContractors(){
 
 
 const box =
-
 document.getElementById(
 "settingsContent"
 );
@@ -325,11 +306,8 @@ box.innerHTML =
 
 
 const {
-
 data,
-
 error
-
 }
 
 =
@@ -363,8 +341,8 @@ return;
 
 
 
-
 box.innerHTML =
+
 
 `
 
@@ -380,22 +358,22 @@ Lista kontrahentów
 
 
 
-if(!data.length){
+if(!data || data.length===0){
 
 
 box.innerHTML +=
 
 `
+
 <p>
 Brak kontrahentów
 </p>
+
 `;
 
 return;
 
-
 }
-
 
 
 
@@ -415,21 +393,22 @@ box.innerHTML +=
 
 
 <span>
-
 ${item.nazwa}
-
 </span>
 
 
 
-<button onclick="deleteContractor('${item.id}')">
+<button 
+onclick="deleteContractor('${item.id}')">
 
 Usuń
 
 </button>
 
 
+
 </div>
+
 
 `;
 
@@ -455,7 +434,6 @@ async function(id){
 
 
 if(
-
 !confirm(
 "Usunąć kontrahenta?"
 )
@@ -469,10 +447,9 @@ return;
 
 
 
+
 const {
-
 error
-
 }
 
 =
@@ -494,7 +471,6 @@ id
 
 
 
-
 if(error){
 
 alert(error.message);
@@ -507,7 +483,8 @@ return;
 
 
 
-loadContractors();
+
+await loadContractors();
 
 
 
@@ -521,9 +498,9 @@ loadContractors();
 
 
 
-// ========================
-// DODAJ LOKAL
-// ========================
+// ============================
+// LOKALE - DODAJ
+// ============================
 
 
 function showAddLocal(){
@@ -531,11 +508,9 @@ function showAddLocal(){
 
 
 const box =
-
 document.getElementById(
 "settingsContent"
 );
-
 
 
 
@@ -549,18 +524,14 @@ Dodaj lokal
 </h3>
 
 
-
-<input 
+<input
 id="localMPK"
 placeholder="MPK">
 
 
-
-<input 
+<input
 id="localName"
 placeholder="Nazwa lokalu">
-
-
 
 
 
@@ -572,7 +543,6 @@ Wybierz lokalizację
 
 
 </select>
-
 
 
 
@@ -590,10 +560,7 @@ Zapisz
 
 
 
-
-
 const select =
-
 document.getElementById(
 "localLocation"
 );
@@ -602,12 +569,45 @@ document.getElementById(
 
 
 
-
-if(typeof LOCATIONS !== "undefined"){
-
+const locations =
 
 
-LOCATIONS.forEach(location=>{
+typeof DEFAULT_LOCATIONS !== "undefined"
+
+?
+
+DEFAULT_LOCATIONS.filter(
+x=>x!=="WSZYSTKIE"
+)
+
+:
+
+[
+
+"OKĘCIE",
+"RADOM",
+"MODLIN",
+"BYDGOSZCZ",
+"KRAKÓW",
+"POZNAŃ",
+"WROCŁAW",
+"ŚWINOUJŚCIE",
+"GDAŃSK",
+"GDYNIA",
+"ZIELONA GÓRA",
+"RZESZÓW",
+"FRANCJA",
+"KATOWICE"
+
+];
+
+
+
+
+
+
+
+locations.forEach(location=>{
 
 
 select.innerHTML +=
@@ -627,10 +627,6 @@ ${location}
 
 
 
-}
-
-
-
 
 
 
@@ -642,7 +638,6 @@ document
 )
 
 .onclick =
-
 addLocal;
 
 
@@ -656,53 +651,38 @@ addLocal;
 
 
 
-
 async function addLocal(){
 
 
 
-const mpk =
+const data = {
 
-document
 
-.getElementById(
+mpk:
+
+document.getElementById(
 "localMPK"
-)
-
-.value
-
-.trim();
+).value.trim(),
 
 
 
+nazwa:
 
-
-const name =
-
-document
-
-.getElementById(
+document.getElementById(
 "localName"
-)
-
-.value
-
-.trim();
+).value.trim(),
 
 
 
+lokalizacja:
 
-
-const location =
-
-document
-
-.getElementById(
+document.getElementById(
 "localLocation"
-)
+).value
 
-.value;
 
+
+};
 
 
 
@@ -711,14 +691,11 @@ document
 
 
 if(
-
-!mpk ||
-
-!name ||
-
-!location
-
+!data.mpk ||
+!data.nazwa ||
+!data.lokalizacja
 ){
+
 
 alert(
 "Uzupełnij wszystkie pola"
@@ -726,8 +703,8 @@ alert(
 
 return;
 
-}
 
+}
 
 
 
@@ -736,9 +713,7 @@ return;
 
 
 const {
-
 error
-
 }
 
 =
@@ -747,20 +722,7 @@ await supabaseClient
 
 .from("lokale")
 
-.insert([
-
-{
-
-mpk:mpk,
-
-nazwa:name,
-
-lokalizacja:location
-
-}
-
-]);
-
+.insert([data]);
 
 
 
@@ -779,12 +741,13 @@ return;
 
 
 
-
-
-
 alert(
 "Dodano lokal"
 );
+
+
+
+loadLocals();
 
 
 
@@ -798,9 +761,9 @@ alert(
 
 
 
-// ========================
+// ============================
 // LISTA LOKALI
-// ========================
+// ============================
 
 
 async function loadLocals(){
@@ -808,7 +771,6 @@ async function loadLocals(){
 
 
 const box =
-
 document.getElementById(
 "settingsContent"
 );
@@ -825,11 +787,8 @@ box.innerHTML =
 
 
 const {
-
 data,
-
 error
-
 }
 
 =
@@ -864,8 +823,8 @@ return;
 
 
 
-
 box.innerHTML =
+
 
 `
 
@@ -880,9 +839,7 @@ Lista lokali
 
 
 
-
-
-if(!data.length){
+if(!data || data.length===0){
 
 
 box.innerHTML +=
@@ -906,9 +863,7 @@ return;
 
 
 
-
 data.forEach(local=>{
-
 
 
 box.innerHTML +=
@@ -922,7 +877,6 @@ box.innerHTML +=
 <span>
 
 ${local.nazwa}
-
 (${local.mpk})
 
 <br>
@@ -933,7 +887,8 @@ ${local.lokalizacja}
 
 
 
-<button onclick="deleteLocal('${local.id}')">
+<button
+onclick="deleteLocal('${local.id}')">
 
 Usuń
 
@@ -943,13 +898,12 @@ Usuń
 
 </div>
 
+
 `;
 
 
 
 });
-
-
 
 
 
@@ -969,7 +923,6 @@ async function(id){
 
 
 if(
-
 !confirm(
 "Usunąć lokal?"
 )
@@ -984,9 +937,7 @@ return;
 
 
 const {
-
 error
-
 }
 
 =
@@ -1007,7 +958,6 @@ id
 
 
 
-
 if(error){
 
 alert(error.message);
@@ -1021,7 +971,7 @@ return;
 
 
 
-loadLocals();
+await loadLocals();
 
 
 
