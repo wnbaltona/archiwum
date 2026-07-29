@@ -434,21 +434,14 @@ await supabaseClient
 
 
 
-
-
-
-
-
 if(result.error){
 
 
-console.error(
-result.error
-);
+console.error("BŁĄD SUPABASE:", result.error);
 
 
 showError(
-"Błąd zapisu."
+result.error.message
 );
 
 
@@ -456,8 +449,6 @@ return;
 
 
 }
-
-
 
 
 
