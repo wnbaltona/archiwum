@@ -12,5 +12,16 @@ menuBtn.addEventListener("click", ()=>{
 
 menuList.classList.toggle("show");
 
+document
+.getElementById("allLocations")
+.addEventListener(
+"click",
+()=>{
+
+selectedLocation="WSZYSTKIE";
+
+render();
+
+});
 
 });
