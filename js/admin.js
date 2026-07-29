@@ -1,6 +1,7 @@
 let editingId = null;
 
 
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -20,12 +21,9 @@ document.getElementById("saveBtn");
 
 
 
-
-// OTWÓRZ DODAWANIE
-
 if(addBtn){
 
-addBtn.onclick=()=>{
+addBtn.onclick = ()=>{
 
 openAddModal();
 
@@ -36,14 +34,9 @@ openAddModal();
 
 
 
-
-
-
-// ZAMKNIJ
-
 if(closeBtn){
 
-closeBtn.onclick=()=>{
+closeBtn.onclick = ()=>{
 
 closeModal();
 
@@ -54,14 +47,9 @@ closeModal();
 
 
 
-
-
-
-// ZAPIS
-
 if(saveBtn){
 
-saveBtn.onclick=()=>{
+saveBtn.onclick = ()=>{
 
 saveDocument();
 
@@ -80,9 +68,8 @@ saveDocument();
 
 
 
-
 // =====================
-// NOWY DOKUMENT
+// OTWIERANIE NOWEGO
 // =====================
 
 
@@ -90,7 +77,6 @@ function openAddModal(){
 
 
 editingId=null;
-
 
 
 document
@@ -160,6 +146,7 @@ document
 
 
 
+
 document.getElementById("location").value =
 doc.lokalizacja || "";
 
@@ -175,8 +162,18 @@ doc.nazwa || "";
 
 
 
+document.getElementById("contractor").value =
+doc.nazwa_kontrahenta || "";
+
+
+
 document.getElementById("type").value =
 doc.typ || "";
+
+
+
+document.getElementById("year").value =
+doc.rok || "";
 
 
 
@@ -224,19 +221,22 @@ async function saveDocument(){
 
 
 
-const fields=[
+const required=[
+
 
 "location",
 "number",
 "name",
+"contractor",
 "type",
+"year",
 "shelf",
 "level",
 "folder",
 "status"
 
-];
 
+];
 
 
 
@@ -247,10 +247,10 @@ let valid=true;
 
 
 
-fields.forEach(id=>{
+required.forEach(id=>{
 
 
-const field=
+const field =
 document.getElementById(id);
 
 
@@ -263,15 +263,14 @@ field.classList.add("invalid");
 valid=false;
 
 
-}
-
-else{
+}else{
 
 
 field.classList.remove("invalid");
 
 
 }
+
 
 
 });
@@ -293,6 +292,7 @@ return;
 
 
 }
+
 
 
 
@@ -329,11 +329,29 @@ document
 
 
 
+nazwa_kontrahenta:
+
+document
+.getElementById("contractor")
+.value,
+
+
+
 typ:
 
 document
 .getElementById("type")
 .value,
+
+
+
+rok:
+
+Number(
+document
+.getElementById("year")
+.value
+),
 
 
 
@@ -390,8 +408,8 @@ new Date()
 
 
 
-
 let result;
+
 
 
 
@@ -400,7 +418,8 @@ let result;
 if(editingId){
 
 
-result=
+
+result =
 
 await supabaseClient
 
@@ -415,12 +434,11 @@ editingId
 
 
 
-}
-
-else{
+}else{
 
 
-result=
+
+result =
 
 await supabaseClient
 
@@ -429,23 +447,45 @@ await supabaseClient
 .insert([documentData]);
 
 
+
 }
+
+
+
+
+
+
 
 
 
 if(result.error){
 
-console.log("PEŁNY BŁĄD SUPABASE:");
-console.log(result.error);
 
-alert(
-"SUPABASE ERROR:\n\n" +
-result.error.message
+
+console.error(
+"Błąd Supabase:",
+result.error
 );
+
+
+
+showError(
+
+result.error.message
+
+);
+
+
 
 return;
 
+
 }
+
+
+
+
+
 
 
 
@@ -459,11 +499,15 @@ setTimeout(()=>{
 closeModal();
 
 
+
 if(typeof loadDocuments==="function"){
+
 
 loadDocuments();
 
+
 }
+
 
 
 },700);
@@ -471,7 +515,11 @@ loadDocuments();
 
 
 
+
+
 }
+
+
 
 
 
@@ -482,7 +530,7 @@ loadDocuments();
 
 
 // =====================
-// ZAMKNIĘCIE
+// ZAMKNIJ
 // =====================
 
 
@@ -501,7 +549,9 @@ document
 editingId=null;
 
 
+
 clearForm();
+
 
 
 }
@@ -523,7 +573,7 @@ function clearForm(){
 
 
 
-const inputs=
+const fields =
 
 document.querySelectorAll(
 
@@ -534,12 +584,14 @@ document.querySelectorAll(
 
 
 
-inputs.forEach(input=>{
+
+fields.forEach(field=>{
 
 
-input.value="";
+field.value="";
 
-input.classList.remove(
+
+field.classList.remove(
 "invalid"
 );
 
@@ -550,26 +602,20 @@ input.classList.remove(
 
 
 
+
 document
-
 .getElementById("location")
-
 .value="";
 
 
 
 document
-
 .getElementById("status")
-
 .value="OK";
 
 
 
-
-
 hideMessages();
-
 
 
 }
@@ -590,24 +636,20 @@ hideMessages();
 function showSuccess(){
 
 
-const box=
-
+const box =
 document.getElementById("successBox");
 
 
-box.innerText=
+box.innerText =
+"Dokument został zapisany.";
 
-"Dokument zapisany.";
 
 box.classList.remove(
 "hidden"
 );
 
 
-
 }
-
-
 
 
 
@@ -617,10 +659,8 @@ function showError(text){
 
 
 
-const box=
-
+const box =
 document.getElementById("errorBox");
-
 
 
 box.innerText=text;
@@ -631,7 +671,6 @@ box.classList.remove(
 );
 
 
-
 }
 
 
@@ -639,6 +678,7 @@ box.classList.remove(
 
 
 function hideMessages(){
+
 
 
 document
