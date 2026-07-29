@@ -1,77 +1,46 @@
-let documents = [];
+const input =
+document.getElementById("searchInput");
 
 
-const input = document.getElementById("searchInput");
-const results = document.getElementById("results");
-
-
-// pobranie Excela w formacie CSV
-
-fetch("dokumenty.csv")
-
-.then(response => response.text())
-
-.then(data => {
-
-
-    documents = parseCSV(data);
-
-    displayDocuments();
-
-
-})
-
-.catch(error => {
-
-console.log("Błąd wczytywania danych:", error);
-
-});
+const results =
+document.getElementById("results");
 
 
 
-
-// zamiana CSV na obiekty
-
-function parseCSV(csv){
-
-
-const rows = csv.split("\n");
-
-
-const headers = rows[0]
-.split(";")
-.map(h=>h.trim());
+let documents=[];
 
 
 
-return rows.slice(1)
-
-.filter(row=>row.trim() !== "")
-
-.map(row=>{
+async function loadDocuments(){
 
 
-const values = row.split(";");
+const {data,error}=
+
+await supabaseClient
+
+.from("dokumenty")
+
+.select("*");
 
 
-let obj={};
 
+if(error){
 
-headers.forEach((header,index)=>{
+console.log(error);
 
-obj[header]=values[index];
-
-});
-
-
-return obj;
-
-
-});
-
+return;
 
 }
 
+
+
+documents=data;
+
+
+displayDocuments();
+
+
+}
 
 
 
@@ -82,98 +51,65 @@ results.innerHTML="";
 
 
 
-const filtered = documents.filter(doc=>{
+const filtered =
+documents.filter(doc=>
 
 
-return Object.values(doc)
-
-.join(" ")
+JSON.stringify(doc)
 
 .toLowerCase()
 
-.includes(search.toLowerCase());
+.includes(search.toLowerCase())
 
-
-});
-
-
-
-if(filtered.length===0){
-
-results.innerHTML=`
-
-<div class="card">
-
-<h2>Brak wyników</h2>
-
-</div>
-
-`;
-
-return;
-
-}
+);
 
 
 
 filtered.forEach(doc=>{
 
 
-results.innerHTML += `
-
+results.innerHTML+=`
 
 <div class="card">
 
 
 <h2>
-📄 ${doc["Nazwa dokumentu"]}
+📄 ${doc.nazwa}
 </h2>
 
 
-<div class="info">
-
-
-<div>
-<b>Typ:</b>
-${doc["Typ"]}
-</div>
-
-
-<div>
-<b>Miasto:</b>
-${doc["Miasto"]}
-</div>
-
-
-<div>
-<b>Lokal:</b>
-${doc["Lokal"]}
-</div>
-
-
-<div>
-<b>Regał:</b>
-${doc["Regał"]}
-</div>
-
-
-<div>
-<b>Półka:</b>
-${doc["Półka"]}
-</div>
-
-
-<div>
-<b>Segregator:</b>
-${doc["Segregator"]}
-</div>
-
-
-</div>
+<p>
+<b>Typ:</b> ${doc.typ}
+</p>
 
 
 <p>
-📝 ${doc["Uwagi"] || ""}
+<b>Miasto:</b> ${doc.miasto}
+</p>
+
+
+<p>
+<b>Lokal:</b> ${doc.lokal}
+</p>
+
+
+<p>
+<b>Regał:</b> ${doc.regal}
+</p>
+
+
+<p>
+<b>Półka:</b> ${doc.polka}
+</p>
+
+
+<p>
+<b>Segregator:</b> ${doc.segregator}
+</p>
+
+
+<p>
+📝 ${doc.uwagi ?? ""}
 </p>
 
 
@@ -189,8 +125,11 @@ ${doc["Segregator"]}
 
 
 
-
 input.addEventListener(
 "input",
 ()=>displayDocuments(input.value)
 );
+
+
+
+loadDocuments();
