@@ -92,7 +92,7 @@ documents=data || [];
 
 
 
-createLocations();
+await createLocations();
 
 
 render();
@@ -113,26 +113,43 @@ render();
 // LOKALIZACJE
 // ============================
 
+async function createLocations(){
 
-function createLocations(){
-
-
-
-const box=
-
-document.getElementById(
-"locationTabs"
-);
-
+const box =
+document.getElementById("locationTabs");
 
 
 box.innerHTML="";
 
 
+// pobieramy wszystkie lokalizacje z tabeli lokale
+
+const {
+
+data,
+
+error
+
+} = await supabaseClient
+
+.from("lokale")
+
+.select("lokalizacja");
 
 
 
-const locations=[
+if(error){
+
+console.log(error);
+
+return;
+
+}
+
+
+
+
+const locations = [
 
 "WSZYSTKIE",
 
@@ -140,13 +157,9 @@ const locations=[
 
 new Set(
 
-documents
+data
 
-.map(d=>
-
-d.lokale?.lokalizacja
-
-)
+.map(x=>x.lokalizacja)
 
 .filter(Boolean)
 
@@ -158,15 +171,12 @@ d.lokale?.lokalizacja
 
 
 
-
-
-
 locations.forEach(location=>{
 
 
-const count=
+const count =
 
-location==="WSZYSTKIE"
+location === "WSZYSTKIE"
 
 ?
 
@@ -176,9 +186,9 @@ documents.length
 
 documents.filter(
 
-d=>
+d =>
 
-d.lokale?.lokalizacja===location
+d.lokale?.lokalizacja === location
 
 )
 
@@ -189,11 +199,9 @@ d.lokale?.lokalizacja===location
 
 
 
-const btn=
+const btn =
 
-document.createElement(
-"button"
-);
+document.createElement("button");
 
 
 
@@ -201,16 +209,13 @@ btn.className="location-card";
 
 
 
-btn.innerHTML=
-
-`
+btn.innerHTML = `
 
 <strong>
 
 ${location}
 
 </strong>
-
 
 <span>
 
@@ -224,10 +229,10 @@ ${count} ${documentText(count)}
 
 
 
-btn.onclick=()=>{
+btn.onclick = ()=>{
 
 
-selectedLocation=location;
+selectedLocation = location;
 
 
 render();
@@ -244,6 +249,9 @@ box.appendChild(btn);
 
 
 });
+
+
+}
 
 
 
