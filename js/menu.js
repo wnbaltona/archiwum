@@ -1,49 +1,58 @@
-const menuBtn = document.getElementById("menuBtn");
-const menuList = document.getElementById("menuList");
+const menuBtn =
+document.getElementById("menuBtn");
 
 
-menuBtn.addEventListener("click", () => {
+const menuList =
+document.getElementById("menuList");
 
-    menuList.classList.toggle("active");
+
+
+menuBtn.addEventListener("click",()=>{
+
+
+menuList.classList.toggle("active");
+
 
 });
 
 
 
-const addBtn = document.getElementById("addBtn");
 
-addBtn.addEventListener("click", () => {
 
-    document
-    .getElementById("adminPanel")
-    .classList.toggle("hidden");
+document
+.getElementById("addBtn")
+.addEventListener("click",()=>{
+
+
+document
+.getElementById("adminPanel")
+.classList.toggle("hidden");
+
 
 });
 
 
 
-const allLocations = document.getElementById("allLocations");
 
 
-if(allLocations){
-
-    allLocations.addEventListener("click", () => {
-
-
-        if(typeof selectedLocation !== "undefined"){
-
-            selectedLocation = "WSZYSTKIE";
-
-        }
+document
+.getElementById("allLocations")
+.addEventListener("click",()=>{
 
 
-        if(typeof render === "function"){
+if(typeof selectedLocation !== "undefined"){
 
-            render();
-
-        }
-
-
-    });
+selectedLocation="WSZYSTKIE";
 
 }
+
+
+
+if(typeof render === "function"){
+
+render();
+
+}
+
+
+});
