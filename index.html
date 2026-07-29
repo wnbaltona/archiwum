@@ -16,7 +16,7 @@
 <body>
 
 
-<header class="topbar">
+<header>
 
 
 <div class="logo">
@@ -24,36 +24,28 @@
 </div>
 
 
-
 <div class="menu">
 
-
-<button id="menuButton">
+<button id="menuBtn">
 ☰ Menu
 </button>
 
 
+<div id="menuList" class="dropdown">
 
-<div id="dropdown" class="dropdown">
-
-
-<button id="showAdmin">
+<button id="addBtn">
 ➕ Dodaj dokument
 </button>
 
-
 <button>
-📋 Wszystkie dokumenty
+📋 Wszystkie lokalizacje
 </button>
-
 
 <button>
 ⚙️ Ustawienia
 </button>
 
-
 </div>
-
 
 </div>
 
@@ -62,29 +54,27 @@
 
 
 
-
 <main>
-
-
-<div class="search-box">
 
 
 <input 
 id="searchInput"
-placeholder="🔍 Szukaj dokumentu, miasta, lokalu..."
+placeholder="🔍 Szukaj dokumentu..."
 >
 
 
-</div>
 
-<button id="showAdmin">
-➕ Dodaj dokument
-</button>
+<div id="results"></div>
+
+
 
 
 <section id="adminPanel" class="hidden">
 
-<h3>Dodaj dokument</h3>
+
+<h2>
+Dodaj dokument
+</h2>
 
 
 <select id="location">
@@ -105,68 +95,30 @@ placeholder="🔍 Szukaj dokumentu, miasta, lokalu..."
 </select>
 
 
-<input id="name" placeholder="Nazwa dokumentu">
 
+<input id="name" placeholder="Nazwa dokumentu">
 
 <input id="type" placeholder="Typ">
 
 
 <input id="shelf" placeholder="Regał">
 
-
 <input id="level" placeholder="Półka">
-
 
 <input id="folder" placeholder="Segregator">
 
 
-<textarea id="notes"
-placeholder="Uwagi"></textarea>
+<textarea id="notes" placeholder="Uwagi"></textarea>
 
 
-<button id="addDocument">
+
+<button id="saveBtn">
 Zapisz dokument
 </button>
 
 
 </section>
 
-<section id="results"></section>
-
-
-
-
-<section id="adminPanel" class="hidden">
-
-
-<h3>
-➕ Dodaj dokument
-</h3>
-
-
-<input id="name" placeholder="Nazwa dokumentu">
-
-<input id="type" placeholder="Typ">
-
-<input id="city" placeholder="Miasto">
-
-<input id="local" placeholder="Lokal">
-
-<input id="shelf" placeholder="Regał">
-
-<input id="level" placeholder="Półka">
-
-<input id="folder" placeholder="Segregator">
-
-<textarea id="notes" placeholder="Uwagi"></textarea>
-
-
-<button id="addDocument">
-Zapisz
-</button>
-
-
-</section>
 
 
 </main>
