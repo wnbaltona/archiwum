@@ -1,3 +1,8 @@
+// ===============================
+// SETTINGS.JS
+// ===============================
+
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -21,53 +26,15 @@ closeSettings
 
 
 
-document
-.getElementById("showAddContractor")
-?.addEventListener(
-"click",
-showAddContractor
-);
-
-
-
-document
-.getElementById("showContractors")
-?.addEventListener(
-"click",
-loadContractors
-);
-
-
-
-document
-.getElementById("showAddLocal")
-?.addEventListener(
-"click",
-showAddLocal
-);
-
-
-
-document
-.getElementById("showLocals")
-?.addEventListener(
-"click",
-loadLocals
-);
-
-
-
 });
 
 
 
 
 
-
-
-// ============================
-// OTWIERANIE USTAWIEŃ
-// ============================
+// ===============================
+// OTWARCIE USTAWIEŃ
+// ===============================
 
 
 function openSettings(){
@@ -90,11 +57,7 @@ overlay.classList.remove(
 
 
 
-
-document.getElementById(
-"settingsContent"
-).innerHTML="";
-
+showSettingsMenu();
 
 
 }
@@ -129,11 +92,79 @@ document
 
 
 
+// ===============================
+// GŁÓWNE MENU USTAWIEŃ
+// ===============================
 
 
-// ============================
-// KONTRAHENCI - DODAJ
-// ============================
+function showSettingsMenu(){
+
+
+const box =
+document.getElementById(
+"settingsContent"
+);
+
+
+
+box.innerHTML =
+
+
+`
+
+<div class="settings-buttons">
+
+
+<button onclick="showAddContractor()">
+
+Dodaj kontrahenta
+
+</button>
+
+
+
+<button onclick="loadContractors()">
+
+Lista kontrahentów
+
+</button>
+
+
+
+<button onclick="showAddLocal()">
+
+Dodaj lokal
+
+</button>
+
+
+
+<button onclick="loadLocals()">
+
+Lista lokali
+
+</button>
+
+
+</div>
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// DODAJ KONTRAHENTA
+// ===============================
 
 
 function showAddContractor(){
@@ -161,13 +192,15 @@ id="contractorName"
 placeholder="Nazwa kontrahenta">
 
 
-
 <button id="saveContractor">
+
 Zapisz
+
 </button>
 
 
 `;
+
 
 
 
@@ -178,7 +211,8 @@ document
 "saveContractor"
 )
 
-.onclick = addContractor;
+.onclick =
+addContractor;
 
 
 
@@ -191,7 +225,6 @@ document
 
 
 async function addContractor(){
-
 
 
 const name =
@@ -213,7 +246,7 @@ document
 if(!name){
 
 alert(
-"Podaj nazwę kontrahenta"
+"Wpisz nazwę kontrahenta"
 );
 
 return;
@@ -226,7 +259,9 @@ return;
 
 
 const {
+
 error
+
 }
 
 =
@@ -238,9 +273,7 @@ await supabaseClient
 .insert([
 
 {
-
 nazwa:name
-
 }
 
 ]);
@@ -267,7 +300,7 @@ alert(
 
 
 
-loadContractors();
+showSettingsMenu();
 
 
 
@@ -281,9 +314,9 @@ loadContractors();
 
 
 
-// ============================
+// ===============================
 // LISTA KONTRAHENTÓW
-// ============================
+// ===============================
 
 
 async function loadContractors(){
@@ -306,8 +339,11 @@ box.innerHTML =
 
 
 const {
+
 data,
+
 error
+
 }
 
 =
@@ -321,6 +357,7 @@ await supabaseClient
 .order(
 "nazwa"
 );
+
 
 
 
@@ -358,7 +395,7 @@ Lista kontrahentów
 
 
 
-if(!data || data.length===0){
+if(!data.length){
 
 
 box.innerHTML +=
@@ -397,18 +434,14 @@ ${item.nazwa}
 </span>
 
 
-
-<button 
-onclick="deleteContractor('${item.id}')">
+<button onclick="deleteContractor('${item.id}')">
 
 Usuń
 
 </button>
 
 
-
 </div>
-
 
 `;
 
@@ -449,7 +482,68 @@ return;
 
 
 const {
+
+data:contractor
+
+}
+
+=
+
+await supabaseClient
+
+.from("kontrahenci")
+
+.select("nazwa")
+
+.eq(
+"id",
+id
+)
+
+.single();
+
+
+
+
+
+
+
+if(contractor){
+
+
+
+await supabaseClient
+
+.from("dokumenty")
+
+.update({
+
+nazwa_kontrahenta:null
+
+})
+
+.eq(
+
+"nazwa_kontrahenta",
+
+contractor.nazwa
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+const {
+
 error
+
 }
 
 =
@@ -484,7 +578,7 @@ return;
 
 
 
-await loadContractors();
+loadContractors();
 
 
 
@@ -498,13 +592,12 @@ await loadContractors();
 
 
 
-// ============================
-// LOKALE - DODAJ
-// ============================
+// ===============================
+// DODAJ LOKAL
+// ===============================
 
 
 function showAddLocal(){
-
 
 
 const box =
@@ -524,9 +617,11 @@ Dodaj lokal
 </h3>
 
 
+
 <input
 id="localMPK"
 placeholder="MPK">
+
 
 
 <input
@@ -537,17 +632,31 @@ placeholder="Nazwa lokalu">
 
 <select id="localLocation">
 
-<option value="">
+<option>
 Wybierz lokalizację
 </option>
 
+<option>OKĘCIE</option>
+<option>RADOM</option>
+<option>MODLIN</option>
+<option>BYDGOSZCZ</option>
+<option>KRAKÓW</option>
+<option>POZNAŃ</option>
+<option>WROCŁAW</option>
+<option>ŚWINOUJŚCIE</option>
+<option>GDAŃSK</option>
+<option>GDYNIA</option>
+<option>ZIELONA GÓRA</option>
+<option>RZESZÓW</option>
+<option>FRANCJA</option>
+<option>KATOWICE</option>
 
 </select>
 
 
 
 
-<button id="saveLocal">
+<button onclick="addLocal()">
 
 Zapisz
 
@@ -558,91 +667,8 @@ Zapisz
 
 
 
-
-
-const select =
-document.getElementById(
-"localLocation"
-);
-
-
-
-
-
-const locations =
-
-
-typeof DEFAULT_LOCATIONS !== "undefined"
-
-?
-
-DEFAULT_LOCATIONS.filter(
-x=>x!=="WSZYSTKIE"
-)
-
-:
-
-[
-
-"OKĘCIE",
-"RADOM",
-"MODLIN",
-"BYDGOSZCZ",
-"KRAKÓW",
-"POZNAŃ",
-"WROCŁAW",
-"ŚWINOUJŚCIE",
-"GDAŃSK",
-"GDYNIA",
-"ZIELONA GÓRA",
-"RZESZÓW",
-"FRANCJA",
-"KATOWICE"
-
-];
-
-
-
-
-
-
-
-locations.forEach(location=>{
-
-
-select.innerHTML +=
-
-
-`
-
-<option value="${location}">
-${location}
-</option>
-
-`;
-
-
-
-});
-
-
-
-
-
-
-
-document
-
-.getElementById(
-"saveLocal"
-)
-
-.onclick =
-addLocal;
-
-
-
 }
+
 
 
 
@@ -654,32 +680,25 @@ addLocal;
 async function addLocal(){
 
 
-
 const data = {
 
 
 mpk:
-
 document.getElementById(
 "localMPK"
-).value.trim(),
-
+).value,
 
 
 nazwa:
-
 document.getElementById(
 "localName"
-).value.trim(),
-
+).value,
 
 
 lokalizacja:
-
 document.getElementById(
 "localLocation"
 ).value
-
 
 
 };
@@ -689,31 +708,10 @@ document.getElementById(
 
 
 
-
-if(
-!data.mpk ||
-!data.nazwa ||
-!data.lokalizacja
-){
-
-
-alert(
-"Uzupełnij wszystkie pola"
-);
-
-return;
-
-
-}
-
-
-
-
-
-
-
 const {
+
 error
+
 }
 
 =
@@ -723,7 +721,6 @@ await supabaseClient
 .from("lokale")
 
 .insert([data]);
-
 
 
 
@@ -747,7 +744,7 @@ alert(
 
 
 
-loadLocals();
+showSettingsMenu();
 
 
 
@@ -761,9 +758,9 @@ loadLocals();
 
 
 
-// ============================
+// ===============================
 // LISTA LOKALI
-// ============================
+// ===============================
 
 
 async function loadLocals(){
@@ -787,8 +784,11 @@ box.innerHTML =
 
 
 const {
+
 data,
+
 error
+
 }
 
 =
@@ -802,7 +802,6 @@ await supabaseClient
 .order(
 "lokalizacja"
 );
-
 
 
 
@@ -839,31 +838,7 @@ Lista lokali
 
 
 
-if(!data || data.length===0){
-
-
-box.innerHTML +=
-
-`
-
-<p>
-Brak lokali
-</p>
-
-`;
-
-return;
-
-
-}
-
-
-
-
-
-
-
-data.forEach(local=>{
+data.forEach(item=>{
 
 
 box.innerHTML +=
@@ -876,19 +851,18 @@ box.innerHTML +=
 
 <span>
 
-${local.nazwa}
-(${local.mpk})
+${item.nazwa}
+(${item.mpk})
 
 <br>
 
-${local.lokalizacja}
+${item.lokalizacja}
 
 </span>
 
 
 
-<button
-onclick="deleteLocal('${local.id}')">
+<button onclick="deleteLocal('${item.id}')">
 
 Usuń
 
@@ -897,7 +871,6 @@ Usuń
 
 
 </div>
-
 
 `;
 
@@ -908,7 +881,6 @@ Usuń
 
 
 }
-
 
 
 
@@ -937,7 +909,9 @@ return;
 
 
 const {
+
 error
+
 }
 
 =
@@ -958,6 +932,7 @@ id
 
 
 
+
 if(error){
 
 alert(error.message);
@@ -971,7 +946,7 @@ return;
 
 
 
-await loadLocals();
+loadLocals();
 
 
 
