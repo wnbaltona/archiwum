@@ -1,83 +1,66 @@
-const addBtn =
-document.getElementById("addBtn");
+const addBtn = document.getElementById("addBtn");
+
+const adminPanel = document.getElementById("adminPanel");
 
 
-const panel =
-document.getElementById("adminPanel");
 
+addBtn.addEventListener("click", () => {
 
-addBtn.onclick=()=>{
+    adminPanel.classList.toggle("hidden");
 
-panel.classList.toggle("hidden");
-
-};
-
+});
 
 
 
 
-document
-.getElementById("saveBtn")
-.onclick=async()=>{
+const saveBtn = document.getElementById("saveBtn");
 
 
-const doc={
+saveBtn.addEventListener("click", async () => {
 
 
-lokalizacja:
-location.value,
+    const documentData = {
 
+        lokalizacja: document.getElementById("location").value,
 
-nazwa:
-name.value,
+        nazwa: document.getElementById("name").value,
 
+        typ: document.getElementById("type").value,
 
-typ:
-type.value,
+        regal: document.getElementById("shelf").value,
 
+        polka: document.getElementById("level").value,
 
-regal:
-shelf.value,
+        segregator: document.getElementById("folder").value,
 
+        uwagi: document.getElementById("notes").value
 
-polka:
-level.value,
-
-
-segregator:
-folder.value,
-
-
-uwagi:
-notes.value
-
-
-};
+    };
 
 
 
-const {error}=await supabaseClient
-.from("dokumenty")
-.insert([doc]);
+    const { data, error } = await supabaseClient
+        .from("dokumenty")
+        .insert([documentData]);
 
 
 
-if(error){
+    if(error){
 
-alert("Błąd zapisu");
+        console.error(error);
 
-console.log(error);
+        alert("Błąd zapisu dokumentu");
 
-return;
+        return;
 
-}
-
-
-
-alert("Dodano");
+    }
 
 
-location.reload();
+
+    alert("Dokument dodany");
 
 
-};
+    location.reload();
+
+
+});
