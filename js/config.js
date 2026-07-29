@@ -1,4 +1,4 @@
-const APP_LOCATIONS = [
+const LOCATIONS = [
 
 "OKĘCIE",
 "RADOM",
