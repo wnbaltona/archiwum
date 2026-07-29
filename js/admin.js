@@ -1,96 +1,56 @@
-const adminButton =
-document.getElementById("showAdmin");
+document
+.getElementById("showAdmin")
+.onclick=()=>{
 
 
-const adminPanel =
-document.getElementById("adminPanel");
-
-
-
-adminButton.onclick=()=>{
-
-
-adminPanel.classList.toggle("hidden");
+document
+.getElementById("adminPanel")
+.classList.toggle("hidden");
 
 
 };
-
-
 
 
 
 document
 .getElementById("addDocument")
-.onclick = async ()=>{
+.onclick=()=>{
 
 
-const documentData={
+let newDoc={
 
+"Lokalizacja":
+document.getElementById("location").value,
 
-nazwa:
+"Nazwa dokumentu":
 document.getElementById("name").value,
 
-
-typ:
+"Typ":
 document.getElementById("type").value,
 
-
-miasto:
-document.getElementById("city").value,
-
-
-lokal:
-document.getElementById("local").value,
-
-
-regal:
+"Regał":
 document.getElementById("shelf").value,
 
-
-polka:
+"Półka":
 document.getElementById("level").value,
 
-
-segregator:
+"Segregator":
 document.getElementById("folder").value,
 
-
-uwagi:
+"Uwagi":
 document.getElementById("notes").value
-
 
 };
 
 
 
-const {error}=await supabaseClient
-
-.from("dokumenty")
-
-.insert([documentData]);
+documents.push(newDoc);
 
 
-
-if(error){
-
-alert(
-"Błąd zapisu"
-);
-
-console.log(error);
-
-return;
-
-}
+showLocations();
 
 
-
-alert(
-"Dokument dodany!"
-);
-
-
-location.reload();
+alert("Dodano dokument");
 
 
 };
