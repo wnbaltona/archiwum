@@ -246,9 +246,70 @@ cursor:pointer;
 }
 
 
+.hidden{
+
+display:none;
+
+}
+
+.location{
+
+background:white;
+
+margin-top:12px;
+
+border-radius:12px;
+
+overflow:hidden;
+
+}
+
+
+.location-title{
+
+padding:18px;
+
+font-size:18px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+
+.location-title:hover{
+
+background:#f3f4f6;
+
+}
+
+
+
+.documents{
+
+padding:0 15px 15px;
+
+}
+
+
 
 .hidden{
 
 display:none;
+
+}
+
+
+.card{
+
+background:#f9fafb;
+
+padding:15px;
+
+margin-top:10px;
+
+border-radius:10px;
 
 }
