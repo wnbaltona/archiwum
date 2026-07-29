@@ -1,6 +1,6 @@
 document
 .getElementById("showAdmin")
-.onclick=()=>{
+.onclick = ()=>{
 
 
 document
@@ -12,45 +12,79 @@ document
 
 
 
+
+
 document
 .getElementById("addDocument")
-.onclick=()=>{
+.onclick = async ()=>{
 
 
-let newDoc={
+const newDocument = {
 
-"Lokalizacja":
+
+lokalizacja:
 document.getElementById("location").value,
 
-"Nazwa dokumentu":
+
+nazwa:
 document.getElementById("name").value,
 
-"Typ":
+
+typ:
 document.getElementById("type").value,
 
-"Regał":
+
+regal:
 document.getElementById("shelf").value,
 
-"Półka":
+
+polka:
 document.getElementById("level").value,
 
-"Segregator":
+
+segregator:
 document.getElementById("folder").value,
 
-"Uwagi":
+
+uwagi:
 document.getElementById("notes").value
+
 
 };
 
 
 
-documents.push(newDoc);
+const {data,error} = await supabaseClient
+
+.from("dokumenty")
+
+.insert([newDocument])
+
+.select();
 
 
-showLocations();
+
+if(error){
+
+console.log(error);
+
+alert(
+"Błąd zapisu dokumentu"
+);
+
+return;
+
+}
 
 
-alert("Dodano dokument");
+
+alert(
+"Dokument został dodany"
+);
+
+
+
+location.reload();
 
 
 };

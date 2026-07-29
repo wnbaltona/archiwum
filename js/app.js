@@ -1,213 +1,388 @@
-let documents=[];
+let documents = [];
+
+const results = document.getElementById("results");
+const searchInput = document.getElementById("searchInput");
 
 
-const results =
-document.getElementById("results");
+// kolejność lokalizacji
 
-
-const searchInput =
-document.getElementById("searchInput");
-
-
-
-fetch("dokumenty.csv")
-
-.then(response=>response.text())
-
-.then(data=>{
-
-documents=parseCSV(data);
-
-showLocations();
-
-});
-
-
-
-function parseCSV(csv){
-
-
-let rows=csv.split("\n");
-
-
-let headers=
-rows[0].split(";");
-
-
-return rows.slice(1)
-.filter(r=>r.trim()!="")
-.map(row=>{
-
-
-let values=row.split(";");
-
-let obj={};
-
-
-headers.forEach((h,i)=>{
-
-obj[h.trim()]=values[i]?.trim();
-
-});
-
-
-return obj;
-
-
-});
-
-}
-
-
-
-function showLocations(){
-
-
-results.innerHTML="";
-
-
-let locations=[
-
-"OKĘCIE",
-"RADOM",
-"MODLIN",
-"SONATA",
-"RZESZÓW",
-"KATOWICE",
-"KRAKÓW",
-"ZIELONA GÓRA",
-"FRANCJA",
-"BYDGOSZCZ",
-"POZNAŃ",
-"WROCŁAW"
-
+const locations = [
+    "OKĘCIE",
+    "RADOM",
+    "MODLIN",
+    "SONATA",
+    "RZESZÓW",
+    "KATOWICE",
+    "KRAKÓW",
+    "ZIELONA GÓRA",
+    "FRANCJA",
+    "BYDGOSZCZ",
+    "POZNAŃ",
+    "WROCŁAW"
 ];
 
 
 
-locations.forEach(location=>{
+// ==========================
+// POBIERANIE DANYCH
+// ==========================
 
 
-let docs=
-documents.filter(
-d=>d["Lokalizacja"]==location
-);
+async function loadDocuments() {
+
+
+    const { data, error } = await supabaseClient
+        .from("dokumenty")
+        .select("*")
+        .order("lokalizacja", { ascending: true });
 
 
 
-if(docs.length){
+    if (error) {
+
+        console.error(
+            "Błąd pobierania:",
+            error
+        );
+
+        results.innerHTML = `
+        <div class="card">
+        ❌ Nie udało się pobrać dokumentów
+        </div>
+        `;
+
+        return;
+    }
 
 
-results.innerHTML+=`
 
-<div class="location">
-
-<h3 onclick="openLocation('${location}')">
-
-▶ ${location}
-(${docs.length})
-
-</h3>
+    documents = data || [];
 
 
-<div id="${location}" class="hidden">
-
-
-${docs.map(d=>`
-
-<div class="card">
-
-<b>📄 ${d["Nazwa dokumentu"]}</b>
-
-<p>
-🗄️ Regał:
-${d["Regał"]}
-</p>
-
-<p>
-📚 Półka:
-${d["Półka"]}
-</p>
-
-<p>
-📂 Segregator:
-${d["Segregator"]}
-</p>
-
-</div>
-
-
-`).join("")}
-
-
-</div>
-
-
-</div>
-
-`;
-
-}
-
-
-});
-
+    showLocations();
 
 }
 
 
 
-function openLocation(id){
+// ==========================
+// WYŚWIETLANIE LOKALIZACJI
+// ==========================
 
-document
-.getElementById(id)
-.classList.toggle("hidden");
+
+function showLocations() {
+
+
+    results.innerHTML = "";
+
+
+
+    locations.forEach(location => {
+
+
+        const locationDocuments =
+            documents.filter(doc =>
+                doc.lokalizacja === location
+            );
+
+
+
+        if (locationDocuments.length === 0) {
+
+            return;
+
+        }
+
+
+
+        results.innerHTML += `
+
+        <div class="location">
+
+
+            <div 
+            class="location-title"
+            onclick="toggleLocation('${location}')">
+
+                ▶ ${location}
+
+                <span>
+                (${locationDocuments.length})
+                </span>
+
+            </div>
+
+
+
+            <div 
+            id="${location}"
+            class="documents hidden">
+
+
+                ${
+                    locationDocuments.map(doc => `
+
+                    <div class="card">
+
+
+                        <h3>
+                        📄 ${doc.nazwa}
+                        </h3>
+
+
+                        <p>
+                        📌 Typ:
+                        ${doc.typ || "-"}
+                        </p>
+
+
+                        <p>
+                        🗄️ Regał:
+                        ${doc.regal || "-"}
+                        </p>
+
+
+                        <p>
+                        📚 Półka:
+                        ${doc.polka || "-"}
+                        </p>
+
+
+                        <p>
+                        📂 Segregator:
+                        ${doc.segregator || "-"}
+                        </p>
+
+
+                        <p>
+                        📝 ${doc.uwagi || ""}
+                        </p>
+
+
+                    </div>
+
+
+                    `).join("")
+                }
+
+
+
+            </div>
+
+
+        </div>
+
+        `;
+
+
+    });
+
+
 
 }
 
+
+
+// ==========================
+// ROZWIJANIE LOKALIZACJI
+// ==========================
+
+
+function toggleLocation(location) {
+
+
+    const element =
+        document.getElementById(location);
+
+
+
+    if(element){
+
+        element.classList.toggle(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+
+// ==========================
+// WYSZUKIWANIE
+// ==========================
 
 
 searchInput.addEventListener(
 "input",
-()=>{
+function(){
 
 
-let text=
-searchInput.value.toLowerCase();
+    const text =
+    searchInput.value
+    .toLowerCase()
+    .trim();
 
 
-results.innerHTML="";
+
+    if(text === ""){
+
+        showLocations();
+
+        return;
+
+    }
 
 
-documents
-.filter(d=>
-JSON.stringify(d)
-.toLowerCase()
-.includes(text)
-)
-.forEach(d=>{
 
 
-results.innerHTML+=`
+    const filtered =
+    documents.filter(doc => {
 
-<div class="card">
 
-📄 ${d["Nazwa dokumentu"]}
+        return (
 
-<br>
+            (doc.nazwa || "")
+            .toLowerCase()
+            .includes(text)
 
-📍 ${d["Lokalizacja"]}
 
-<br>
+            ||
 
-🗄️ Regał:
-${d["Regał"]}
+            (doc.lokalizacja || "")
+            .toLowerCase()
+            .includes(text)
 
-</div>
 
-`;
+            ||
+
+            (doc.typ || "")
+            .toLowerCase()
+            .includes(text)
+
+
+            ||
+
+            (doc.regal || "")
+            .toLowerCase()
+            .includes(text)
+
+
+            ||
+
+            (doc.polka || "")
+            .toLowerCase()
+            .includes(text)
+
+
+            ||
+
+            (doc.segregator || "")
+            .toLowerCase()
+            .includes(text)
+
+
+        );
+
+
+    });
+
+
+
+    showSearchResults(filtered);
+
 
 });
 
 
-});
+
+
+// ==========================
+// WYNIKI SZUKANIA
+// ==========================
+
+
+function showSearchResults(data){
+
+
+    results.innerHTML = "";
+
+
+
+    if(data.length === 0){
+
+
+        results.innerHTML = `
+
+        <div class="card">
+
+        Brak wyników
+
+        </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+
+
+    data.forEach(doc => {
+
+
+
+        results.innerHTML += `
+
+
+        <div class="card">
+
+
+            <h3>
+            📄 ${doc.nazwa}
+            </h3>
+
+
+            <p>
+            📍 ${doc.lokalizacja}
+            </p>
+
+
+            <p>
+            🗄️ Regał:
+            ${doc.regal || "-"}
+            </p>
+
+
+            <p>
+            📚 Półka:
+            ${doc.polka || "-"}
+            </p>
+
+
+            <p>
+            📂 Segregator:
+            ${doc.segregator || "-"}
+            </p>
+
+
+
+        </div>
+
+
+        `;
+
+
+    });
+
+
+}
+
+
+
+// START
+
+loadDocuments();
