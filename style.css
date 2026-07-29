@@ -5,23 +5,29 @@ font-family:Inter,Arial,sans-serif;
 
 
 body{
+
 margin:0;
-background:#f6f7f9;
+background:#f5f6f8;
 color:#1f2937;
+
 }
 
 
-/* ================= HEADER ================= */
+
+/* =====================
+HEADER
+===================== */
+
 
 .topbar{
 
-height:72px;
+height:70px;
 background:white;
 display:flex;
 align-items:center;
 justify-content:space-between;
 padding:0 35px;
-box-shadow:0 2px 12px rgba(0,0,0,.08);
+box-shadow:0 3px 12px rgba(0,0,0,.08);
 position:sticky;
 top:0;
 z-index:20;
@@ -30,16 +36,18 @@ z-index:20;
 
 
 .logo{
+
 font-size:24px;
 font-weight:700;
+
 }
 
 
 .menu-button{
 
-background:none;
-border:none;
 font-size:28px;
+border:none;
+background:none;
 cursor:pointer;
 
 }
@@ -49,11 +57,11 @@ cursor:pointer;
 .menu-list{
 
 position:absolute;
-right:30px;
+right:35px;
 top:65px;
 background:white;
 padding:15px;
-border-radius:16px;
+border-radius:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.15);
 display:flex;
 flex-direction:column;
@@ -65,23 +73,30 @@ gap:10px;
 .menu-list button{
 
 border:none;
-padding:12px 18px;
-border-radius:10px;
 background:#f3f4f6;
+padding:12px 20px;
+border-radius:10px;
 cursor:pointer;
+font-size:15px;
 
 }
 
 
 .hidden{
+
 display:none!important;
+
 }
 
 
 
 
 
-/* ================= FILTRY ================= */
+
+
+/* =====================
+FILTRY
+===================== */
 
 
 .filters{
@@ -113,6 +128,7 @@ padding:18px 25px;
 cursor:pointer;
 min-width:150px;
 transition:.2s;
+box-shadow:0 3px 10px rgba(0,0,0,.05);
 
 }
 
@@ -126,7 +142,6 @@ transform:translateY(-3px);
 
 
 
-
 .location-card.active{
 
 background:#111827;
@@ -136,28 +151,25 @@ color:white;
 
 
 
-
 .location-card span{
 
 display:block;
-margin-top:5px;
 font-size:13px;
+margin-top:5px;
 color:#6b7280;
 
 }
 
 
 
-
-
 .filter-box{
 
 background:white;
-padding:20px;
 border-radius:18px;
+padding:20px;
+margin-top:25px;
 display:flex;
 gap:15px;
-margin-top:20px;
 box-shadow:0 3px 12px rgba(0,0,0,.05);
 
 }
@@ -167,27 +179,30 @@ box-shadow:0 3px 12px rgba(0,0,0,.05);
 .filter-box input,
 .filter-box select{
 
-height:42px;
-padding:0 14px;
-border-radius:10px;
+height:45px;
 border:1px solid #ddd;
+border-radius:12px;
+padding:0 15px;
+font-size:15px;
 
 }
 
 
 
 
-
-/* ================= ARCHIWUM ================= */
+/* =====================
+DOKUMENTY
+===================== */
 
 
 #results{
 
 max-width:1400px;
 margin:auto;
-padding:0 25px 50px;
+padding:0 25px 40px;
 
 }
+
 
 
 
@@ -206,28 +221,27 @@ box-shadow:0 4px 15px rgba(0,0,0,.06);
 .archive-header{
 
 padding:22px 28px;
+font-size:21px;
+font-weight:700;
 display:flex;
 justify-content:space-between;
-align-items:center;
 cursor:pointer;
-font-size:20px;
-font-weight:700;
 
 }
 
 
 
-.archive-header:after{
+.archive-header::after{
 
 content:"+";
-font-size:25px;
+font-size:24px;
 
 }
 
 
 
 .archive-location.open 
-.archive-header:after{
+.archive-header::after{
 
 content:"−";
 
@@ -254,8 +268,6 @@ display:block;
 
 
 
-
-
 .year-box{
 
 margin-top:20px;
@@ -267,23 +279,38 @@ margin-top:20px;
 
 .year-box h3{
 
-font-size:18px;
+margin-bottom:15px;
 
 }
 
 
 
 
-
-/* dokumenty */
-
-
 .document{
 
-background:#f9fafb;
-border-radius:15px;
-padding:18px;
+background:#f8fafc;
+border-radius:16px;
+padding:20px;
 margin-bottom:15px;
+border:1px solid #e5e7eb;
+
+}
+
+
+
+.document h4{
+
+margin:0 0 15px;
+font-size:18px;
+
+}
+
+
+
+.document p{
+
+margin:6px 0;
+color:#4b5563;
 
 }
 
@@ -291,12 +318,14 @@ margin-bottom:15px;
 
 .document button{
 
-padding:8px 15px;
+margin-top:15px;
+padding:9px 16px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 cursor:pointer;
 
 }
+
 
 
 .edit{
@@ -319,10 +348,9 @@ background:#fee2e2;
 
 
 
-
-
-/* ================= MODALE ================= */
-
+/* =====================
+MODALE
+===================== */
 
 
 .overlay{
@@ -331,8 +359,8 @@ position:fixed;
 inset:0;
 background:rgba(0,0,0,.45);
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 padding:20px;
 z-index:100;
 
@@ -343,10 +371,11 @@ z-index:100;
 .modal{
 
 background:white;
-border-radius:24px;
 width:100%;
-max-width:700px;
+max-width:750px;
+border-radius:25px;
 padding:35px;
+position:relative;
 max-height:90vh;
 overflow:auto;
 
@@ -354,57 +383,35 @@ overflow:auto;
 
 
 
+
 .close-button{
 
-float:right;
+position:absolute;
+right:20px;
+top:20px;
+width:35px;
+height:35px;
 border:none;
+border-radius:50%;
 background:#ef4444;
 color:white;
-border-radius:50%;
-width:32px;
-height:32px;
 cursor:pointer;
 
 }
 
 
 
+.modal h2{
 
-
-/* ================= FORMULARZ 2 KOLUMNY ================= */
-
-
-#modalOverlay .modal{
-
-
-display:block;
-
-}
-
-
-
-#modalOverlay .modal label{
-
-
-margin-top:12px;
-
-}
-
-
-
-#modalOverlay .modal input,
-#modalOverlay .modal select,
-#modalOverlay .modal textarea{
-
-width:100%;
+margin-top:0;
 
 }
 
 
 
 
-@media(min-width:700px){
 
+/* formularz */
 
 #modalOverlay .modal{
 
@@ -416,7 +423,7 @@ gap:15px 20px;
 
 
 
-#modalOverlay .modal h2{
+#modalOverlay h2{
 
 grid-column:1/-1;
 
@@ -424,29 +431,57 @@ grid-column:1/-1;
 
 
 
-#modalOverlay .modal .close-button{
+#modalOverlay label{
 
-position:absolute;
+font-weight:600;
 
 }
 
 
 
-#modalOverlay .modal textarea,
-#modalOverlay .modal .primary-button{
+#modalOverlay input,
+#modalOverlay select,
+#modalOverlay textarea{
+
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #d1d5db;
+
+}
+
+
+
+#modalOverlay textarea{
 
 grid-column:1/-1;
+height:90px;
 
 }
 
 
+
+.primary-button{
+
+grid-column:1/-1;
+padding:14px;
+border:none;
+border-radius:14px;
+background:#111827;
+color:white;
+cursor:pointer;
+font-size:16px;
+
 }
 
 
 
 
 
-/* ================= USTAWIENIA ================= */
+
+/* =====================
+USTAWIENIA
+===================== */
 
 
 .settings-modal{
@@ -460,8 +495,8 @@ max-width:600px;
 .settings-modal h3{
 
 margin-top:30px;
-padding-bottom:10px;
 border-bottom:1px solid #eee;
+padding-bottom:10px;
 
 }
 
@@ -470,6 +505,10 @@ border-bottom:1px solid #eee;
 .settings-modal input,
 .settings-modal select{
 
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #ddd;
 margin-bottom:12px;
 
 }
@@ -479,7 +518,7 @@ margin-bottom:12px;
 .settings-modal button:not(.close-button){
 
 width:100%;
-padding:12px;
+padding:13px;
 border:none;
 border-radius:12px;
 background:#111827;
@@ -487,6 +526,8 @@ color:white;
 cursor:pointer;
 
 }
+
+
 
 
 
@@ -501,5 +542,20 @@ flex-direction:column;
 
 }
 
+
+
+#modalOverlay .modal{
+
+grid-template-columns:1fr;
+
+}
+
+
+
+.location-card{
+
+width:100%;
+
+}
 
 }
