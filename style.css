@@ -687,5 +687,25 @@ grid-column:1!important;
 
 
 }
+
+  #localsList,
+#contractorsList{
+
+margin-top:15px;
+
+max-height:300px;
+
+overflow-y:auto;
+
+}
+
+
+.contractor-row span{
+
+font-size:14px;
+
+line-height:1.4;
+
+}
   
 }
