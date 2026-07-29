@@ -19,9 +19,14 @@
 
 <header>
 
+
 <div class="logo">
 Archiwum Dokumentów
 </div>
+
+
+
+<div class="menu">
 
 
 <button id="menuBtn">
@@ -29,15 +34,30 @@ Menu
 </button>
 
 
-<div id="menuPanel" class="menu-panel">
+
+<div id="menuList" class="dropdown">
+
 
 <button id="addBtn">
 Dodaj dokument
 </button>
 
+
+
 <button id="allLocations">
 Wszystkie lokalizacje
 </button>
+
+
+
+<button id="deleteModeBtn">
+Usuń dokument
+</button>
+
+
+
+</div>
+
 
 </div>
 
@@ -47,10 +67,12 @@ Wszystkie lokalizacje
 
 
 
+
 <main>
 
 
-<input 
+
+<input
 id="searchInput"
 placeholder="Wyszukaj dokument, lokal, regał..."
 >
@@ -61,12 +83,12 @@ placeholder="Wyszukaj dokument, lokal, regał..."
 
 
 
-<div class="filters">
+<div id="filters">
 
 
 <select id="typeFilter">
 
-<option>
+<option value="">
 Wszystkie typy
 </option>
 
@@ -76,7 +98,7 @@ Wszystkie typy
 
 <select id="shelfFilter">
 
-<option>
+<option value="">
 Wszystkie regały
 </option>
 
@@ -88,7 +110,11 @@ Wszystkie regały
 
 
 
+
 <div id="results"></div>
+
+
+
 
 
 
@@ -102,7 +128,14 @@ Dodaj dokument
 
 
 
+
+<label>
+Lokalizacja
+</label>
+
+
 <select id="location">
+
 
 <option>OKĘCIE</option>
 <option>RADOM</option>
@@ -117,52 +150,121 @@ Dodaj dokument
 <option>POZNAŃ</option>
 <option>WROCŁAW</option>
 
+
 </select>
 
 
 
-<input id="number"
-placeholder="Numer lokalu">
+
+
+<label>
+Numer lokalu
+</label>
+
+
+<input
+id="number"
+placeholder="Numer lokalu"
+>
 
 
 
-<input id="name"
-placeholder="Nazwa dokumentu">
+
+
+<label>
+Nazwa dokumentu
+</label>
+
+
+<input
+id="name"
+placeholder="Nazwa dokumentu"
+>
 
 
 
-<input id="type"
-placeholder="Typ dokumentu">
+
+
+<label>
+Typ dokumentu
+</label>
+
+
+<input
+id="type"
+placeholder="Typ dokumentu"
+>
 
 
 
-<input id="shelf"
-placeholder="Regał">
+
+
+<label>
+Regał
+</label>
+
+
+<input
+id="shelf"
+placeholder="Regał"
+>
 
 
 
-<input id="level"
-placeholder="Półka">
+
+
+<label>
+Półka
+</label>
+
+
+<input
+id="level"
+placeholder="Półka"
+>
 
 
 
-<input id="folder"
-placeholder="Segregator">
+
+
+<label>
+Segregator
+</label>
+
+
+<input
+id="folder"
+placeholder="Segregator"
+>
 
 
 
-<textarea id="notes"
+
+
+<label>
+Uwagi
+</label>
+
+
+<textarea
+id="notes"
 placeholder="Uwagi">
 </textarea>
 
 
 
+
+
 <button id="saveBtn">
-Zapisz
+Zapisz dokument
 </button>
 
 
+
 </section>
+
+
+
 
 
 
@@ -172,15 +274,21 @@ Zapisz
 
 
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <script src="./js/supabase.js"></script>
 
+
 <script src="./js/app.js"></script>
+
 
 <script src="./js/admin.js"></script>
 
+
 <script src="./js/menu.js"></script>
+
 
 
 </body>
