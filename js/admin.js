@@ -1,38 +1,213 @@
 let editingId = null;
 
 
-
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
 
+const addBtn =
+document.getElementById("addBtn");
 
-const saveBtn =
-document.getElementById("saveBtn");
 
 const closeBtn =
 document.getElementById("closeModal");
 
 
+const saveBtn =
+document.getElementById("saveBtn");
 
 
 
 
-// =====================
-// ZAMYKANIE MODALA
-// =====================
 
+// OTWÓRZ DODAWANIE
 
-closeBtn.addEventListener(
-"click",
-()=>{
+if(addBtn){
 
-closeModal();
+addBtn.onclick=()=>{
+
+openAddModal();
+
+};
 
 }
 
-);
+
+
+
+
+
+
+// ZAMKNIJ
+
+if(closeBtn){
+
+closeBtn.onclick=()=>{
+
+closeModal();
+
+};
+
+}
+
+
+
+
+
+
+
+// ZAPIS
+
+if(saveBtn){
+
+saveBtn.onclick=()=>{
+
+saveDocument();
+
+};
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
+// =====================
+// NOWY DOKUMENT
+// =====================
+
+
+function openAddModal(){
+
+
+editingId=null;
+
+
+
+document
+.getElementById("modalOverlay")
+.classList.remove("hidden");
+
+
+
+document
+.getElementById("modalTitle")
+.innerText=
+"Dodaj dokument";
+
+
+
+document
+.getElementById("saveBtn")
+.innerText=
+"Zapisz dokument";
+
+
+
+clearForm();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// EDYCJA
+// =====================
+
+
+function openEditModal(doc){
+
+
+editingId=doc.id;
+
+
+
+document
+.getElementById("modalOverlay")
+.classList.remove("hidden");
+
+
+
+document
+.getElementById("modalTitle")
+.innerText=
+"Edytuj dokument";
+
+
+
+document
+.getElementById("saveBtn")
+.innerText=
+"Zapisz zmiany";
+
+
+
+
+document.getElementById("location").value =
+doc.lokalizacja || "";
+
+
+
+document.getElementById("number").value =
+doc.numer_lokalu || "";
+
+
+
+document.getElementById("name").value =
+doc.nazwa || "";
+
+
+
+document.getElementById("type").value =
+doc.typ || "";
+
+
+
+document.getElementById("shelf").value =
+doc.regal || "";
+
+
+
+document.getElementById("level").value =
+doc.polka || "";
+
+
+
+document.getElementById("folder").value =
+doc.segregator || "";
+
+
+
+document.getElementById("status").value =
+doc.status || "OK";
+
+
+
+document.getElementById("notes").value =
+doc.uwagi || "";
+
+
+
+}
+
+
 
 
 
@@ -45,15 +220,11 @@ closeModal();
 // =====================
 
 
-saveBtn.addEventListener(
-"click",
-async ()=>{
+async function saveDocument(){
 
 
 
-
-
-const required=[
+const fields=[
 
 "location",
 "number",
@@ -68,13 +239,15 @@ const required=[
 
 
 
+
+
 let valid=true;
 
 
 
 
 
-required.forEach(id=>{
+fields.forEach(id=>{
 
 
 const field=
@@ -85,10 +258,7 @@ document.getElementById(id);
 if(!field.value.trim()){
 
 
-field.classList.add(
-"invalid"
-);
-
+field.classList.add("invalid");
 
 valid=false;
 
@@ -98,16 +268,13 @@ valid=false;
 else{
 
 
-field.classList.remove(
-"invalid"
-);
+field.classList.remove("invalid");
 
 
 }
 
 
 });
-
 
 
 
@@ -134,8 +301,7 @@ return;
 
 
 
-
-const data={
+const documentData={
 
 
 
@@ -212,9 +378,12 @@ document
 
 
 updated_at:
+
 new Date()
 
 };
+
+
 
 
 
@@ -228,20 +397,16 @@ let result;
 
 
 
-
-
-// EDYCJA
-
-
 if(editingId){
 
 
+result=
 
-result = await supabaseClient
+await supabaseClient
 
 .from("dokumenty")
 
-.update(data)
+.update(documentData)
 
 .eq(
 "id",
@@ -252,22 +417,16 @@ editingId
 
 }
 
-
-
-
-
-
-// NOWY
-
-
 else{
 
 
-result = await supabaseClient
+result=
+
+await supabaseClient
 
 .from("dokumenty")
 
-.insert([data]);
+.insert([documentData]);
 
 
 }
@@ -283,17 +442,14 @@ result = await supabaseClient
 if(result.error){
 
 
-
 console.error(
 result.error
 );
 
 
-
 showError(
-"Błąd zapisu dokumentu."
+"Błąd zapisu."
 );
-
 
 
 return;
@@ -306,78 +462,25 @@ return;
 
 
 
-
 showSuccess();
 
 
 
-if(typeof loadDocuments==="function"){
+setTimeout(()=>{
 
+
+closeModal();
+
+
+if(typeof loadDocuments==="function"){
 
 loadDocuments();
 
-
 }
 
 
+},700);
 
-
-
-
-
-});
-
-
-
-
-
-
-});
-
-
-
-
-
-
-
-
-
-// =====================
-// OTWÓRZ DODAWANIE
-// =====================
-
-
-function openAddModal(){
-
-
-
-editingId=null;
-
-
-
-document
-.getElementById("modalOverlay")
-.classList.remove(
-"hidden"
-);
-
-
-
-document
-.getElementById("modalTitle")
-.innerText=
-"Dodaj dokument";
-
-
-
-document
-.getElementById("saveBtn")
-.innerText=
-"Zapisz dokument";
-
-
-
-clearForm();
 
 
 
@@ -392,84 +495,7 @@ clearForm();
 
 
 // =====================
-// EDYCJA
-// =====================
-
-
-function openEditModal(doc){
-
-
-
-editingId=doc.id;
-
-
-
-document
-.getElementById("modalOverlay")
-.classList.remove(
-"hidden"
-);
-
-
-
-
-document
-.getElementById("modalTitle")
-.innerText=
-"Edytuj dokument";
-
-
-
-document
-.getElementById("saveBtn")
-.innerText=
-"Zapisz zmiany";
-
-
-
-
-
-document.getElementById("location").value=
-doc.lokalizacja || "";
-
-document.getElementById("number").value=
-doc.numer_lokalu || "";
-
-document.getElementById("name").value=
-doc.nazwa || "";
-
-document.getElementById("type").value=
-doc.typ || "";
-
-document.getElementById("shelf").value=
-doc.regal || "";
-
-document.getElementById("level").value=
-doc.polka || "";
-
-document.getElementById("folder").value=
-doc.segregator || "";
-
-document.getElementById("status").value=
-doc.status || "OK";
-
-document.getElementById("notes").value=
-doc.uwagi || "";
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// ZAMKNIJ
+// ZAMKNIĘCIE
 // =====================
 
 
@@ -478,19 +504,17 @@ function closeModal(){
 
 
 document
+
 .getElementById("modalOverlay")
-.classList.add(
-"hidden"
-);
 
-
-
-clearForm();
+.classList.add("hidden");
 
 
 
 editingId=null;
 
+
+clearForm();
 
 
 }
@@ -512,18 +536,23 @@ function clearForm(){
 
 
 
-document
-.querySelectorAll(
+const inputs=
+
+document.querySelectorAll(
+
 "#modalOverlay input, #modalOverlay textarea"
-)
 
-.forEach(field=>{
-
-
-field.value="";
+);
 
 
-field.classList.remove(
+
+
+inputs.forEach(input=>{
+
+
+input.value="";
+
+input.classList.remove(
 "invalid"
 );
 
@@ -532,31 +561,27 @@ field.classList.remove(
 
 
 
+
+
 document
+
 .getElementById("location")
+
 .value="";
 
 
 
 document
+
 .getElementById("status")
+
 .value="OK";
 
 
 
-document
-.getElementById("successBox")
-.classList.add(
-"hidden"
-);
 
 
-
-document
-.getElementById("errorBox")
-.classList.add(
-"hidden"
-);
+hideMessages();
 
 
 
@@ -578,20 +603,14 @@ document
 function showSuccess(){
 
 
-
 const box=
-document.getElementById(
-"successBox"
-);
 
+document.getElementById("successBox");
 
 
 box.innerText=
-"Dokument został zapisany.";
 
-
-
-
+"Dokument zapisany.";
 
 box.classList.remove(
 "hidden"
@@ -612,19 +631,42 @@ function showError(text){
 
 
 const box=
-document.getElementById(
-"errorBox"
-);
+
+document.getElementById("errorBox");
 
 
 
 box.innerText=text;
 
 
-
 box.classList.remove(
 "hidden"
 );
+
+
+
+}
+
+
+
+
+
+function hideMessages(){
+
+
+document
+
+.getElementById("successBox")
+
+.classList.add("hidden");
+
+
+
+document
+
+.getElementById("errorBox")
+
+.classList.add("hidden");
 
 
 
