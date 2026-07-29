@@ -1,75 +1,6 @@
-let documents = [];
+let documents=[];
 
-let selectedLocation = "WSZYSTKIE";
-
-
-
-const results =
-document.getElementById("results");
-
-const searchInput =
-document.getElementById("searchInput");
-
-const typeFilter =
-document.getElementById("typeFilter");
-
-const shelfFilter =
-document.getElementById("shelfFilter");
-
-const statusFilter =
-document.getElementById("statusFilter");
-
-const locationTabs =
-document.getElementById("locationTabs");
-
-
-
-
-
-
-
-// =====================
-// ODMIANA
-// =====================
-
-
-function documentText(number){
-
-number = Number(number);
-
-
-
-if(number === 1){
-
-return "dokument";
-
-}
-
-
-
-if(
-number % 10 >= 2 &&
-number % 10 <=4 &&
-(number %100 <12 || number %100 >14)
-
-){
-
-return "dokumenty";
-
-}
-
-
-
-return "dokumentów";
-
-}
-
-
-
-
-
-
-
+let selectedLocation="WSZYSTKIE";
 
 
 
@@ -89,13 +20,6 @@ loadDocuments();
 
 
 
-
-
-// =====================
-// POBIERANIE
-// =====================
-
-
 async function loadDocuments(){
 
 
@@ -106,11 +30,38 @@ data,
 
 error
 
-}= await supabaseClient
+}=
+
+await supabaseClient
 
 .from("dokumenty")
 
-.select("*")
+.select(`
+
+*,
+
+lokale (
+
+id,
+
+mpk,
+
+nazwa,
+
+lokalizacja
+
+),
+
+
+kontrahenci (
+
+id,
+
+nazwa
+
+)
+
+`)
 
 .order(
 "rok",
@@ -124,9 +75,10 @@ ascending:false
 
 
 
+
 if(error){
 
-console.error(error);
+console.log(error);
 
 return;
 
@@ -135,13 +87,13 @@ return;
 
 
 
+
 documents=data || [];
 
 
 
-createLocationTabs();
+createLocations();
 
-createFilters();
 
 render();
 
@@ -157,16 +109,26 @@ render();
 
 
 
-// =====================
+// ============================
 // LOKALIZACJE
-// =====================
+// ============================
 
 
-function createLocationTabs(){
+function createLocations(){
 
 
 
-locationTabs.innerHTML="";
+const box=
+
+document.getElementById(
+"locationTabs"
+);
+
+
+
+box.innerHTML="";
+
+
 
 
 
@@ -180,7 +142,11 @@ new Set(
 
 documents
 
-.map(d=>d.lokalizacja)
+.map(d=>
+
+d.lokale?.lokalizacja
+
+)
 
 .filter(Boolean)
 
@@ -193,11 +159,12 @@ documents
 
 
 
+
+
 locations.forEach(location=>{
 
 
-
-const count =
+const count=
 
 location==="WSZYSTKIE"
 
@@ -209,37 +176,46 @@ documents.length
 
 documents.filter(
 
-d=>d.lokalizacja===location
+d=>
 
-).length;
+d.lokale?.lokalizacja===location
 
+)
 
-
-
-
-
-const button =
-
-document.createElement("button");
+.length;
 
 
 
-button.className=
-"location-card";
 
 
 
-button.innerHTML=
+const btn=
+
+document.createElement(
+"button"
+);
+
+
+
+btn.className="location-card";
+
+
+
+btn.innerHTML=
 
 `
 
 <strong>
+
 ${location}
+
 </strong>
 
 
 <span>
+
 ${count} ${documentText(count)}
+
 </span>
 
 `;
@@ -248,8 +224,7 @@ ${count} ${documentText(count)}
 
 
 
-
-button.onclick=()=>{
+btn.onclick=()=>{
 
 
 selectedLocation=location;
@@ -264,8 +239,7 @@ render();
 
 
 
-
-locationTabs.appendChild(button);
+box.appendChild(btn);
 
 
 
@@ -283,128 +257,30 @@ locationTabs.appendChild(button);
 
 
 
-// =====================
-// FILTRY
-// =====================
+function documentText(number){
 
 
-function createFilters(){
+if(number===1)
+
+return "dokument";
 
 
 
-let types =
+if(
 
-[
+number%10>=2 &&
 
-...
+number%10<=4 &&
 
-new Set(
-
-documents
-
-.map(d=>d.typ)
-
-.filter(Boolean)
+(number%100<12 || number%100>14)
 
 )
 
-];
+return "dokumenty";
 
 
 
-
-
-
-typeFilter.innerHTML=
-
-`
-<option value="">
-Wszystkie typy
-</option>
-`;
-
-
-
-
-
-types.forEach(type=>{
-
-
-typeFilter.innerHTML +=
-
-`
-
-<option>
-${type}
-</option>
-
-`;
-
-
-
-});
-
-
-
-
-
-
-
-
-
-let shelves =
-
-[
-
-...
-
-new Set(
-
-documents
-
-.map(d=>d.regal)
-
-.filter(Boolean)
-
-)
-
-];
-
-
-
-
-
-
-
-shelfFilter.innerHTML=
-
-`
-<option value="">
-Wszystkie regały
-</option>
-`;
-
-
-
-
-
-shelves.forEach(shelf=>{
-
-
-shelfFilter.innerHTML +=
-
-`
-
-<option>
-${shelf}
-</option>
-
-`;
-
-
-
-});
-
+return "dokumentów";
 
 
 }
@@ -417,32 +293,26 @@ ${shelf}
 
 
 
-typeFilter.onchange=render;
-
-shelfFilter.onchange=render;
-
-statusFilter.onchange=render;
-
-searchInput.oninput=render;
-
-
-
-
-
-
-
-
-
-// =====================
-// WYŚWIETLANIE
-// =====================
+// ============================
+// RENDER
+// ============================
 
 
 function render(){
 
 
 
+const results=
+
+document.getElementById(
+"results"
+);
+
+
+
 results.innerHTML="";
+
+
 
 
 
@@ -453,70 +323,23 @@ let list=[...documents];
 
 
 
-if(selectedLocation !== "WSZYSTKIE"){
+
+if(selectedLocation!=="WSZYSTKIE"){
 
 
+list=
 
-list=list.filter(
+list.filter(
 
-d=>d.lokalizacja===selectedLocation
+d=>
 
-);
-
-
-}
-
-
-
-
-
-
-
-
-if(typeFilter.value){
-
-
-list=list.filter(
-
-d=>d.typ===typeFilter.value
+d.lokale?.lokalizacja===selectedLocation
 
 );
 
 
 }
 
-
-
-
-
-if(shelfFilter.value){
-
-
-list=list.filter(
-
-d=>d.regal===shelfFilter.value
-
-);
-
-
-}
-
-
-
-
-
-
-if(statusFilter.value){
-
-
-list=list.filter(
-
-d=>d.status===statusFilter.value
-
-);
-
-
-}
 
 
 
@@ -526,7 +349,16 @@ d=>d.status===statusFilter.value
 
 const search=
 
-searchInput.value.toLowerCase();
+document
+
+.getElementById(
+"searchInput"
+)
+
+.value
+
+.toLowerCase();
+
 
 
 
@@ -539,11 +371,15 @@ if(search){
 
 list=list.filter(d=>
 
+
+
 JSON.stringify(d)
 
 .toLowerCase()
 
 .includes(search)
+
+
 
 );
 
@@ -551,25 +387,6 @@ JSON.stringify(d)
 
 }
 
-
-
-
-
-
-
-// dodatkowe sortowanie po roku
-
-list.sort(
-
-(a,b)=>
-
-Number(b.rok || 0)
-
--
-
-Number(a.rok || 0)
-
-);
 
 
 
@@ -593,6 +410,8 @@ Brak dokumentów
 
 `;
 
+
+
 return;
 
 }
@@ -605,9 +424,9 @@ return;
 
 
 
-const grouped={};
+// lokalizacja
 
-
+const locations={};
 
 
 
@@ -615,15 +434,22 @@ list.forEach(doc=>{
 
 
 
-if(!grouped[doc.lokalizacja]){
+const loc=
+
+doc.lokale?.lokalizacja ||
+
+"Brak lokalizacji";
 
 
-grouped[doc.lokalizacja]=[];
 
-}
+if(!locations[loc])
+
+locations[loc]=[];
 
 
-grouped[doc.lokalizacja].push(doc);
+
+
+locations[loc].push(doc);
 
 
 
@@ -636,19 +462,26 @@ grouped[doc.lokalizacja].push(doc);
 
 
 
-Object.entries(grouped)
 
-.forEach(([location,docs])=>{
+Object.entries(locations)
 
+.forEach(
 
-
-const archive=
-
-document.createElement("div");
+([location,docs])=>{
 
 
 
-archive.className=
+
+
+const locationBox=
+
+document.createElement(
+"div"
+);
+
+
+
+locationBox.className=
 "archive-location";
 
 
@@ -656,37 +489,17 @@ archive.className=
 
 
 
-
-const header=
-
-document.createElement("div");
-
-
-
-header.className=
-"archive-header";
-
-
-
-header.innerHTML=
+locationBox.innerHTML=
 
 `
 
-<div>
+<div class="archive-header">
 
 <strong>
 ${location}
 </strong>
 
-<span>
-${docs.length} ${documentText(docs.length)}
-</span>
 
-</div>
-
-
-<div class="arrow">
-▼
 </div>
 
 `;
@@ -698,36 +511,91 @@ ${docs.length} ${documentText(docs.length)}
 
 
 
-const content=
+// grupowanie rok
 
-document.createElement("div");
 
-content.className=
-
-"archive-content hidden";
+const years={};
 
 
 
+docs.forEach(doc=>{
+
+
+
+const year=
+
+doc.rok || "Brak roku";
+
+
+
+if(!years[year])
+
+years[year]=[];
+
+
+
+years[year].push(doc);
+
+
+
+});
 
 
 
 
 
 
-header.onclick=()=>{
 
 
-content.classList.toggle(
-"hidden"
+Object.entries(years)
+
+.sort(
+
+(a,b)=>
+
+Number(b[0])
+
+-
+
+Number(a[0])
+
+)
+
+.forEach(
+
+([year,docs])=>{
+
+
+
+
+
+
+const yearBox=
+
+document.createElement(
+"div"
 );
 
 
-header.classList.toggle(
-"open"
-);
+
+yearBox.className=
+"year-box";
 
 
-};
+
+
+
+yearBox.innerHTML=
+
+`
+
+<h3>
+
+${year}
+
+</h3>
+
+`;
 
 
 
@@ -750,22 +618,19 @@ docs.forEach(doc=>{
 
 
 
-const nr=
+const id=
 
-doc.numer_lokalu || "Brak numeru";
-
-
+doc.lokal_id || "brak";
 
 
-if(!locals[nr]){
+
+if(!locals[id])
+
+locals[id]=[];
 
 
-locals[nr]=[];
 
-}
-
-
-locals[nr].push(doc);
+locals[id].push(doc);
 
 
 
@@ -777,17 +642,45 @@ locals[nr].push(doc);
 
 
 
+Object.values(locals)
+
+.forEach(localDocs=>{
 
 
-Object.entries(locals)
 
-.forEach(([nr,docs])=>{
+const first=
+
+localDocs[0];
+
+
+
+
+
+const localName=
+
+first.lokale
+
+?
+
+`${first.lokale.nazwa} (${first.lokale.mpk})`
+
+:
+
+"Brak lokalu";
+
+
+
+
+
+
 
 
 
 const localBox=
 
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 
 
@@ -796,13 +689,18 @@ localBox.className=
 
 
 
+
+
+
 localBox.innerHTML=
 
 `
 
-<h3>
-Lokal ${nr}
-</h3>
+<h4>
+
+${localName}
+
+</h4>
 
 `;
 
@@ -814,13 +712,15 @@ Lokal ${nr}
 
 
 
-docs.forEach(doc=>{
+localDocs.forEach(doc=>{
 
 
 
 const card=
 
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 
 
@@ -831,70 +731,101 @@ card.className=
 
 
 
+
 card.innerHTML=
 
 `
 
 <strong>
+
 ${doc.nazwa}
+
 </strong>
 
 
+
 <p>
+
 Kontrahent:
-${doc.nazwa_kontrahenta || "-"}
+
+${
+
+doc.kontrahenci?.nazwa
+
+||
+
+"-"
+
+}
+
 </p>
 
 
-<p>
-Rok:
-${doc.rok || "-"}
-</p>
-
 
 <p>
+
 Typ:
+
 ${doc.typ || "-"}
+
 </p>
 
 
+
 <p>
+
 Regał:
+
 ${doc.regal || "-"}
+
 </p>
 
 
+
 <p>
+
 Półka:
+
 ${doc.polka || "-"}
+
 </p>
 
 
+
 <p>
+
 Segregator:
+
 ${doc.segregator || "-"}
+
 </p>
 
 
+
 <p>
+
 Status:
+
 ${doc.status || "-"}
+
 </p>
 
 
-<p>
-${doc.uwagi || ""}
-</p>
 
 
 
 <button class="edit">
+
 Edytuj
+
 </button>
 
 
+
 <button class="delete">
+
 Usuń
+
 </button>
 
 `;
@@ -906,7 +837,9 @@ Usuń
 
 
 
-card.querySelector(".edit")
+card
+
+.querySelector(".edit")
 
 .onclick=()=>{
 
@@ -921,7 +854,9 @@ openEditModal(doc);
 
 
 
-card.querySelector(".delete")
+card
+
+.querySelector(".delete")
 
 .onclick=()=>{
 
@@ -930,6 +865,8 @@ deleteDocument(doc.id);
 
 
 };
+
+
 
 
 
@@ -946,7 +883,8 @@ localBox.appendChild(card);
 
 
 
-content.appendChild(localBox);
+
+yearBox.appendChild(localBox);
 
 
 
@@ -957,13 +895,12 @@ content.appendChild(localBox);
 
 
 
-archive.appendChild(header);
 
-archive.appendChild(content);
-
+locationBox.appendChild(yearBox);
 
 
-results.appendChild(archive);
+
+results.appendChild(locationBox);
 
 
 
@@ -981,9 +918,9 @@ results.appendChild(archive);
 
 
 
-// =====================
+// ============================
 // USUWANIE
-// =====================
+// ============================
 
 
 async function deleteDocument(id){
@@ -991,8 +928,9 @@ async function deleteDocument(id){
 
 
 if(
+
 !confirm(
-"Czy usunąć dokument?"
+"Usunąć dokument?"
 )
 
 )
@@ -1004,7 +942,11 @@ return;
 
 
 
-const {error}=
+const {
+
+error
+
+}=
 
 await supabaseClient
 
@@ -1022,11 +964,14 @@ id
 
 
 
+
 if(error){
+
 
 alert(error.message);
 
 return;
+
 
 }
 
@@ -1034,7 +979,6 @@ return;
 
 
 loadDocuments();
-
 
 
 }
