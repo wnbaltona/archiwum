@@ -6,8 +6,8 @@ document.getElementById("saveBtn");
 
 
 
-
 saveBtn.onclick = async ()=>{
+
 
 
 const documentData={
@@ -45,6 +45,7 @@ uwagi:
 document.getElementById("notes").value
 
 
+
 };
 
 
@@ -52,9 +53,82 @@ document.getElementById("notes").value
 
 
 
+
+// JEŻELI EDYTUJEMY ISTNIEJĄCY DOKUMENT
+
+
+if(editingId){
+
+
+
 const {error}=await supabaseClient
 
+
 .from("dokumenty")
+
+
+.update(documentData)
+
+
+.eq("id",editingId);
+
+
+
+
+if(error){
+
+
+console.error(error);
+
+
+alert("Nie udało się zapisać zmian");
+
+
+return;
+
+
+}
+
+
+
+alert("Dokument został zaktualizowany");
+
+
+
+closeModal();
+
+
+
+loadDocuments();
+
+
+
+editingId=null;
+
+
+
+return;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// DODAWANIE NOWEGO DOKUMENTU
+
+
+const {error}=await supabaseClient
+
+
+.from("dokumenty")
+
 
 .insert([documentData]);
 
@@ -69,7 +143,7 @@ if(error){
 console.error(error);
 
 
-alert("Błąd zapisu dokumentu");
+alert("Nie udało się dodać dokumentu");
 
 
 return;
@@ -88,19 +162,13 @@ document
 
 
 
-
-
 document
 .getElementById("saveBtn")
 .disabled=true;
 
 
 
-if(typeof loadDocuments==="function"){
-
 loadDocuments();
-
-}
 
 
 
@@ -111,10 +179,36 @@ loadDocuments();
 
 
 
+// ZAMKNIĘCIE PO DODANIU
+
 
 document
 .getElementById("closeAfterSave")
 .onclick=()=>{
+
+
+closeModal();
+
+
+};
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+function closeModal(){
+
 
 
 document
@@ -135,10 +229,41 @@ document
 
 
 
-};
+document
+.getElementById("saveBtn")
+.innerText=
+"Zapisz dokument";
+
+
+
+document
+.getElementById("modalTitle")
+.innerText=
+"Dodaj dokument";
 
 
 
 
+// czyszczenie formularza
 
-});
+
+document.getElementById("number").value="";
+
+document.getElementById("name").value="";
+
+document.getElementById("type").value="";
+
+document.getElementById("shelf").value="";
+
+document.getElementById("level").value="";
+
+document.getElementById("folder").value="";
+
+document.getElementById("notes").value="";
+
+
+editingId=null;
+
+
+
+}
