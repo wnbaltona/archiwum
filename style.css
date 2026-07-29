@@ -1,155 +1,254 @@
-* {
-    box-sizing:border-box;
+*{
+box-sizing:border-box;
 }
 
 
-body {
+body{
 
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#f4f6f8;
-    color:#333;
+margin:0;
 
-}
+font-family:
+Arial,
+sans-serif;
 
+background:#f3f4f6;
 
-header {
-
-    background:#1f2937;
-    color:white;
-    text-align:center;
-    padding:30px;
+color:#1f2937;
 
 }
 
 
-header h1 {
 
-    margin:0;
-    font-size:32px;
+/* GÓRNY PASEK */
 
-}
+.topbar{
 
-
-main {
-
-    max-width:1000px;
-    margin:40px auto;
-    padding:20px;
-
-}
-
-
-.search-section input {
-
-    width:100%;
-    padding:18px;
-
-    font-size:18px;
-
-    border-radius:12px;
-    border:1px solid #ccc;
-
-}
-
-
-.card {
-
-    background:white;
-
-    margin-top:20px;
-
-    padding:25px;
-
-    border-radius:15px;
-
-    box-shadow:
-    0 5px 15px rgba(0,0,0,0.08);
-
-}
-
-
-.card h2 {
-
-    margin-top:0;
-
-    color:#111827;
-
-}
-
-
-.info {
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:10px;
-
-}
-
-
-.label {
-
-    font-weight:bold;
-
-}
-
-
-@media(max-width:600px){
-
-.info{
-
-grid-template-columns:1fr;
-
-}
-
-button {
-
-background:#2563eb;
-color:white;
-border:none;
-padding:12px 20px;
-border-radius:8px;
-cursor:pointer;
-margin-top:15px;
-
-}
-
-
-button:hover {
-
-opacity:0.8;
-
-}
-
-
-#adminPanel {
+height:65px;
 
 background:white;
-padding:25px;
-border-radius:15px;
-margin-top:30px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 30px;
+
+box-shadow:
+0 2px 8px rgba(0,0,0,.08);
 
 }
 
 
-#adminPanel input,
-#adminPanel textarea {
 
-width:100%;
-padding:12px;
-margin:8px 0;
+.logo{
+
+font-size:20px;
+
+font-weight:600;
+
+}
+
+
+
+.menu{
+
+position:relative;
+
+}
+
+
+
+.menu button{
+
+background:white;
+
+border:1px solid #ddd;
+
+padding:10px 16px;
+
 border-radius:8px;
-border:1px solid #ccc;
+
+cursor:pointer;
 
 }
 
 
-.hidden {
+
+.dropdown{
 
 display:none;
 
+position:absolute;
+
+right:0;
+
+top:45px;
+
+background:white;
+
+width:220px;
+
+border-radius:10px;
+
+box-shadow:
+0 5px 20px rgba(0,0,0,.15);
+
+overflow:hidden;
+
 }
+
+
+
+.dropdown button{
+
+width:100%;
+
+border:none;
+
+border-radius:0;
+
+text-align:left;
+
+padding:14px;
+
+}
+
+
+
+.dropdown button:hover{
+
+background:#f3f4f6;
+
+}
+
+
+.show{
+
+display:block;
+
+}
+
+
+
+/* GŁÓWNA CZĘŚĆ */
+
+
+main{
+
+max-width:900px;
+
+margin:30px auto;
+
+padding:0 20px;
+
+}
+
+
+
+.search-box input{
+
+width:100%;
+
+padding:15px 20px;
+
+font-size:16px;
+
+border-radius:12px;
+
+border:1px solid #ddd;
+
+outline:none;
+
+}
+
+
+
+/* KARTA */
+
+
+.card{
+
+background:white;
+
+margin-top:15px;
+
+padding:18px;
+
+border-radius:12px;
+
+box-shadow:
+0 3px 10px rgba(0,0,0,.07);
+
+}
+
+
+
+.card h3{
+
+margin:0 0 10px;
+
+}
+
+
+
+/* FORMULARZ */
+
+
+#adminPanel{
+
+background:white;
+
+padding:20px;
+
+border-radius:12px;
+
+margin-top:20px;
+
+}
+
+
+
+#adminPanel input,
+#adminPanel textarea{
+
+
+width:100%;
+
+padding:10px;
+
+margin-bottom:10px;
+
+border:1px solid #ddd;
+
+border-radius:8px;
+
+}
+
+
+
+#adminPanel button{
+
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+padding:12px 20px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+
+
+.hidden{
+
+display:none;
 
 }
