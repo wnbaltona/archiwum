@@ -10,8 +10,6 @@ document.getElementById("menuList");
 
 
 
-if(menuBtn){
-
 
 menuBtn.onclick=()=>{
 
@@ -22,17 +20,16 @@ menuList.classList.toggle("active");
 };
 
 
-}
 
 
+
+
+// OTWARCIE FORMULARZA DODAWANIA
 
 
 const addBtn =
 document.getElementById("addBtn");
 
-
-
-if(addBtn){
 
 
 addBtn.onclick=()=>{
@@ -45,29 +42,41 @@ document
 
 
 document
+.getElementById("modalTitle")
+.innerText=
+"Dodaj dokument";
+
+
+
+document
+.getElementById("saveBtn")
+.innerText=
+"Zapisz dokument";
+
+
+
+document
 .getElementById("successBox")
 .classList.add("hidden");
 
 
 
-document
-.getElementById("modalTitle")
-.innerText="Dodaj dokument";
+editingId=null;
 
 
 
 menuList.classList.remove("active");
 
 
+
 };
 
 
 
-}
 
 
 
-
+// WSZYSTKIE LOKALIZACJE
 
 
 const allLocations =
@@ -75,25 +84,13 @@ document.getElementById("allLocations");
 
 
 
-if(allLocations){
-
-
 allLocations.onclick=()=>{
 
 
-if(typeof selectedLocation !== "undefined"){
-
 selectedLocation="WSZYSTKIE";
 
-}
-
-
-
-if(typeof render==="function"){
 
 render();
-
-}
 
 
 
@@ -101,9 +98,6 @@ menuList.classList.remove("active");
 
 
 };
-
-
-}
 
 
 
