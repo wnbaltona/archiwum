@@ -931,58 +931,33 @@ results.appendChild(locationBox);
 
 async function deleteDocument(id){
 
+    if(
+        !confirm(
+            "Czy na pewno usunąć dokument?"
+        )
+    ){
+        return;
+    }
 
 
-if(
-!confirm(
-"Czy na pewno usunąć dokument?"
-)
-
-)
-
-return;
-
-
-
-
-
-const {
-
-error
-
-}=
-
-await supabaseClient
-
-.from("dokumenty")
-
-.delete()
-
-.eq(
-"id",
-id
-);
+    const {
+        error
+    } = await supabaseClient
+        .from("dokumenty")
+        .delete()
+        .eq("id", id);
 
 
 
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
 
 
-if(error){
-
-
-alert(error.message);
-
-return;
-
-
-}
-
-
-
-
-
-loadDocuments();
-
-
+    loadDocuments();
 
 }
