@@ -5,19 +5,18 @@ document.addEventListener(
 
 document
 
-.getElementById("exportBtn")
+.getElementById(
+"exportBtn"
+)
 
 ?.addEventListener(
-
 "click",
-
 exportDocuments
-
 );
 
 
-});
 
+});
 
 
 
@@ -49,6 +48,8 @@ await supabaseClient
 
 
 
+
+
 if(error){
 
 
@@ -68,14 +69,13 @@ return;
 
 
 
-if(
-!data ||
-data.length===0
-){
+
+
+if(!data || data.length===0){
 
 
 alert(
-"Brak dokumentów do eksportu"
+"Brak danych do eksportu"
 );
 
 
@@ -90,41 +90,25 @@ return;
 
 
 
-const headers=[
+let csv =
 
+[
+[
 "Lokalizacja",
-
 "Lokal",
-
-"Nazwa dokumentu",
-
+"Nazwa",
 "Typ",
-
-"Rok",
-
-"Kontrahent",
-
 "Regał",
-
 "Półka",
-
 "Segregator",
-
 "Status",
-
+"Kontrahent",
+"Rok",
 "Uwagi"
+]
 
 ];
 
-
-
-
-
-
-
-let csv=headers.join(";")
-+
-"\n";
 
 
 
@@ -135,55 +119,33 @@ data.forEach(doc=>{
 
 
 
-csv +=
-
-[
+csv.push([
 
 
-doc.lokalizacja,
+doc.lokalizacja || "",
 
-doc.numer_lokalu,
+doc.numer_lokalu || "",
 
-doc.nazwa,
+doc.nazwa || "",
 
-doc.typ,
+doc.typ || "",
 
-doc.rok,
+doc.regal || "",
 
-doc.nazwa_kontrahenta,
+doc.polka || "",
 
-doc.regal,
+doc.segregator || "",
 
-doc.polka,
+doc.status || "",
 
-doc.segregator,
+doc.nazwa_kontrahenta || "",
 
-doc.status,
+doc.rok || "",
 
-doc.uwagi
-
-
-]
-
-.map(value=>{
+doc.uwagi || ""
 
 
-if(value===null || value===undefined)
-
-return "";
-
-
-return String(value)
-.replaceAll(";"," ");
-
-
-})
-
-.join(";")
-
-+
-
-"\n";
+]);
 
 
 
@@ -196,26 +158,42 @@ return String(value)
 
 
 
+const content =
+
+csv
+
+.map(row=>
+
+row
+
+.map(value=>
+
+`"${String(value).replaceAll('"','""')}"`
+
+)
+
+.join(";")
+
+)
+
+.join("\n");
+
+
+
+
+
+
 
 const blob =
 
 new Blob(
 
 [
-
-"\ufeff"
-
-+
-
-csv
-
+content
 ],
 
 {
-
-type:
-"text/csv;charset=utf-8;"
-
+type:"text/csv;charset=utf-8;"
 }
 
 );
@@ -225,10 +203,12 @@ type:
 
 
 
-
 const url =
 
-URL.createObjectURL(blob);
+URL.createObjectURL(
+blob
+);
+
 
 
 
@@ -248,7 +228,8 @@ link.href=url;
 
 link.download=
 
-"dokumenty_export.csv";
+"archiwum_dokumentow.csv";
+
 
 
 
@@ -258,8 +239,9 @@ link.click();
 
 
 
-
-URL.revokeObjectURL(url);
+URL.revokeObjectURL(
+url
+);
 
 
 
