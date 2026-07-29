@@ -4,34 +4,17 @@ let selectedLocation = "WSZYSTKIE";
 
 
 
+const results = document.getElementById("results");
 
+const searchInput = document.getElementById("searchInput");
 
-const results =
-document.getElementById("results");
+const typeFilter = document.getElementById("typeFilter");
 
+const shelfFilter = document.getElementById("shelfFilter");
 
-const searchInput =
-document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
 
-
-const typeFilter =
-document.getElementById("typeFilter");
-
-
-const shelfFilter =
-document.getElementById("shelfFilter");
-
-
-const statusFilter =
-document.getElementById("statusFilter");
-
-
-const locationTabs =
-document.getElementById("locationTabs");
-
-
-
-
+const locationTabs = document.getElementById("locationTabs");
 
 
 
@@ -40,34 +23,20 @@ document.getElementById("locationTabs");
 const locations = [
 
 "WSZYSTKIE",
-
 "OKĘCIE",
-
 "RADOM",
-
 "MODLIN",
-
 "SONATA",
-
 "RZESZÓW",
-
 "KATOWICE",
-
 "KRAKÓW",
-
 "ZIELONA GÓRA",
-
 "FRANCJA",
-
 "BYDGOSZCZ",
-
 "POZNAŃ",
-
 "WROCŁAW"
 
 ];
-
-
 
 
 
@@ -78,9 +47,7 @@ document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
-
 loadDocuments();
-
 
 });
 
@@ -90,20 +57,21 @@ loadDocuments();
 
 
 
-
-
-// ======================
+// =====================
 // POBIERANIE DANYCH
-// ======================
+// =====================
 
 
 async function loadDocuments(){
 
 
+const {
 
-const {data,error}=
+data,
 
-await supabaseClient
+error
+
+}= await supabaseClient
 
 .from("dokumenty")
 
@@ -118,40 +86,26 @@ ascending:false
 
 
 
-
-
-
-
 if(error){
-
 
 console.error(error);
 
-
 return;
 
-
 }
-
 
 
 
 documents=data || [];
 
 
-
 createLocationTabs();
 
-
-
 createFilters();
-
-
 
 render();
 
 
-
 }
 
 
@@ -162,124 +116,9 @@ render();
 
 
 
-// ======================
-// DASHBOARD
-// ======================
-
-
-function updateDashboard(){
-
-
-
-
-
-document
-.getElementById("documentsCount")
-.innerText=
-documents.length;
-
-
-
-
-
-
-const locs =
-new Set(
-documents.map(
-d=>d.lokalizacja
-)
-);
-
-
-
-document
-.getElementById("locationsCount")
-.innerText=
-locs.size;
-
-
-
-
-
-
-
-
-const month =
-new Date()
-.getMonth();
-
-
-
-
-
-const current =
-documents.filter(d=>{
-
-
-if(!d.created_at)
-return false;
-
-
-
-return (
-new Date(d.created_at)
-.getMonth()
-===month
-);
-
-
-
-});
-
-
-
-
-
-
-document
-.getElementById("monthCount")
-.innerText=
-current.length;
-
-
-
-
-
-
-
-
-const missing =
-documents.filter(
-d=>
-d.status==="Do uzupełnienia"
-||
-d.status==="Brak dokumentu"
-);
-
-
-
-document
-.getElementById("missingCount")
-.innerText=
-missing.length;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// ======================
+// =====================
 // LOKALIZACJE
-// ======================
+// =====================
 
 
 function createLocationTabs(){
@@ -289,28 +128,72 @@ locationTabs.innerHTML="";
 
 
 
-locations.forEach(loc=>{
+locations.forEach(location=>{
+
+
+
+const count =
+
+location==="WSZYSTKIE"
+
+?
+
+documents.length
+
+:
+
+documents.filter(
+
+d=>d.lokalizacja===location
+
+).length;
+
+
+
+
 
 
 const button =
+
 document.createElement("button");
 
 
 
-button.innerText=loc;
+button.className="location-card";
+
+
+
+button.innerHTML=
+
+`
+
+<strong>
+${location}
+</strong>
+
+<span>
+${count} dokumentów
+</span>
+
+`;
+
+
 
 
 
 button.onclick=()=>{
 
 
-selectedLocation=loc;
+selectedLocation=location;
 
 
 render();
 
 
 };
+
+
+
 
 
 
@@ -332,27 +215,35 @@ locationTabs.appendChild(button);
 
 
 
-// ======================
+// =====================
 // FILTRY
-// ======================
+// =====================
 
 
 function createFilters(){
 
 
 
-const types =
-[
+let types = [
+
 ...new Set(
+
 documents
+
 .map(d=>d.typ)
+
 .filter(Boolean)
+
 )
+
 ];
 
 
 
+
+
 typeFilter.innerHTML=
+
 `
 <option value="">
 Wszystkie typy
@@ -361,17 +252,20 @@ Wszystkie typy
 
 
 
-types.forEach(t=>{
+
+
+types.forEach(type=>{
 
 
 typeFilter.innerHTML +=
 
 `
-<option>
-${t}
-</option>
-`;
 
+<option>
+${type}
+</option>
+
+`;
 
 
 });
@@ -382,19 +276,29 @@ ${t}
 
 
 
-const shelves =
-[
+
+let shelves=[
+
 ...new Set(
+
 documents
+
 .map(d=>d.regal)
+
 .filter(Boolean)
+
 )
+
 ];
 
 
 
 
+
+
+
 shelfFilter.innerHTML=
+
 `
 <option value="">
 Wszystkie regały
@@ -404,18 +308,19 @@ Wszystkie regały
 
 
 
-shelves.forEach(s=>{
+
+shelves.forEach(shelf=>{
 
 
-shelfFilter.innerHTML+=
+shelfFilter.innerHTML +=
 
 `
+
 <option>
-${s}
+${shelf}
 </option>
 
 `;
-
 
 
 });
@@ -423,7 +328,6 @@ ${s}
 
 
 }
-
 
 
 
@@ -446,9 +350,9 @@ searchInput.oninput=render;
 
 
 
-// ======================
+// =====================
 // RENDER
-// ======================
+// =====================
 
 
 function render(){
@@ -459,10 +363,7 @@ results.innerHTML="";
 
 
 
-let filtered =
-[...documents];
-
-
+let list=[...documents];
 
 
 
@@ -471,14 +372,17 @@ let filtered =
 if(selectedLocation!=="WSZYSTKIE"){
 
 
-filtered =
-filtered.filter(
+list=list.filter(
+
 d=>
+
 d.lokalizacja===selectedLocation
+
 );
 
 
 }
+
 
 
 
@@ -488,14 +392,19 @@ d.lokalizacja===selectedLocation
 if(typeFilter.value){
 
 
-filtered =
-filtered.filter(
+list=list.filter(
+
 d=>
+
 d.typ===typeFilter.value
+
 );
 
 
 }
+
+
+
 
 
 
@@ -503,14 +412,19 @@ d.typ===typeFilter.value
 if(shelfFilter.value){
 
 
-filtered =
-filtered.filter(
+list=list.filter(
+
 d=>
+
 d.regal===shelfFilter.value
+
 );
 
 
 }
+
+
+
 
 
 
@@ -518,15 +432,16 @@ d.regal===shelfFilter.value
 if(statusFilter.value){
 
 
-filtered =
-filtered.filter(
+list=list.filter(
+
 d=>
+
 d.status===statusFilter.value
+
 );
 
 
 }
-
 
 
 
@@ -535,8 +450,11 @@ d.status===statusFilter.value
 
 
 const search =
+
 searchInput.value
+
 .toLowerCase();
+
 
 
 
@@ -545,12 +463,12 @@ searchInput.value
 if(search){
 
 
-filtered =
-filtered.filter(
-d=>
+list=list.filter(d=>
 
 JSON.stringify(d)
+
 .toLowerCase()
+
 .includes(search)
 
 );
@@ -564,13 +482,14 @@ JSON.stringify(d)
 
 
 
-if(filtered.length===0){
+if(list.length===0){
 
 
 results.innerHTML=
+
 `
 
-<div class="archive-location">
+<div class="empty">
 
 Brak dokumentów
 
@@ -590,16 +509,11 @@ return;
 
 
 
-
-
 const grouped={};
 
 
 
-
-
-filtered.forEach(doc=>{
-
+list.forEach(doc=>{
 
 
 if(!grouped[doc.lokalizacja]){
@@ -610,9 +524,7 @@ grouped[doc.lokalizacja]=[];
 }
 
 
-
-grouped[doc.lokalizacja]
-.push(doc);
+grouped[doc.lokalizacja].push(doc);
 
 
 
@@ -624,35 +536,35 @@ grouped[doc.lokalizacja]
 
 
 
-
-
 Object.entries(grouped)
 
 .forEach(
+
 ([location,docs])=>{
 
 
 
-const box =
-document.createElement("div");
+const archive=
 
-
-box.className=
-"archive-location";
-
-
-
-
-
-
-
-const header =
 document.createElement("div");
 
 
 
-header.className=
-"archive-header";
+archive.className="archive-location";
+
+
+
+
+
+
+
+const header=
+
+document.createElement("div");
+
+
+
+header.className="archive-header";
 
 
 
@@ -663,26 +575,20 @@ header.innerHTML=
 <div>
 
 <strong>
-
 ${location}
-
 </strong>
 
 
 <span>
-
 ${docs.length} dokumentów
-
 </span>
+
 
 </div>
 
 
-
 <div class="arrow">
-
 ▼
-
 </div>
 
 `;
@@ -694,13 +600,16 @@ ${docs.length} dokumentów
 
 
 
-const content =
+const content=
+
 document.createElement("div");
 
 
 
 content.className=
+
 "archive-content hidden";
+
 
 
 
@@ -730,17 +639,18 @@ header.classList.toggle(
 
 
 
+
 const locals={};
+
 
 
 
 docs.forEach(doc=>{
 
 
+let nr=
 
-const nr =
-doc.numer_lokalu ||
-"Brak numeru";
+doc.numer_lokalu || "Brak numeru";
 
 
 
@@ -756,10 +666,7 @@ locals[nr]=[];
 locals[nr].push(doc);
 
 
-
 });
-
-
 
 
 
@@ -770,30 +677,29 @@ locals[nr].push(doc);
 Object.entries(locals)
 
 .forEach(
-([nr,items])=>{
+
+([nr,docs])=>{
 
 
 
-const local =
+const localBox=
+
 document.createElement("div");
 
 
 
-local.className=
-"local-box";
+localBox.className="local-box";
 
 
 
 
 
-local.innerHTML=
+localBox.innerHTML=
 
 `
 
 <h3>
-
 Lokal ${nr}
-
 </h3>
 
 `;
@@ -803,20 +709,18 @@ Lokal ${nr}
 
 
 
-
-items.forEach(doc=>{
-
+docs.forEach(doc=>{
 
 
 
+const card=
 
-const card =
 document.createElement("div");
 
 
 
-card.className=
-"document";
+card.className="document";
+
 
 
 
@@ -826,72 +730,52 @@ card.innerHTML=
 `
 
 <strong>
-
-${doc.nazwa || "-"}
-
+${doc.nazwa}
 </strong>
 
 
 <p>
-Typ:
-${doc.typ || "-"}
+Typ: ${doc.typ || "-"}
 </p>
 
 
 <p>
-Regał:
-${doc.regal || "-"}
+Regał: ${doc.regal || "-"}
 </p>
 
 
 <p>
-Półka:
-${doc.polka || "-"}
+Półka: ${doc.polka || "-"}
 </p>
 
 
 <p>
-Segregator:
-${doc.segregator || "-"}
+Segregator: ${doc.segregator || "-"}
 </p>
 
 
 <p>
-
 Status:
-
 <span class="status">
-
 ${doc.status || "OK"}
-
 </span>
-
 </p>
 
 
-
 <p>
-
 ${doc.uwagi || ""}
-
 </p>
 
 
 
 <button class="edit">
-
 Edytuj
-
 </button>
-
 
 
 <button class="delete">
-
 Usuń
-
 </button>
-
 
 `;
 
@@ -902,9 +786,8 @@ Usuń
 
 
 
-
-card.querySelector(".edit")
-
+card
+.querySelector(".edit")
 .onclick=()=>{
 
 
@@ -918,8 +801,9 @@ openEditModal(doc);
 
 
 
-card.querySelector(".delete")
 
+card
+.querySelector(".delete")
 .onclick=()=>{
 
 
@@ -935,7 +819,7 @@ deleteDocument(doc.id);
 
 
 
-local.appendChild(card);
+localBox.appendChild(card);
 
 
 
@@ -945,7 +829,7 @@ local.appendChild(card);
 
 
 
-content.appendChild(local);
+content.appendChild(localBox);
 
 
 
@@ -956,18 +840,20 @@ content.appendChild(local);
 
 
 
+archive.appendChild(header);
 
-
-box.appendChild(header);
-
-box.appendChild(content);
-
-
-results.appendChild(box);
+archive.appendChild(content);
 
 
 
-});
+results.appendChild(archive);
+
+
+
+}
+
+);
+
 
 
 
@@ -981,9 +867,9 @@ results.appendChild(box);
 
 
 
-// ======================
+// =====================
 // USUWANIE
-// ======================
+// =====================
 
 
 async function deleteDocument(id){
@@ -992,9 +878,11 @@ async function deleteDocument(id){
 
 if(
 !confirm(
-"Czy usunąć dokument?"
+"Czy na pewno usunąć dokument?"
 )
+
 )
+
 return;
 
 
@@ -1018,7 +906,6 @@ id
 
 
 
-
 if(error){
 
 
@@ -1035,7 +922,6 @@ return;
 
 
 loadDocuments();
-
 
 
 }
