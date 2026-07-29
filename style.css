@@ -558,4 +558,30 @@ width:100%;
 
 }
 
+/* pełna szerokość */
+
+.full-width{
+
+grid-column:1/-1;
+
+}
+
+
+
+#modalOverlay textarea{
+
+min-height:100px;
+
+}
+
+
+
+#modalOverlay .modal label{
+
+display:block;
+
+margin-bottom:5px;
+
+}
+
 }
