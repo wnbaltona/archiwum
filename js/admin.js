@@ -433,23 +433,19 @@ await supabaseClient
 
 
 
-
 if(result.error){
 
+console.log("PEŁNY BŁĄD SUPABASE:");
+console.log(result.error);
 
-console.error("BŁĄD SUPABASE:", result.error);
-
-
-showError(
+alert(
+"SUPABASE ERROR:\n\n" +
 result.error.message
 );
 
-
 return;
 
-
 }
-
 
 
 
