@@ -9,6 +9,7 @@ document.getElementById(
 );
 
 
+
 const menuList =
 document.getElementById(
 "menuList"
@@ -16,14 +17,22 @@ document.getElementById(
 
 
 
-if(!menuBtn || !menuList)
+
+
+if(
+!menuBtn ||
+!menuList
+)
 return;
 
 
 
 
 
-menuBtn.onclick=()=>{
+
+menuBtn.addEventListener(
+"click",
+()=>{
 
 
 menuList.classList.toggle(
@@ -31,8 +40,8 @@ menuList.classList.toggle(
 );
 
 
-};
 
+});
 
 
 
@@ -45,9 +54,13 @@ document.addEventListener(
 
 
 if(
+
 !menuBtn.contains(e.target)
+
 &&
+
 !menuList.contains(e.target)
+
 ){
 
 
@@ -57,7 +70,6 @@ menuList.classList.add(
 
 
 }
-
 
 
 });
