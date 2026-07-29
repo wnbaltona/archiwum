@@ -21,11 +21,8 @@
 
 
 <div class="logo">
-
 Archiwum Dokumentów
-
 </div>
-
 
 
 
@@ -33,13 +30,12 @@ Archiwum Dokumentów
 
 
 <button 
-class="menu-button"
-id="menuBtn">
+id="menuBtn"
+class="menu-button">
 
 Menu
 
 </button>
-
 
 
 
@@ -49,37 +45,27 @@ class="dropdown">
 
 
 <button id="addBtn">
-
 Dodaj dokument
-
 </button>
 
 
 <button id="exportExcelBtn">
-
 Eksport Excel
-
 </button>
 
 
 <button id="exportCsvBtn">
-
 Eksport CSV
-
 </button>
 
 
 <button id="missingBtn">
-
 Raport brakujących
-
 </button>
 
 
 <button id="settingsBtn">
-
 Ustawienia
-
 </button>
 
 
@@ -97,14 +83,13 @@ Ustawienia
 
 
 
-
 <main class="container">
 
 
 
 
 
-<!-- SZUKAJ -->
+<!-- WYSZUKIWANIE -->
 
 
 <div class="search-box">
@@ -133,11 +118,10 @@ placeholder="Szukaj dokumentu, lokalu, regału..."
 <section class="location-section">
 
 
-<h3>
-
+<h2>
 Lokalizacje
+</h2>
 
-</h3>
 
 
 <div 
@@ -166,13 +150,12 @@ class="location-tabs">
 
 
 <option value="">
-
 Wszystkie typy
-
 </option>
 
 
 </select>
+
 
 
 
@@ -181,13 +164,12 @@ Wszystkie typy
 
 
 <option value="">
-
 Wszystkie regały
-
 </option>
 
 
 </select>
+
 
 
 
@@ -196,41 +178,32 @@ Wszystkie regały
 
 
 <option value="">
-
 Wszystkie statusy
-
 </option>
 
 
-<option value="OK">
-
+<option>
 OK
-
 </option>
 
 
-<option value="Do uzupełnienia">
-
+<option>
 Do uzupełnienia
-
 </option>
 
 
-<option value="Brak dokumentu">
-
+<option>
 Brak dokumentu
-
 </option>
 
 
-<option value="Nieaktualny">
-
+<option>
 Nieaktualny
-
 </option>
 
 
 </select>
+
 
 
 </div>
@@ -242,8 +215,8 @@ Nieaktualny
 
 
 
+<!-- LISTA DOKUMENTÓW -->
 
-<!-- LISTA -->
 
 <div id="results">
 
@@ -264,7 +237,8 @@ Nieaktualny
 
 
 
-<!-- MODAL -->
+<!-- MODAL DODAWANIA / EDYCJI -->
+
 
 <div 
 id="modalOverlay"
@@ -273,8 +247,6 @@ class="modal-overlay hidden">
 
 
 <div class="modal">
-
-
 
 
 
@@ -292,21 +264,9 @@ class="close-modal">
 
 
 
-
-
-<div class="modal-header">
-
-
 <h2 id="modalTitle">
-
 Dodaj dokument
-
 </h2>
-
-
-</div>
-
-
 
 
 
@@ -319,14 +279,11 @@ Dodaj dokument
 
 
 
-
 <div class="form-group">
 
 
 <label>
-
 Lokalizacja *
-
 </label>
 
 
@@ -334,59 +291,22 @@ Lokalizacja *
 
 
 <option value="">
-
 Wybierz
-
 </option>
 
 
-<option>
-OKĘCIE
-</option>
-
-<option>
-RADOM
-</option>
-
-<option>
-MODLIN
-</option>
-
-<option>
-SONATA
-</option>
-
-<option>
-RZESZÓW
-</option>
-
-<option>
-KATOWICE
-</option>
-
-<option>
-KRAKÓW
-</option>
-
-<option>
-ZIELONA GÓRA
-</option>
-
-<option>
-FRANCJA
-</option>
-
-<option>
-BYDGOSZCZ
-</option>
-
-<option>
-POZNAŃ
-</option>
-
-<option>
-WROCŁAW
-</option>
+<option>OKĘCIE</option>
+<option>RADOM</option>
+<option>MODLIN</option>
+<option>SONATA</option>
+<option>RZESZÓW</option>
+<option>KATOWICE</option>
+<option>KRAKÓW</option>
+<option>ZIELONA GÓRA</option>
+<option>FRANCJA</option>
+<option>BYDGOSZCZ</option>
+<option>POZNAŃ</option>
+<option>WROCŁAW</option>
 
 
 </select>
@@ -400,19 +320,18 @@ WROCŁAW
 
 
 
+
 <div class="form-group">
 
 
 <label>
-
 Numer lokalu *
-
 </label>
 
 
 <input 
 id="number"
-placeholder="np. 101">
+placeholder="Numer lokalu">
 
 
 </div>
@@ -428,15 +347,13 @@ placeholder="np. 101">
 
 
 <label>
-
 Nazwa dokumentu *
-
 </label>
 
 
 <input 
 id="name"
-placeholder="np. Umowa najmu">
+placeholder="Nazwa dokumentu">
 
 
 </div>
@@ -452,15 +369,13 @@ placeholder="np. Umowa najmu">
 
 
 <label>
-
 Typ *
-
 </label>
 
 
 <input 
 id="type"
-placeholder="np. Umowa">
+placeholder="Typ dokumentu">
 
 
 </div>
@@ -476,15 +391,13 @@ placeholder="np. Umowa">
 
 
 <label>
-
 Regał *
-
 </label>
 
 
 <input 
 id="shelf"
-placeholder="np. A3">
+placeholder="Regał">
 
 
 </div>
@@ -500,15 +413,13 @@ placeholder="np. A3">
 
 
 <label>
-
 Półka *
-
 </label>
 
 
 <input 
 id="level"
-placeholder="np. 2">
+placeholder="Półka">
 
 
 </div>
@@ -524,18 +435,17 @@ placeholder="np. 2">
 
 
 <label>
-
 Segregator *
-
 </label>
 
 
 <input 
 id="folder"
-placeholder="np. Czerwony">
+placeholder="Segregator">
 
 
 </div>
+
 
 
 
@@ -547,40 +457,30 @@ placeholder="np. Czerwony">
 
 
 <label>
-
 Status *
-
 </label>
 
 
 <select id="status">
 
 
-<option value="OK">
-
+<option>
 OK
-
 </option>
 
 
-<option value="Do uzupełnienia">
-
+<option>
 Do uzupełnienia
-
 </option>
 
 
-<option value="Brak dokumentu">
-
+<option>
 Brak dokumentu
-
 </option>
 
 
-<option value="Nieaktualny">
-
+<option>
 Nieaktualny
-
 </option>
 
 
@@ -588,6 +488,7 @@ Nieaktualny
 
 
 </div>
+
 
 
 
@@ -599,17 +500,12 @@ Nieaktualny
 
 
 <label>
-
 Uwagi
-
 </label>
 
 
-<textarea
-
-id="notes"
-
-placeholder="Dodatkowe informacje">
+<textarea 
+id="notes">
 
 </textarea>
 
@@ -618,6 +514,7 @@ placeholder="Dodatkowe informacje">
 
 
 
+
 </div>
 
 
@@ -626,21 +523,18 @@ placeholder="Dodatkowe informacje">
 
 
 
-
-
-<div id="successBox"
+<div 
+id="successBox"
 class="success hidden">
 
-
-Dokument zapisany.
-
 </div>
 
 
 
-<div id="errorBox"
-class="error hidden">
 
+<div 
+id="errorBox"
+class="error hidden">
 
 </div>
 
@@ -665,15 +559,18 @@ Zapisz dokument
 </button>
 
 
-</div>
-
-
-
 
 </div>
 
 
+
+
+
 </div>
+
+
+</div>
+
 
 
 
@@ -695,7 +592,6 @@ Zapisz dokument
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script src="./js/export.js"></script>
-
 
 
 </body>
