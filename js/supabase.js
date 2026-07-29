@@ -11,4 +11,4 @@ SUPABASE_KEY
 );
 
 
-console.log("Supabase działa");
+console.log("SUPABASE ZAŁADOWANY", supabaseClient);
