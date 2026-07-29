@@ -1,12 +1,14 @@
-document
-.getElementById("showAdmin")
-.onclick = ()=>{
+const addBtn =
+document.getElementById("addBtn");
 
 
-document
-.getElementById("adminPanel")
-.classList.toggle("hidden");
+const panel =
+document.getElementById("adminPanel");
 
+
+addBtn.onclick=()=>{
+
+panel.classList.toggle("hidden");
 
 };
 
@@ -15,62 +17,56 @@ document
 
 
 document
-.getElementById("addDocument")
-.onclick = async ()=>{
+.getElementById("saveBtn")
+.onclick=async()=>{
 
 
-const newDocument = {
+const doc={
 
 
 lokalizacja:
-document.getElementById("location").value,
+location.value,
 
 
 nazwa:
-document.getElementById("name").value,
+name.value,
 
 
 typ:
-document.getElementById("type").value,
+type.value,
 
 
 regal:
-document.getElementById("shelf").value,
+shelf.value,
 
 
 polka:
-document.getElementById("level").value,
+level.value,
 
 
 segregator:
-document.getElementById("folder").value,
+folder.value,
 
 
 uwagi:
-document.getElementById("notes").value
+notes.value
 
 
 };
 
 
 
-const {data,error} = await supabaseClient
-
+const {error}=await supabaseClient
 .from("dokumenty")
-
-.insert([newDocument])
-
-.select();
+.insert([doc]);
 
 
 
 if(error){
 
-console.log(error);
+alert("Błąd zapisu");
 
-alert(
-"Błąd zapisu dokumentu"
-);
+console.log(error);
 
 return;
 
@@ -78,10 +74,7 @@ return;
 
 
 
-alert(
-"Dokument został dodany"
-);
-
+alert("Dodano");
 
 
 location.reload();

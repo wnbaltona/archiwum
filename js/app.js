@@ -1,388 +1,181 @@
-let documents = [];
-
-const results = document.getElementById("results");
-const searchInput = document.getElementById("searchInput");
+let documents=[];
 
 
-// kolejność lokalizacji
+const results =
+document.getElementById("results");
 
-const locations = [
-    "OKĘCIE",
-    "RADOM",
-    "MODLIN",
-    "SONATA",
-    "RZESZÓW",
-    "KATOWICE",
-    "KRAKÓW",
-    "ZIELONA GÓRA",
-    "FRANCJA",
-    "BYDGOSZCZ",
-    "POZNAŃ",
-    "WROCŁAW"
+
+const search =
+document.getElementById("searchInput");
+
+
+
+const locations=[
+
+"OKĘCIE",
+"RADOM",
+"MODLIN",
+"SONATA",
+"RZESZÓW",
+"KATOWICE",
+"KRAKÓW",
+"ZIELONA GÓRA",
+"FRANCJA",
+"BYDGOSZCZ",
+"POZNAŃ",
+"WROCŁAW"
+
 ];
 
 
 
-// ==========================
-// POBIERANIE DANYCH
-// ==========================
+async function load(){
 
 
-async function loadDocuments() {
-
-
-    const { data, error } = await supabaseClient
-        .from("dokumenty")
-        .select("*")
-        .order("lokalizacja", { ascending: true });
+const {data,error}=await supabaseClient
+.from("dokumenty")
+.select("*");
 
 
 
-    if (error) {
+if(error){
 
-        console.error(
-            "Błąd pobierania:",
-            error
-        );
+console.log(error);
 
-        results.innerHTML = `
-        <div class="card">
-        ❌ Nie udało się pobrać dokumentów
-        </div>
-        `;
-
-        return;
-    }
-
-
-
-    documents = data || [];
-
-
-    showLocations();
+return;
 
 }
 
 
 
-// ==========================
-// WYŚWIETLANIE LOKALIZACJI
-// ==========================
+documents=data;
 
 
-function showLocations() {
-
-
-    results.innerHTML = "";
-
-
-
-    locations.forEach(location => {
-
-
-        const locationDocuments =
-            documents.filter(doc =>
-                doc.lokalizacja === location
-            );
-
-
-
-        if (locationDocuments.length === 0) {
-
-            return;
-
-        }
-
-
-
-        results.innerHTML += `
-
-        <div class="location">
-
-
-            <div 
-            class="location-title"
-            onclick="toggleLocation('${location}')">
-
-                ▶ ${location}
-
-                <span>
-                (${locationDocuments.length})
-                </span>
-
-            </div>
-
-
-
-            <div 
-            id="${location}"
-            class="documents hidden">
-
-
-                ${
-                    locationDocuments.map(doc => `
-
-                    <div class="card">
-
-
-                        <h3>
-                        📄 ${doc.nazwa}
-                        </h3>
-
-
-                        <p>
-                        📌 Typ:
-                        ${doc.typ || "-"}
-                        </p>
-
-
-                        <p>
-                        🗄️ Regał:
-                        ${doc.regal || "-"}
-                        </p>
-
-
-                        <p>
-                        📚 Półka:
-                        ${doc.polka || "-"}
-                        </p>
-
-
-                        <p>
-                        📂 Segregator:
-                        ${doc.segregator || "-"}
-                        </p>
-
-
-                        <p>
-                        📝 ${doc.uwagi || ""}
-                        </p>
-
-
-                    </div>
-
-
-                    `).join("")
-                }
-
-
-
-            </div>
-
-
-        </div>
-
-        `;
-
-
-    });
-
+render();
 
 
 }
 
 
 
-// ==========================
-// ROZWIJANIE LOKALIZACJI
-// ==========================
+
+function render(){
 
 
-function toggleLocation(location) {
-
-
-    const element =
-        document.getElementById(location);
+results.innerHTML="";
 
 
 
-    if(element){
+locations.forEach(loc=>{
 
-        element.classList.toggle(
-            "hidden"
-        );
 
-    }
-
-}
+let docs=
+documents.filter(
+d=>d.lokalizacja===loc
+);
 
 
 
-// ==========================
-// WYSZUKIWANIE
-// ==========================
-
-
-searchInput.addEventListener(
-"input",
-function(){
-
-
-    const text =
-    searchInput.value
-    .toLowerCase()
-    .trim();
+if(!docs.length)return;
 
 
 
-    if(text === ""){
+results.innerHTML+=`
 
-        showLocations();
-
-        return;
-
-    }
+<div class="location">
 
 
+<div class="location-title"
+onclick="toggle('${loc}')">
 
+▶ ${loc} (${docs.length})
 
-    const filtered =
-    documents.filter(doc => {
-
-
-        return (
-
-            (doc.nazwa || "")
-            .toLowerCase()
-            .includes(text)
-
-
-            ||
-
-            (doc.lokalizacja || "")
-            .toLowerCase()
-            .includes(text)
-
-
-            ||
-
-            (doc.typ || "")
-            .toLowerCase()
-            .includes(text)
-
-
-            ||
-
-            (doc.regal || "")
-            .toLowerCase()
-            .includes(text)
-
-
-            ||
-
-            (doc.polka || "")
-            .toLowerCase()
-            .includes(text)
-
-
-            ||
-
-            (doc.segregator || "")
-            .toLowerCase()
-            .includes(text)
-
-
-        );
-
-
-    });
+</div>
 
 
 
-    showSearchResults(filtered);
+<div id="${loc}" class="documents hidden">
+
+
+${docs.map(d=>`
+
+<div class="card">
+
+<b>📄 ${d.nazwa}</b>
+
+<br>
+
+📦 Regał: ${d.regal || "-"}
+
+<br>
+
+📚 Półka: ${d.polka || "-"}
+
+<br>
+
+📂 Segregator: ${d.segregator || "-"}
+
+</div>
+
+`).join("")}
+
+
+
+</div>
+
+
+</div>
+
+
+`;
 
 
 });
 
 
-
-
-// ==========================
-// WYNIKI SZUKANIA
-// ==========================
-
-
-function showSearchResults(data){
-
-
-    results.innerHTML = "";
+}
 
 
 
-    if(data.length === 0){
+function toggle(id){
 
-
-        results.innerHTML = `
-
-        <div class="card">
-
-        Brak wyników
-
-        </div>
-
-        `;
-
-
-        return;
-
-    }
-
-
-
-
-
-    data.forEach(doc => {
-
-
-
-        results.innerHTML += `
-
-
-        <div class="card">
-
-
-            <h3>
-            📄 ${doc.nazwa}
-            </h3>
-
-
-            <p>
-            📍 ${doc.lokalizacja}
-            </p>
-
-
-            <p>
-            🗄️ Regał:
-            ${doc.regal || "-"}
-            </p>
-
-
-            <p>
-            📚 Półka:
-            ${doc.polka || "-"}
-            </p>
-
-
-            <p>
-            📂 Segregator:
-            ${doc.segregator || "-"}
-            </p>
-
-
-
-        </div>
-
-
-        `;
-
-
-    });
-
+document
+.getElementById(id)
+.classList.toggle("hidden");
 
 }
 
 
 
-// START
 
-loadDocuments();
+search.addEventListener(
+"input",
+()=>{
+
+
+let value=
+search.value.toLowerCase();
+
+
+
+let filtered=
+documents.filter(d=>
+
+JSON.stringify(d)
+.toLowerCase()
+.includes(value)
+
+);
+
+
+
+documents=filtered;
+
+
+render();
+
+
+});
+
+
+load();
