@@ -3,111 +3,43 @@ document.addEventListener(
 ()=>{
 
 
-const settingsBtn =
-document.getElementById(
-"settingsBtn"
-);
-
-
-const closeSettings =
-document.getElementById(
-"closeSettings"
+document
+.getElementById("settingsBtn")
+?.addEventListener(
+"click",
+openSettings
 );
 
 
 
-const addContractorBtn =
-document.getElementById(
-"addContractorBtn"
+document
+.getElementById("closeSettings")
+?.addEventListener(
+"click",
+closeSettings
 );
 
 
 
-const addLocalBtn =
-document.getElementById(
-"addLocalBtn"
+document
+.getElementById("addContractorBtn")
+?.addEventListener(
+"click",
+addContractor
 );
 
 
 
+document
+.getElementById("addLocalBtn")
+?.addEventListener(
+"click",
+addLocal
+);
 
 
 
-if(settingsBtn){
-
-
-settingsBtn.onclick=()=>{
-
-
-openSettings();
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-if(closeSettings){
-
-
-closeSettings.onclick=()=>{
-
-
-closeSettingsModal();
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-
-if(addContractorBtn){
-
-
-addContractorBtn.onclick=()=>{
-
-
-addContractor();
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-if(addLocalBtn){
-
-
-addLocalBtn.onclick=()=>{
-
-
-addLocal();
-
-
-};
-
-
-}
-
+loadSettingsLocations();
 
 
 
@@ -120,28 +52,18 @@ addLocal();
 
 
 
-
-// ==============================
-// OTWIERANIE
-// ==============================
+// =============================
+// OTWIERANIE USTAWIEŃ
+// =============================
 
 
 function openSettings(){
 
 
-
 document
-
-.getElementById(
-"settingsOverlay"
-)
-
+.getElementById("settingsOverlay")
 .classList
-
-.remove(
-"hidden"
-);
-
+.remove("hidden");
 
 
 }
@@ -152,28 +74,13 @@ document
 
 
 
-
-// ==============================
-// ZAMYKANIE
-// ==============================
-
-
-function closeSettingsModal(){
-
+function closeSettings(){
 
 
 document
-
-.getElementById(
-"settingsOverlay"
-)
-
+.getElementById("settingsOverlay")
 .classList
-
-.add(
-"hidden"
-);
-
+.add("hidden");
 
 
 }
@@ -186,9 +93,76 @@ document
 
 
 
-// ==============================
-// KONTRAHENT
-// ==============================
+// =============================
+// LOKALIZACJE W USTAWIENIACH
+// =============================
+
+
+function loadSettingsLocations(){
+
+
+
+const select =
+document.getElementById(
+"localLocation"
+);
+
+
+
+if(!select)
+return;
+
+
+
+
+select.innerHTML=
+
+`
+<option value="">
+Wybierz lokalizację
+</option>
+
+`;
+
+
+
+
+
+
+LOCATIONS.forEach(location=>{
+
+
+select.innerHTML +=
+
+`
+
+<option value="${location}">
+
+${location}
+
+</option>
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================
+// DODAJ KONTRAHENTA
+// =============================
 
 
 async function addContractor(){
@@ -209,7 +183,6 @@ input.value.trim();
 
 
 
-
 if(!name){
 
 
@@ -220,10 +193,7 @@ alert(
 
 return;
 
-
 }
-
-
 
 
 
@@ -243,15 +213,14 @@ await supabaseClient
 
 .insert([
 
-
 {
 
 nazwa:name
 
 }
 
-
 ]);
+
 
 
 
@@ -284,24 +253,10 @@ alert(
 
 
 
-
-
 input.value="";
 
 
 
-
-
-if(typeof loadFormData==="function"){
-
-
-loadFormData();
-
-
-}
-
-
-
 }
 
 
@@ -312,9 +267,9 @@ loadFormData();
 
 
 
-// ==============================
-// LOKAL
-// ==============================
+// =============================
+// DODAJ LOKAL
+// =============================
 
 
 async function addLocal(){
@@ -337,8 +292,6 @@ document
 
 
 
-
-
 const name =
 
 document
@@ -350,9 +303,6 @@ document
 .value
 
 .trim();
-
-
-
 
 
 
@@ -374,13 +324,16 @@ document
 
 
 
-
-
 if(
+
 !mpk ||
+
 !name ||
+
 !location
+
 ){
+
 
 
 alert(
@@ -393,9 +346,6 @@ return;
 
 }
 
-
-
- 
 
 
 
@@ -414,7 +364,6 @@ await supabaseClient
 
 .insert([
 
-
 {
 
 mpk:mpk,
@@ -425,9 +374,7 @@ lokalizacja:location
 
 }
 
-
 ]);
-
 
 
 
@@ -449,11 +396,11 @@ error.message
 );
 
 
+
 return;
 
 
 }
-
 
 
 
@@ -469,48 +416,21 @@ alert(
 
 
 
-
 document
-
-.getElementById(
-"localMPK"
-)
-
+.getElementById("localMPK")
 .value="";
 
 
 
 document
-
-.getElementById(
-"localName"
-)
-
+.getElementById("localName")
 .value="";
 
 
 
 document
-
-.getElementById(
-"localLocation"
-)
-
+.getElementById("localLocation")
 .value="";
-
-
-
-
-
-
-
-if(typeof loadLocations==="function"){
-
-
-loadLocations();
-
-
-}
 
 
 
