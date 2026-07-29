@@ -19,11 +19,16 @@ const saveBtn =
 document.getElementById("saveBtn");
 
 
+const location =
+document.getElementById("location");
+
+
+
 
 
 if(addBtn){
 
-addBtn.onclick = ()=>{
+addBtn.onclick=()=>{
 
 openAddModal();
 
@@ -34,9 +39,10 @@ openAddModal();
 
 
 
+
 if(closeBtn){
 
-closeBtn.onclick = ()=>{
+closeBtn.onclick=()=>{
 
 closeModal();
 
@@ -47,15 +53,34 @@ closeModal();
 
 
 
+
 if(saveBtn){
 
-saveBtn.onclick = ()=>{
+saveBtn.onclick=()=>{
 
 saveDocument();
 
 };
 
 }
+
+
+
+
+
+if(location){
+
+location.onchange=()=>{
+
+loadLocals(location.value);
+
+};
+
+}
+
+
+
+loadLocations();
 
 
 
@@ -68,38 +93,109 @@ saveDocument();
 
 
 
-// =====================
-// OTWIERANIE NOWEGO
-// =====================
+
+// =====================================
+// LOKALIZACJE
+// =====================================
 
 
-function openAddModal(){
+async function loadLocations(){
 
 
-editingId=null;
+const {
 
+data,
 
-document
-.getElementById("modalOverlay")
-.classList.remove("hidden");
+error
 
+}=
 
+await supabaseClient
 
-document
-.getElementById("modalTitle")
-.innerText=
-"Dodaj dokument";
+.from("lokale")
 
-
-
-document
-.getElementById("saveBtn")
-.innerText=
-"Zapisz dokument";
+.select("lokalizacja");
 
 
 
-clearForm();
+
+
+if(error)
+return;
+
+
+
+
+
+
+const locations =
+
+[
+
+...
+
+new Set(
+
+data
+
+.map(x=>x.lokalizacja)
+
+)
+
+];
+
+
+
+
+
+const select =
+
+document.getElementById(
+"location"
+);
+
+
+
+
+
+if(select){
+
+
+
+select.innerHTML=
+
+`
+
+<option value="">
+Wybierz lokalizację
+</option>
+
+`;
+
+
+
+
+
+locations.forEach(l=>{
+
+
+select.innerHTML +=
+
+`
+
+<option>
+${l}
+</option>
+
+`;
+
+
+
+});
+
+
+
+}
 
 
 
@@ -113,57 +209,261 @@ clearForm();
 
 
 
-// =====================
+// =====================================
+// LOKALE PO LOKALIZACJI
+// =====================================
+
+
+async function loadLocals(location){
+
+
+
+const select =
+
+document.getElementById(
+"local"
+);
+
+
+
+
+
+select.innerHTML=
+
+`
+
+<option>
+Ładowanie...
+</option>
+
+`;
+
+
+
+
+
+
+if(!location){
+
+
+select.innerHTML=
+
+`
+
+<option>
+Najpierw wybierz lokalizację
+</option>
+
+`;
+
+return;
+
+
+}
+
+
+
+
+
+
+const {
+
+data,
+
+error
+
+}=
+
+await supabaseClient
+
+.from("lokale")
+
+.select("*")
+
+.eq(
+"lokalizacja",
+location
+)
+
+.order(
+"nazwa"
+);
+
+
+
+
+
+
+if(error){
+
+
+console.log(error);
+
+
+return;
+
+
+}
+
+
+
+
+
+
+select.innerHTML=
+
+`
+
+<option value="">
+Wybierz lokal
+</option>
+
+`;
+
+
+
+
+
+
+data.forEach(local=>{
+
+
+
+select.innerHTML +=
+
+`
+
+<option value="${local.id}">
+
+${local.nazwa} (${local.mpk})
+
+</option>
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================================
+// OTWÓRZ DODAWANIE
+// =====================================
+
+
+function openAddModal(){
+
+
+
+editingId=null;
+
+
+
+
+document
+
+.getElementById(
+"modalOverlay"
+)
+
+.classList
+
+.remove(
+"hidden"
+);
+
+
+
+
+document
+
+.getElementById(
+"modalTitle"
+)
+
+.innerText=
+
+"Dodaj dokument";
+
+
+
+
+
+clearForm();
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================================
 // EDYCJA
-// =====================
+// =====================================
 
 
-function openEditModal(doc){
+async function openEditModal(doc){
+
 
 
 editingId=doc.id;
 
 
 
-document
-.getElementById("modalOverlay")
-.classList.remove("hidden");
-
-
 
 document
-.getElementById("modalTitle")
+
+.getElementById(
+"modalOverlay"
+)
+
+.classList
+
+.remove(
+"hidden"
+);
+
+
+
+
+
+
+document
+
+.getElementById(
+"modalTitle"
+)
+
 .innerText=
+
 "Edytuj dokument";
 
 
 
-document
-.getElementById("saveBtn")
-.innerText=
-"Zapisz zmiany";
-
-
-
-
-
-document.getElementById("location").value =
-doc.lokalizacja || "";
-
-
-
-document.getElementById("number").value =
-doc.numer_lokalu || "";
 
 
 
 document.getElementById("name").value =
 doc.nazwa || "";
-
-
-
-document.getElementById("contractor").value =
-doc.nazwa_kontrahenta || "";
 
 
 
@@ -202,6 +502,95 @@ doc.uwagi || "";
 
 
 
+
+
+
+if(doc.lokal_id){
+
+
+
+const {
+
+data
+
+}=
+
+await supabaseClient
+
+.from("lokale")
+
+.select("*")
+
+.eq(
+"id",
+doc.lokal_id
+)
+
+.single();
+
+
+
+
+
+
+if(data){
+
+
+
+document.getElementById(
+"location"
+)
+
+.value=
+
+data.lokalizacja;
+
+
+
+await loadLocals(
+data.lokalizacja
+);
+
+
+
+
+document.getElementById(
+"local"
+)
+
+.value=
+
+data.id;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+if(doc.kontrahent_id){
+
+
+document.getElementById(
+"contractor"
+)
+
+.value=
+
+doc.kontrahent_id;
+
+
+}
+
+
+
 }
 
 
@@ -212,12 +601,14 @@ doc.uwagi || "";
 
 
 
-// =====================
+// =====================================
 // ZAPIS
-// =====================
+// =====================================
 
 
 async function saveDocument(){
+
+
 
 
 
@@ -225,18 +616,18 @@ const required=[
 
 
 "location",
-"number",
+"local",
 "name",
-"contractor",
 "type",
 "year",
 "shelf",
 "level",
-"folder",
-"status"
+"folder"
 
 
 ];
+
+
 
 
 
@@ -250,15 +641,19 @@ let valid=true;
 required.forEach(id=>{
 
 
-const field =
+const el=
+
 document.getElementById(id);
 
 
 
-if(!field.value.trim()){
+if(!el.value){
 
 
-field.classList.add("invalid");
+el.classList.add(
+"invalid"
+);
+
 
 valid=false;
 
@@ -266,11 +661,12 @@ valid=false;
 }else{
 
 
-field.classList.remove("invalid");
+el.classList.remove(
+"invalid"
+);
 
 
 }
-
 
 
 });
@@ -283,8 +679,8 @@ field.classList.remove("invalid");
 if(!valid){
 
 
-showError(
-"Uzupełnij wszystkie wymagane pola."
+alert(
+"Uzupełnij wszystkie wymagane pola"
 );
 
 
@@ -301,46 +697,46 @@ return;
 
 
 
-const documentData={
+const data={
 
 
 
-lokalizacja:
+lokal_id:
 
-document
-.getElementById("location")
+document.getElementById(
+"local"
+)
+
 .value,
 
 
 
-numer_lokalu:
+kontrahent_id:
 
-document
-.getElementById("number")
-.value,
+document.getElementById(
+"contractor"
+)
+
+.value || null,
 
 
 
 nazwa:
 
-document
-.getElementById("name")
-.value,
+document.getElementById(
+"name"
+)
 
-
-
-nazwa_kontrahenta:
-
-document
-.getElementById("contractor")
 .value,
 
 
 
 typ:
 
-document
-.getElementById("type")
+document.getElementById(
+"type"
+)
+
 .value,
 
 
@@ -348,58 +744,67 @@ document
 rok:
 
 Number(
-document
-.getElementById("year")
+
+document.getElementById(
+"year"
+)
+
 .value
+
 ),
 
 
 
 regal:
 
-document
-.getElementById("shelf")
+document.getElementById(
+"shelf"
+)
+
 .value,
 
 
 
 polka:
 
-document
-.getElementById("level")
+document.getElementById(
+"level"
+)
+
 .value,
 
 
 
 segregator:
 
-document
-.getElementById("folder")
+document.getElementById(
+"folder"
+)
+
 .value,
 
 
 
 status:
 
-document
-.getElementById("status")
+document.getElementById(
+"status"
+)
+
 .value,
 
 
 
 uwagi:
 
-document
-.getElementById("notes")
-.value,
+document.getElementById(
+"notes"
+)
 
-
-
-updated_at:
-
-new Date()
+.value
 
 };
+
 
 
 
@@ -414,18 +819,17 @@ let result;
 
 
 
-
 if(editingId){
 
 
 
-result =
+result=
 
 await supabaseClient
 
 .from("dokumenty")
 
-.update(documentData)
+.update(data)
 
 .eq(
 "id",
@@ -438,19 +842,17 @@ editingId
 
 
 
-result =
+result=
 
 await supabaseClient
 
 .from("dokumenty")
 
-.insert([documentData]);
+.insert([data]);
 
 
 
 }
-
-
 
 
 
@@ -461,20 +863,10 @@ await supabaseClient
 if(result.error){
 
 
-
-console.error(
-"Błąd Supabase:",
-result.error
-);
-
-
-
-showError(
-
+alert(
+"Błąd zapisu:\n"+
 result.error.message
-
 );
-
 
 
 return;
@@ -484,16 +876,6 @@ return;
 
 
 
-
-
-
-
-
-showSuccess();
-
-
-
-setTimeout(()=>{
 
 
 closeModal();
@@ -510,13 +892,6 @@ loadDocuments();
 
 
 
-},700);
-
-
-
-
-
-
 }
 
 
@@ -527,11 +902,9 @@ loadDocuments();
 
 
 
-
-
-// =====================
+// =====================================
 // ZAMKNIJ
-// =====================
+// =====================================
 
 
 function closeModal(){
@@ -540,17 +913,15 @@ function closeModal(){
 
 document
 
-.getElementById("modalOverlay")
+.getElementById(
+"modalOverlay"
+)
 
-.classList.add("hidden");
+.classList
 
-
-
-editingId=null;
-
-
-
-clearForm();
+.add(
+"hidden"
+);
 
 
 
@@ -561,139 +932,39 @@ clearForm();
 
 
 
-
-
-
-// =====================
-// CZYSZCZENIE
-// =====================
 
 
 function clearForm(){
 
 
 
-const fields =
+document
 
-document.querySelectorAll(
-
+.querySelectorAll(
 "#modalOverlay input, #modalOverlay textarea"
+)
 
-);
+.forEach(x=>{
 
-
-
-
-
-fields.forEach(field=>{
-
-
-field.value="";
-
-
-field.classList.remove(
-"invalid"
-);
-
+x.value="";
 
 });
 
 
 
+document.getElementById(
+"local"
+)
 
+.innerHTML=
 
+`
 
-document
-.getElementById("location")
-.value="";
+<option>
+Najpierw wybierz lokalizację
+</option>
 
-
-
-document
-.getElementById("status")
-.value="OK";
-
-
-
-hideMessages();
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// KOMUNIKATY
-// =====================
-
-
-function showSuccess(){
-
-
-const box =
-document.getElementById("successBox");
-
-
-box.innerText =
-"Dokument został zapisany.";
-
-
-box.classList.remove(
-"hidden"
-);
-
-
-}
-
-
-
-
-
-function showError(text){
-
-
-
-const box =
-document.getElementById("errorBox");
-
-
-box.innerText=text;
-
-
-box.classList.remove(
-"hidden"
-);
-
-
-}
-
-
-
-
-
-function hideMessages(){
-
-
-
-document
-
-.getElementById("successBox")
-
-.classList.add("hidden");
-
-
-
-document
-
-.getElementById("errorBox")
-
-.classList.add("hidden");
+`;
 
 
 
