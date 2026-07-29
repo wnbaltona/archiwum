@@ -9,12 +9,17 @@
 
 <title>Archiwum dokumentów</title>
 
+
 <link rel="stylesheet" href="style.css">
+
 
 </head>
 
 
 <body>
+
+
+<!-- ================= HEADER ================= -->
 
 
 <header class="topbar">
@@ -25,25 +30,43 @@ Archiwum dokumentów
 </div>
 
 
-<button id="menuBtn" class="menu-button">
+
+<div>
+
+
+<button 
+id="menuBtn"
+class="menu-button">
+
 ☰
+
 </button>
 
 
 
-<div id="menuList" class="menu-list hidden">
+<div 
+id="menuList"
+class="menu-list hidden">
+
 
 <button id="addBtn">
 Dodaj dokument
 </button>
 
+
 <button id="settingsBtn">
 Ustawienia
 </button>
 
+
 <button id="exportBtn">
-Eksport
+Export
 </button>
+
+
+
+</div>
+
 
 </div>
 
@@ -54,23 +77,68 @@ Eksport
 
 
 
-<main>
+<!-- ================= FILTRY ================= -->
 
 
 <section class="filters">
 
 
-<div id="locationTabs" class="location-tabs">
+<div 
+id="locationTabs"
+class="location-tabs">
 
 </div>
 
 
 
+<div class="filter-box">
+
+
 <input 
 id="searchInput"
 type="text"
-placeholder="Szukaj dokumentu..."
->
+placeholder="Szukaj dokumentu...">
+
+
+<select id="yearFilter">
+
+
+<option value="">
+Wszystkie lata
+</option>
+
+
+</select>
+
+
+
+<select id="statusFilter">
+
+
+<option value="">
+Wszystkie statusy
+</option>
+
+
+<option value="OK">
+OK
+</option>
+
+
+<option value="DO UZUPEŁNIENIA">
+DO UZUPEŁNIENIA
+</option>
+
+
+<option value="BRAK">
+BRAK
+</option>
+
+
+</select>
+
+
+</div>
 
 
 </section>
@@ -81,11 +149,10 @@ placeholder="Szukaj dokumentu..."
 
 
 
-<section id="results">
+<!-- ================= DOKUMENTY ================= -->
 
 
-</section>
-
+<main id="results">
 
 
 </main>
@@ -96,9 +163,12 @@ placeholder="Szukaj dokumentu..."
 
 
 
-<!-- MODAL DOKUMENT -->
+<!-- ================= MODAL DOKUMENT ================= -->
 
-<div id="modalOverlay" class="overlay hidden">
+
+<div 
+id="modalOverlay"
+class="overlay hidden">
 
 
 <div class="modal">
@@ -107,8 +177,11 @@ placeholder="Szukaj dokumentu..."
 <button 
 id="closeModal"
 class="close-button">
+
 X
+
 </button>
+
 
 
 <h2 id="modalTitle">
@@ -118,18 +191,15 @@ Dodaj dokument
 
 
 
+
 <label>
 Lokalizacja
 </label>
 
+
 <select id="location">
 
-<option>
-Wybierz lokalizację
-</option>
-
 </select>
-
 
 
 
@@ -155,7 +225,9 @@ Najpierw wybierz lokalizację
 Nazwa dokumentu
 </label>
 
+
 <input id="name">
+
 
 
 
@@ -165,7 +237,9 @@ Nazwa dokumentu
 Typ dokumentu
 </label>
 
+
 <input id="type">
+
 
 
 
@@ -175,6 +249,7 @@ Typ dokumentu
 Rok
 </label>
 
+
 <input 
 id="year"
 type="number">
@@ -183,9 +258,22 @@ type="number">
 
 
 
+
+<label>
+Kontrahent
+</label>
+
+
+<input id="contractor">
+
+
+
+
+
 <label>
 Regał
 </label>
+
 
 <input id="shelf">
 
@@ -197,7 +285,9 @@ Regał
 Półka
 </label>
 
+
 <input id="level">
+
 
 
 
@@ -207,17 +297,9 @@ Półka
 Segregator
 </label>
 
+
 <input id="folder">
 
-
-
-
-
-<label>
-Kontrahent
-</label>
-
-<input id="contractor">
 
 
 
@@ -231,17 +313,17 @@ Status
 <select id="status">
 
 
-<option value="OK">
+<option>
 OK
 </option>
 
 
-<option value="DO UZUPEŁNIENIA">
+<option>
 DO UZUPEŁNIENIA
 </option>
 
 
-<option value="BRAK">
+<option>
 BRAK
 </option>
 
@@ -263,7 +345,9 @@ Uwagi
 
 
 
-<button id="saveBtn" class="primary-button">
+<button 
+id="saveBtn"
+class="primary-button">
 
 Zapisz
 
@@ -273,6 +357,7 @@ Zapisz
 
 </div>
 
+
 </div>
 
 
@@ -283,10 +368,13 @@ Zapisz
 
 
 
-<!-- USTAWIENIA -->
+
+<!-- ================= USTAWIENIA ================= -->
 
 
-<div id="settingsOverlay" class="overlay hidden">
+<div 
+id="settingsOverlay"
+class="overlay hidden">
 
 
 <div class="modal settings-modal">
@@ -295,8 +383,11 @@ Zapisz
 <button 
 id="closeSettings"
 class="close-button">
+
 X
+
 </button>
+
 
 
 
@@ -307,9 +398,11 @@ Ustawienia
 
 
 
+
 <h3>
 Dodaj kontrahenta
 </h3>
+
 
 
 <input 
@@ -317,9 +410,14 @@ id="newContractor"
 placeholder="Nazwa kontrahenta">
 
 
-<button id="addContractorBtn">
+<button 
+id="addContractorBtn">
+
 Dodaj kontrahenta
+
 </button>
+
+
 
 
 
@@ -328,6 +426,7 @@ Dodaj kontrahenta
 <h3>
 Dodaj lokal
 </h3>
+
 
 
 <input 
@@ -341,23 +440,14 @@ placeholder="Nazwa lokalu">
 
 
 
-
-
 <select id="localLocation">
-
-
-<option>
-Wybierz lokalizację
-</option>
-
 
 </select>
 
 
 
-
-
-<button id="addLocalBtn">
+<button 
+id="addLocalBtn">
 
 Dodaj lokal
 
@@ -373,16 +463,22 @@ Dodaj lokal
 
 
 
-<!-- biblioteka Supabase -->
+
+
+
+
+
+<!-- ================= SKRYPTY ================= -->
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- konfiguracja Supabase -->
+
 <script src="js/supabase.js"></script>
 
-<!-- lokalizacje -->
 <script src="js/config.js"></script>
 
-<!-- aplikacja -->
+
 <script src="js/app.js"></script>
 
 <script src="js/admin.js"></script>
@@ -392,6 +488,7 @@ Dodaj lokal
 <script src="js/menu.js"></script>
 
 <script src="js/export.js"></script>
+
 
 
 </body>
