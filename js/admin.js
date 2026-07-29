@@ -38,19 +38,19 @@ document
 .getElementById("location")
 ?.addEventListener(
 "change",
-()=>{
+(e)=>{
+
 
 loadLocals(
-document.getElementById("location").value
-);
-
-}
-
+e.target.value
 );
 
 
+});
 
-loadLocations();
+
+
+loadDocumentLocations();
 
 
 });
@@ -60,51 +60,16 @@ loadLocations();
 
 
 
-// ==================================
-// OTWIERANIE DODAWANIA
-// ==================================
-
-
-function openAddModal(){
-
-
-editingDocumentId=null;
-
-
-clearForm();
 
 
 
-document.getElementById(
-"modalTitle"
-).innerText=
-"Dodaj dokument";
+// ==============================
+// LOKALIZACJE W FORMULARZU
+// ==============================
 
 
+function loadDocumentLocations(){
 
-document
-.getElementById("modalOverlay")
-.classList
-.remove("hidden");
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ==================================
-// LOKALIZACJE
-// ==================================
-
-
-function loadLocations(){
 
 
 const select =
@@ -119,14 +84,16 @@ return;
 
 
 
-
 select.innerHTML=
 
 `
+
 <option value="">
 Wybierz lokalizację
 </option>
+
 `;
+
 
 
 
@@ -137,6 +104,7 @@ LOCATIONS.forEach(location=>{
 select.innerHTML +=
 
 `
+
 <option value="${location}">
 ${location}
 </option>
@@ -146,6 +114,7 @@ ${location}
 
 
 });
+
 
 
 }
@@ -158,9 +127,62 @@ ${location}
 
 
 
-// ==================================
-// LOKALE
-// ==================================
+// ==============================
+// OTWÓRZ DODAWANIE
+// ==============================
+
+
+function openAddModal(){
+
+
+
+editingDocumentId=null;
+
+
+
+clearForm();
+
+
+
+document
+
+.getElementById(
+"modalTitle"
+)
+
+.innerText=
+
+"Dodaj dokument";
+
+
+
+
+document
+
+.getElementById(
+"modalOverlay"
+)
+
+.classList
+
+.remove(
+"hidden"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+// ==============================
+// POBIERANIE LOKALI
+// ==============================
 
 
 async function loadLocals(location){
@@ -184,11 +206,13 @@ return;
 select.innerHTML=
 
 `
-<option value="">
+
+<option>
 Ładowanie...
 </option>
 
 `;
+
 
 
 
@@ -223,6 +247,8 @@ location
 
 
 
+
+
 if(error){
 
 
@@ -237,14 +263,20 @@ return;
 
 
 
+
+
 select.innerHTML=
 
 `
+
 <option value="">
 Wybierz lokal
 </option>
 
 `;
+
+
+
 
 
 
@@ -256,15 +288,18 @@ if(!data || data.length===0){
 select.innerHTML=
 
 `
-<option value="">
-Brak lokali dla tej lokalizacji
+
+<option>
+Brak lokali
 </option>
 
 `;
 
 return;
 
+
 }
+
 
 
 
@@ -291,6 +326,7 @@ ${local.nazwa} (${local.mpk})
 
 
 
+
 }
 
 
@@ -301,32 +337,44 @@ ${local.nazwa} (${local.mpk})
 
 
 
-
-// ==================================
+// ==============================
 // EDYCJA
-// ==================================
+// ==============================
 
 
 window.openEditModal=function(doc){
+
 
 
 editingDocumentId=doc.id;
 
 
 
+document
+
+.getElementById(
+"modalOverlay"
+)
+
+.classList
+
+.remove(
+"hidden"
+);
+
+
+
+
+
 
 document
-.getElementById("modalOverlay")
-.classList
-.remove("hidden");
 
-
-
-
-
-document.getElementById(
+.getElementById(
 "modalTitle"
-).innerText=
+)
+
+.innerText=
+
 "Edytuj dokument";
 
 
@@ -335,7 +383,10 @@ document.getElementById(
 
 
 
-document.getElementById("location").value =
+document.getElementById(
+"location"
+).value=
+
 doc.lokalizacja;
 
 
@@ -346,52 +397,82 @@ doc.lokalizacja
 
 
 
-document.getElementById("local").value =
+document.getElementById(
+"local"
+).value=
+
 doc.numer_lokalu;
 
 
 
-document.getElementById("name").value =
+document.getElementById(
+"name"
+).value=
+
 doc.nazwa;
 
 
 
-document.getElementById("type").value =
+document.getElementById(
+"type"
+).value=
+
 doc.typ;
 
 
 
-document.getElementById("year").value =
+document.getElementById(
+"year"
+).value=
+
 doc.rok || "";
 
 
 
-document.getElementById("shelf").value =
-doc.regal;
+document.getElementById(
+"contractor"
+).value=
 
-
-
-document.getElementById("level").value =
-doc.polka;
-
-
-
-document.getElementById("folder").value =
-doc.segregator;
-
-
-
-document.getElementById("contractor").value =
 doc.nazwa_kontrahenta || "";
 
 
 
-document.getElementById("status").value =
+document.getElementById(
+"shelf"
+).value=
+
+doc.regal;
+
+
+
+document.getElementById(
+"level"
+).value=
+
+doc.polka;
+
+
+
+document.getElementById(
+"folder"
+).value=
+
+doc.segregator;
+
+
+
+document.getElementById(
+"status"
+).value=
+
 doc.status || "OK";
 
 
 
-document.getElementById("notes").value =
+document.getElementById(
+"notes"
+).value=
+
 doc.uwagi || "";
 
 
@@ -406,137 +487,111 @@ doc.uwagi || "";
 
 
 
-// ==================================
+// ==============================
 // ZAPIS
-// ==================================
+// ==============================
 
 
 async function saveDocument(){
 
 
 
-const fields=[
-
-"location",
-"local",
-"name",
-"type",
-"shelf",
-"level",
-"folder"
-
-];
 
 
-
-
-
-for(
-const field of fields
-){
-
-
-
-const element =
-document.getElementById(field);
-
-
-
-if(!element.value.trim()){
-
-
-alert(
-"Uzupełnij wszystkie wymagane pola"
-);
-
-
-element.focus();
-
-
-return;
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-const documentData={
-
+const data={
 
 
 lokalizacja:
 
-document.getElementById("location").value,
+document.getElementById(
+"location"
+).value,
 
 
 
 numer_lokalu:
 
-document.getElementById("local").value,
+document.getElementById(
+"local"
+).value,
 
 
 
 nazwa:
 
-document.getElementById("name").value,
+document.getElementById(
+"name"
+).value,
 
 
 
 typ:
 
-document.getElementById("type").value,
+document.getElementById(
+"type"
+).value,
 
 
 
 regal:
 
-document.getElementById("shelf").value,
+document.getElementById(
+"shelf"
+).value,
 
 
 
 polka:
 
-document.getElementById("level").value,
+document.getElementById(
+"level"
+).value,
 
 
 
 segregator:
 
-document.getElementById("folder").value,
+document.getElementById(
+"folder"
+).value,
 
 
 
 status:
 
-document.getElementById("status").value,
+document.getElementById(
+"status"
+).value,
 
 
 
 uwagi:
 
-document.getElementById("notes").value,
+document.getElementById(
+"notes"
+).value,
 
 
 
 nazwa_kontrahenta:
 
-document.getElementById("contractor").value,
+document.getElementById(
+"contractor"
+).value,
 
 
 
 rok:
 
 Number(
-document.getElementById("year").value
-)
+
+document.getElementById(
+"year"
+).value
+
+) || null
+
+
 
 };
 
@@ -546,8 +601,8 @@ document.getElementById("year").value
 
 
 
-
 let result;
+
 
 
 
@@ -562,9 +617,7 @@ await supabaseClient
 
 .from("dokumenty")
 
-.update(
-documentData
-)
+.update(data)
 
 .eq(
 "id",
@@ -586,7 +639,7 @@ await supabaseClient
 
 .insert(
 [
-documentData
+data
 ]
 );
 
@@ -599,13 +652,19 @@ documentData
 
 
 
+
+
 if(result.error){
 
 
 alert(
-"Błąd zapisu: "
+
+"Błąd zapisu dokumentu: "
+
 +
+
 result.error.message
+
 );
 
 
@@ -623,43 +682,43 @@ closeModal();
 
 
 
-if(
-typeof loadDocuments === "function"
-){
-
 loadDocuments();
 
+
+
 }
 
 
 
-}
 
 
 
 
 
 
-
-
-
-
-// ==================================
-// ZAMYKANIE
-// ==================================
+// ==============================
+// ZAMKNIĘCIE
+// ==============================
 
 
 function closeModal(){
 
 
 document
-.getElementById("modalOverlay")
+
+.getElementById(
+"modalOverlay"
+)
+
 .classList
-.add("hidden");
+
+.add(
+"hidden"
+);
+
 
 
 }
-
 
 
 
@@ -681,28 +740,36 @@ document
 
 )
 
-.forEach(element=>{
-
+.forEach(
+element=>{
 
 element.value="";
 
+}
 
-});
-
-
-
-
-
-document.getElementById("status").value="OK";
+);
 
 
 
-document.getElementById("local").innerHTML=
+
+
+document.getElementById(
+"status"
+).value="OK";
+
+
+
+
+document.getElementById(
+"local"
+).innerHTML=
 
 `
+
 <option>
 Najpierw wybierz lokalizację
 </option>
+
 `;
 
 
