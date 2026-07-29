@@ -1,122 +1,154 @@
-const input =
-document.getElementById("searchInput");
+let documents=[];
 
 
 const results =
 document.getElementById("results");
 
 
-
-let documents=[];
-
-
-
-async function loadDocuments(){
-
-
-const {data,error}=
-
-await supabaseClient
-
-.from("dokumenty")
-
-.select("*");
+const searchInput =
+document.getElementById("searchInput");
 
 
 
-if(error){
+fetch("dokumenty.csv")
 
-console.log(error);
+.then(response=>response.text())
 
-return;
+.then(data=>{
+
+documents=parseCSV(data);
+
+showLocations();
+
+});
+
+
+
+function parseCSV(csv){
+
+
+let rows=csv.split("\n");
+
+
+let headers=
+rows[0].split(";");
+
+
+return rows.slice(1)
+.filter(r=>r.trim()!="")
+.map(row=>{
+
+
+let values=row.split(";");
+
+let obj={};
+
+
+headers.forEach((h,i)=>{
+
+obj[h.trim()]=values[i]?.trim();
+
+});
+
+
+return obj;
+
+
+});
 
 }
 
 
 
-documents=data;
-
-
-displayDocuments();
-
-
-}
-
-
-
-function displayDocuments(search=""){
+function showLocations(){
 
 
 results.innerHTML="";
 
 
+let locations=[
 
-const filtered =
-documents.filter(doc=>
+"OKĘCIE",
+"RADOM",
+"MODLIN",
+"SONATA",
+"RZESZÓW",
+"KATOWICE",
+"KRAKÓW",
+"ZIELONA GÓRA",
+"FRANCJA",
+"BYDGOSZCZ",
+"POZNAŃ",
+"WROCŁAW"
+
+];
 
 
-JSON.stringify(doc)
 
-.toLowerCase()
+locations.forEach(location=>{
 
-.includes(search.toLowerCase())
 
+let docs=
+documents.filter(
+d=>d["Lokalizacja"]==location
 );
 
 
 
-filtered.forEach(doc=>{
+if(docs.length){
 
 
 results.innerHTML+=`
 
+<div class="location">
+
+<h3 onclick="openLocation('${location}')">
+
+▶ ${location}
+(${docs.length})
+
+</h3>
+
+
+<div id="${location}" class="hidden">
+
+
+${docs.map(d=>`
+
 <div class="card">
 
-
-<h2>
-📄 ${doc.nazwa}
-</h2>
-
+<b>📄 ${d["Nazwa dokumentu"]}</b>
 
 <p>
-<b>Typ:</b> ${doc.typ}
+🗄️ Regał:
+${d["Regał"]}
 </p>
-
 
 <p>
-<b>Miasto:</b> ${doc.miasto}
+📚 Półka:
+${d["Półka"]}
 </p>
-
 
 <p>
-<b>Lokal:</b> ${doc.lokal}
+📂 Segregator:
+${d["Segregator"]}
 </p>
 
-
-<p>
-<b>Regał:</b> ${doc.regal}
-</p>
+</div>
 
 
-<p>
-<b>Półka:</b> ${doc.polka}
-</p>
-
-
-<p>
-<b>Segregator:</b> ${doc.segregator}
-</p>
-
-
-<p>
-📝 ${doc.uwagi ?? ""}
-</p>
+`).join("")}
 
 
 </div>
 
 
+</div>
+
 `;
+
+}
+
 
 });
 
@@ -125,11 +157,57 @@ results.innerHTML+=`
 
 
 
-input.addEventListener(
+function openLocation(id){
+
+document
+.getElementById(id)
+.classList.toggle("hidden");
+
+}
+
+
+
+searchInput.addEventListener(
 "input",
-()=>displayDocuments(input.value)
-);
+()=>{
 
 
+let text=
+searchInput.value.toLowerCase();
 
-loadDocuments();
+
+results.innerHTML="";
+
+
+documents
+.filter(d=>
+JSON.stringify(d)
+.toLowerCase()
+.includes(text)
+)
+.forEach(d=>{
+
+
+results.innerHTML+=`
+
+<div class="card">
+
+📄 ${d["Nazwa dokumentu"]}
+
+<br>
+
+📍 ${d["Lokalizacja"]}
+
+<br>
+
+🗄️ Regał:
+${d["Regał"]}
+
+</div>
+
+`;
+
+});
+
+
+});
