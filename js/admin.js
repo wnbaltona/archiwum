@@ -5,40 +5,164 @@ const saveBtn =
 document.getElementById("saveBtn");
 
 
+const closeBtn =
+document.getElementById("closeModal");
+
+
+const closeAfterSave =
+document.getElementById("closeAfterSave");
+
+
+
+
+
+// ============================
+// ZAMKNIĘCIE X
+// ============================
+
+
+if(closeBtn){
+
+
+closeBtn.onclick=()=>{
+
+
+closeModal();
+
+
+};
+
+
+}
+
+
+
+
+
+
+// ============================
+// ZAPIS
+// ============================
+
 
 saveBtn.onclick = async ()=>{
+
+
+
+
+
+const requiredFields=[
+
+"location",
+"number",
+"name",
+"type",
+"shelf",
+"level",
+"folder"
+
+];
+
+
+
+let emptyFields=[];
+
+
+
+
+
+requiredFields.forEach(id=>{
+
+
+const field=
+document.getElementById(id);
+
+
+
+if(!field.value.trim()){
+
+
+emptyFields.push(id);
+
+
+field.classList.add("invalid");
+
+
+}else{
+
+
+field.classList.remove("invalid");
+
+
+}
+
+
+});
+
+
+
+
+
+
+
+if(emptyFields.length>0){
+
+
+
+showError(
+"Uzupełnij wszystkie pola oznaczone *"
+);
+
+
+
+return;
+
+
+}
+
+
+
+
 
 
 
 const documentData={
 
 
+
 lokalizacja:
 document.getElementById("location").value,
+
 
 
 numer_lokalu:
 document.getElementById("number").value,
 
 
+
 nazwa:
 document.getElementById("name").value,
+
 
 
 typ:
 document.getElementById("type").value,
 
 
+
 regal:
 document.getElementById("shelf").value,
+
 
 
 polka:
 document.getElementById("level").value,
 
 
+
 segregator:
 document.getElementById("folder").value,
+
 
 
 uwagi:
@@ -54,63 +178,33 @@ document.getElementById("notes").value
 
 
 
-// JEŻELI EDYTUJEMY ISTNIEJĄCY DOKUMENT
+
+
+let response;
+
+
+
+
+
+
+// EDYCJA
 
 
 if(editingId){
 
 
 
-const {error}=await supabaseClient
-
+response =
+await supabaseClient
 
 .from("dokumenty")
 
-
 .update(documentData)
-
 
 .eq("id",editingId);
 
 
 
-
-if(error){
-
-
-console.error(error);
-
-
-alert("Nie udało się zapisać zmian");
-
-
-return;
-
-
-}
-
-
-
-alert("Dokument został zaktualizowany");
-
-
-
-closeModal();
-
-
-
-loadDocuments();
-
-
-
-editingId=null;
-
-
-
-return;
-
-
-
 }
 
 
@@ -118,38 +212,47 @@ return;
 
 
 
+// NOWY DOKUMENT
+
+
+else{
 
 
 
-// DODAWANIE NOWEGO DOKUMENTU
-
-
-const {error}=await supabaseClient
-
+response =
+await supabaseClient
 
 .from("dokumenty")
-
 
 .insert([documentData]);
 
 
 
+}
 
 
 
-if(error){
 
 
-console.error(error);
 
 
-alert("Nie udało się dodać dokumentu");
+
+if(response.error){
+
+
+console.error(response.error);
+
+
+showError(
+"Wystąpił błąd podczas zapisu"
+);
 
 
 return;
 
 
 }
+
 
 
 
@@ -163,12 +266,20 @@ document
 
 
 document
-.getElementById("saveBtn")
-.disabled=true;
+.getElementById("errorBox")
+.classList.add("hidden");
 
+
+
+
+
+if(typeof loadDocuments==="function"){
 
 
 loadDocuments();
+
+
+}
 
 
 
@@ -179,18 +290,30 @@ loadDocuments();
 
 
 
-// ZAMKNIĘCIE PO DODANIU
 
 
-document
-.getElementById("closeAfterSave")
-.onclick=()=>{
+
+
+
+// ============================
+// ZAMKNIĘCIE PO SUKCESIE
+// ============================
+
+
+if(closeAfterSave){
+
+
+closeAfterSave.onclick=()=>{
 
 
 closeModal();
 
 
 };
+
+
+}
+
 
 
 
@@ -207,62 +330,176 @@ closeModal();
 
 
 
+
+
+// ============================
+// FUNKCJA ZAMYKANIA
+// ============================
+
+
 function closeModal(){
 
 
 
+const modal =
+document.getElementById("modalOverlay");
+
+
+
+if(modal){
+
+
+modal.classList.add("hidden");
+
+
+}
+
+
+
+
+
+
+
+const success =
+document.getElementById("successBox");
+
+
+
+if(success){
+
+
+success.classList.add("hidden");
+
+
+}
+
+
+
+
+
+
+
+const error =
+document.getElementById("errorBox");
+
+
+
+if(error){
+
+
+error.classList.add("hidden");
+
+
+}
+
+
+
+
+
+
+
 document
-.getElementById("modalOverlay")
-.classList.add("hidden");
+.querySelectorAll(
+".modal input, .modal textarea"
+)
+
+.forEach(field=>{
+
+
+field.value="";
+
+
+field.classList.remove("invalid");
+
+
+});
 
 
 
-document
-.getElementById("successBox")
-.classList.add("hidden");
 
 
 
-document
-.getElementById("saveBtn")
-.disabled=false;
+
+const title =
+document.getElementById("modalTitle");
 
 
 
-document
-.getElementById("saveBtn")
-.innerText=
-"Zapisz dokument";
+if(title){
 
 
-
-document
-.getElementById("modalTitle")
-.innerText=
+title.innerText=
 "Dodaj dokument";
 
 
+}
 
 
-// czyszczenie formularza
 
 
-document.getElementById("number").value="";
 
-document.getElementById("name").value="";
 
-document.getElementById("type").value="";
 
-document.getElementById("shelf").value="";
+const button =
+document.getElementById("saveBtn");
 
-document.getElementById("level").value="";
 
-document.getElementById("folder").value="";
 
-document.getElementById("notes").value="";
+if(button){
+
+
+button.innerText=
+"Zapisz dokument";
+
+
+}
+
+
+
+
+
 
 
 editingId=null;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ============================
+// BŁĄD
+// ============================
+
+
+function showError(text){
+
+
+
+const box =
+document.getElementById("errorBox");
+
+
+
+if(!box)
+return;
+
+
+
+box.innerText=text;
+
+
+
+box.classList.remove("hidden");
 
 
 
