@@ -1,17 +1,15 @@
-let documents=[];
+let documents = [];
 
 
-const results =
-document.getElementById("results");
+const results = document.getElementById("results");
 
-
-const search =
-document.getElementById("searchInput");
+const searchInput = document.getElementById("searchInput");
 
 
 
-const locations=[
+const locations = [
 
+"WSZYSTKIE",
 "OKĘCIE",
 "RADOM",
 "MODLIN",
@@ -29,18 +27,147 @@ const locations=[
 
 
 
-async function load(){
+let selectedLocation = "WSZYSTKIE";
+
+
+
+
+// pobieranie z Supabase
+
+async function loadDocuments(){
 
 
 const {data,error}=await supabaseClient
 .from("dokumenty")
-.select("*");
+.select("*")
+.order("created_at",{ascending:false});
 
 
 
 if(error){
 
-console.log(error);
+console.error(error);
+
+results.innerHTML=
+"❌ Błąd pobierania dokumentów";
+
+return;
+
+}
+
+
+documents=data || [];
+
+
+createLocationTabs();
+
+renderDocuments();
+
+
+}
+
+
+
+
+
+// zakładki lokalizacji
+
+function createLocationTabs(){
+
+
+const tabs =
+document.createElement("div");
+
+
+tabs.className="location-tabs";
+
+
+
+locations.forEach(loc=>{
+
+
+const button =
+document.createElement("button");
+
+
+button.innerText=loc;
+
+
+button.onclick=()=>{
+
+
+selectedLocation=loc;
+
+
+renderDocuments();
+
+
+};
+
+
+
+tabs.appendChild(button);
+
+
+
+});
+
+
+
+document
+.querySelector("main")
+.insertBefore(
+tabs,
+results
+);
+
+
+}
+
+
+
+
+// wyświetlanie
+
+
+function renderDocuments(){
+
+
+results.innerHTML="";
+
+
+
+let filtered =
+documents;
+
+
+
+if(selectedLocation!=="WSZYSTKIE"){
+
+
+filtered =
+filtered.filter(
+d=>d.lokalizacja===selectedLocation
+);
+
+
+}
+
+
+
+
+if(filtered.length===0){
+
+
+results.innerHTML=
+
+`
+<div class="card">
+
+Brak dokumentów
+
+</div>
+`;
 
 return;
 
@@ -48,120 +175,72 @@ return;
 
 
 
-documents=data;
 
-
-render();
-
-
-}
-
-
-
-
-function render(){
-
-
-results.innerHTML="";
-
-
-
-locations.forEach(loc=>{
-
-
-let docs=
-documents.filter(
-d=>d.lokalizacja===loc
-);
-
-
-
-if(!docs.length)return;
-
+filtered.forEach(doc=>{
 
 
 results.innerHTML+=`
 
-<div class="location">
-
-
-<div class="location-title"
-onclick="toggle('${loc}')">
-
-▶ ${loc} (${docs.length})
-
-</div>
-
-
-
-<div id="${loc}" class="documents hidden">
-
-
-${docs.map(d=>`
-
 <div class="card">
 
-<b>📄 ${d.nazwa}</b>
 
-<br>
+<h3>
+📄 ${doc.nazwa}
+</h3>
 
-📦 Regał: ${d.regal || "-"}
 
-<br>
+<p>
+📍 ${doc.lokalizacja}
+</p>
 
-📚 Półka: ${d.polka || "-"}
 
-<br>
+<p>
+🗄️ Regał:
+${doc.regal || "-"}
+</p>
 
-📂 Segregator: ${d.segregator || "-"}
+
+<p>
+📚 Półka:
+${doc.polka || "-"}
+</p>
+
+
+<p>
+📂 Segregator:
+${doc.segregator || "-"}
+</p>
+
 
 </div>
-
-`).join("")}
-
-
-
-</div>
-
-
-</div>
-
 
 `;
 
 
 });
 
-
-}
-
-
-
-function toggle(id){
-
-document
-.getElementById(id)
-.classList.toggle("hidden");
-
 }
 
 
 
 
-search.addEventListener(
+// wyszukiwanie
+
+
+searchInput.addEventListener(
 "input",
 ()=>{
 
 
-let value=
-search.value.toLowerCase();
+let value =
+searchInput.value.toLowerCase();
 
 
 
-let filtered=
-documents.filter(d=>
+let filtered =
+documents.filter(doc=>
 
-JSON.stringify(d)
+JSON.stringify(doc)
 .toLowerCase()
 .includes(value)
 
@@ -169,13 +248,45 @@ JSON.stringify(d)
 
 
 
-documents=filtered;
+results.innerHTML="";
 
 
-render();
+
+filtered.forEach(doc=>{
+
+
+results.innerHTML+=`
+
+<div class="card">
+
+
+<h3>
+📄 ${doc.nazwa}
+</h3>
+
+
+<p>
+📍 ${doc.lokalizacja}
+</p>
+
+
+<p>
+🗄️ Regał:
+${doc.regal}
+</p>
+
+
+</div>
+
+`;
 
 
 });
 
 
-load();
+});
+
+
+
+
+loadDocuments();
