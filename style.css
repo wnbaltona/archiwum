@@ -576,6 +576,93 @@ flex-direction:column;
 
 }
 
+/* =========================
+POPRAWKA UKŁADU GŁÓWNEGO
+========================= */
 
+
+#results{
+
+max-width:1400px;
+margin:0 auto;
+padding:20px 30px 50px;
+
+}
+
+
+
+.archive-location{
+
+margin-bottom:25px;
+
+}
+
+
+
+.archive-header{
+
+background:#ffffff;
+padding:20px 30px;
+cursor:pointer;
+border-bottom:1px solid #eee;
+
+}
+
+
+
+.year-box{
+
+padding:20px 30px;
+
+}
+
+
+
+.document{
+
+background:#ffffff;
+border-radius:16px;
+padding:20px;
+margin-bottom:15px;
+box-shadow:0 3px 10px rgba(0,0,0,.06);
+
+}
+
+
+
+/* =========================
+USTAWIENIA - START
+========================= */
+
+
+#settingsContent:empty{
+
+display:none;
+
+}
+
+
+
+.settings-buttons{
+
+margin-bottom:0;
+
+}
+
+
+
+.settings-modal{
+
+min-height:auto;
+
+}
+
+
+
+.settings-modal h2{
+
+margin-top:0;
+
+}
 
 }
