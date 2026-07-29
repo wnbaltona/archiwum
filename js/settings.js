@@ -41,6 +41,8 @@ addLocal
 
 loadSettingsLocations();
 
+loadContractorsList();
+
 
 });
 
@@ -50,31 +52,17 @@ loadSettingsLocations();
 
 
 
-// ==============================
-// OTWIERANIE USTAWIEŃ
-// ==============================
-
 
 function openSettings(){
 
 
 document
-
-.getElementById(
-"settingsOverlay"
-)
-
+.getElementById("settingsOverlay")
 .classList
-
-.remove(
-"hidden"
-);
+.remove("hidden");
 
 
 }
-
-
-
 
 
 
@@ -82,16 +70,9 @@ function closeSettings(){
 
 
 document
-
-.getElementById(
-"settingsOverlay"
-)
-
+.getElementById("settingsOverlay")
 .classList
-
-.add(
-"hidden"
-);
+.add("hidden");
 
 
 }
@@ -103,10 +84,9 @@ document
 
 
 
-
-// ==============================
-// LISTA LOKALIZACJI
-// ==============================
+// ==========================
+// LOKALIZACJE
+// ==========================
 
 
 function loadSettingsLocations(){
@@ -114,7 +94,6 @@ function loadSettingsLocations(){
 
 
 const select =
-
 document.getElementById(
 "localLocation"
 );
@@ -130,13 +109,10 @@ return;
 select.innerHTML=
 
 `
-
 <option value="">
 Wybierz lokalizację
 </option>
-
 `;
-
 
 
 
@@ -147,7 +123,6 @@ LOCATIONS.forEach(location=>{
 select.innerHTML +=
 
 `
-
 <option value="${location}">
 ${location}
 </option>
@@ -157,6 +132,7 @@ ${location}
 
 
 });
+
 
 
 }
@@ -169,9 +145,134 @@ ${location}
 
 
 
-// ==============================
-// DODAJ KONTRAHENTA
-// ==============================
+// ==========================
+// KONTRAHENCI
+// ==========================
+
+
+async function loadContractorsList(){
+
+
+
+const box =
+document.getElementById(
+"contractorsList"
+);
+
+
+
+if(!box)
+return;
+
+
+
+
+const {
+
+data,
+
+error
+
+}
+
+=
+
+await supabaseClient
+
+.from("kontrahenci")
+
+.select("*")
+
+.order(
+"nazwa"
+);
+
+
+
+
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+
+
+
+
+box.innerHTML="";
+
+
+
+
+
+data.forEach(item=>{
+
+
+const row =
+document.createElement(
+"div"
+);
+
+
+
+row.className=
+"contractor-row";
+
+
+
+row.innerHTML=
+
+`
+
+<span>
+${item.nazwa}
+</span>
+
+
+<button>
+Usuń
+</button>
+
+`;
+
+
+
+
+
+row
+.querySelector("button")
+.onclick=()=>{
+
+deleteContractor(
+item.id
+);
+
+};
+
+
+
+
+
+box.appendChild(row);
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
 
 
 async function addContractor(){
@@ -179,7 +280,6 @@ async function addContractor(){
 
 
 const input =
-
 document.getElementById(
 "newContractor"
 );
@@ -187,9 +287,7 @@ document.getElementById(
 
 
 const name =
-
 input.value.trim();
-
 
 
 
@@ -197,14 +295,11 @@ input.value.trim();
 
 if(!name){
 
-
 alert(
 "Podaj nazwę kontrahenta"
 );
 
-
 return;
-
 
 }
 
@@ -228,9 +323,7 @@ await supabaseClient
 .insert([
 
 {
-
 nazwa:name
-
 }
 
 ]);
@@ -240,33 +333,14 @@ nazwa:name
 
 
 
-
 if(error){
 
-
-alert(
-
-"Błąd dodawania kontrahenta: "
-
-+
-
-error.message
-
-);
-
+alert(error.message);
 
 return;
 
-
 }
 
-
-
-
-
-alert(
-"Kontrahent dodany"
-);
 
 
 
@@ -274,6 +348,73 @@ input.value="";
 
 
 
+loadContractorsList();
+
+
+
+}
+
+
+
+
+
+async function deleteContractor(id){
+
+
+
+if(
+!confirm(
+"Usunąć kontrahenta?"
+)
+)
+
+return;
+
+
+
+
+
+
+const {
+
+error
+
+}
+
+=
+
+await supabaseClient
+
+.from("kontrahenci")
+
+.delete()
+
+.eq(
+"id",
+id
+);
+
+
+
+
+
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+
+
+loadContractorsList();
+
+
+
 }
 
 
@@ -284,9 +425,9 @@ input.value="";
 
 
 
-// ==============================
-// DODAJ LOKAL
-// ==============================
+// ==========================
+// LOKALE
+// ==========================
 
 
 async function addLocal(){
@@ -294,47 +435,25 @@ async function addLocal(){
 
 
 const mpk =
-
-document
-
-.getElementById(
+document.getElementById(
 "localMPK"
 )
-
-.value
-
-.trim();
-
-
-
+.value.trim();
 
 
 
 const name =
-
-document
-
-.getElementById(
+document.getElementById(
 "localName"
 )
-
-.value
-
-.trim();
-
-
-
+.value.trim();
 
 
 
 const location =
-
-document
-
-.getElementById(
+document.getElementById(
 "localLocation"
 )
-
 .value;
 
 
@@ -342,31 +461,19 @@ document
 
 
 
-
 if(
-
 !mpk ||
-
 !name ||
-
 !location
-
 ){
-
-
 
 alert(
 "Uzupełnij wszystkie pola"
 );
 
-
-
 return;
 
-
 }
-
-
 
 
 
@@ -405,69 +512,32 @@ lokalizacja:location
 
 
 
-
 if(error){
 
-
-alert(
-
-"Błąd dodawania lokalu: "
-
-+
-
-error.message
-
-);
-
-
+alert(error.message);
 
 return;
-
 
 }
 
 
 
 
+document.getElementById(
+"localMPK"
+).value="";
+
+
+
+document.getElementById(
+"localName"
+).value="";
 
 
 
 alert(
 "Lokal dodany"
 );
-
-
-
-
-
-
-document
-
-.getElementById(
-"localMPK"
-)
-
-.value="";
-
-
-
-document
-
-.getElementById(
-"localName"
-)
-
-.value="";
-
-
-
-document
-
-.getElementById(
-"localLocation"
-)
-
-.value="";
 
 
 
