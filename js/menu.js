@@ -1,4 +1,6 @@
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
 
 const menuBtn =
@@ -10,32 +12,9 @@ document.getElementById("menuList");
 
 
 
-const addBtn =
-document.getElementById("addBtn");
+if(!menuBtn || !menuList){
 
-
-const allLocations =
-document.getElementById("allLocations");
-
-
-
-
-
-
-// OTWIERANIE MENU
-
-
-if(menuBtn){
-
-
-menuBtn.onclick=()=>{
-
-
-menuList.classList.toggle("active");
-
-
-};
-
+return;
 
 }
 
@@ -43,59 +22,20 @@ menuList.classList.toggle("active");
 
 
 
+// rozwijanie menu
+
+menuBtn.addEventListener(
+"click",
+(e)=>{
 
 
-// DODAJ DOKUMENT
+e.stopPropagation();
 
 
-if(addBtn){
+menuList.classList.toggle(
+"active"
+);
 
-
-addBtn.onclick=()=>{
-
-
-
-const modal =
-document.getElementById("modalOverlay");
-
-
-
-modal.classList.remove("hidden");
-
-
-
-document
-.getElementById("modalTitle")
-.innerText=
-"Dodaj dokument";
-
-
-
-document
-.getElementById("saveBtn")
-.innerText=
-"Zapisz dokument";
-
-
-
-
-
-
-// czyszczenie formularza
-
-
-document
-.querySelectorAll(
-".modal input, .modal textarea"
-)
-
-.forEach(field=>{
-
-
-field.value="";
-
-
-field.classList.remove("invalid");
 
 
 });
@@ -104,81 +44,71 @@ field.classList.remove("invalid");
 
 
 
-const location =
-document.getElementById("location");
 
 
-
-if(location){
-
-
-location.value="";
+// klik poza menu - zamykanie
 
 
-}
+document.addEventListener(
+"click",
+()=>{
 
 
+menuList.classList.remove(
+"active"
+);
 
 
-editingId=null;
-
-
-
-
-document
-.getElementById("successBox")
-.classList.add("hidden");
-
-
-
-document
-.getElementById("errorBox")
-.classList.add("hidden");
+});
 
 
 
 
 
-menuList.classList.remove("active");
+// żeby kliknięcie w menu go nie zamykało
+
+menuList.addEventListener(
+"click",
+(e)=>{
 
 
-};
+e.stopPropagation();
 
 
-}
+});
 
 
 
 
 
 
+// dodawanie dokumentu
+
+
+const addBtn =
+document.getElementById("addBtn");
 
 
 
-// WSZYSTKIE LOKALIZACJE
+if(addBtn){
 
 
-if(allLocations){
+addBtn.onclick=()=>{
 
 
-
-allLocations.onclick=()=>{
-
-
-selectedLocation="WSZYSTKIE";
+if(typeof openAddModal==="function"){
 
 
-if(typeof render==="function"){
-
-
-render();
+openAddModal();
 
 
 }
 
 
 
-menuList.classList.remove("active");
+menuList.classList.remove(
+"active"
+);
 
 
 
