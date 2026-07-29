@@ -4,6 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Archiwum Dokumentów</title>
@@ -24,28 +25,36 @@
 </div>
 
 
+
 <div class="menu">
+
 
 <button id="menuBtn">
 ☰ Menu
 </button>
 
 
+
 <div id="menuList" class="dropdown">
+
 
 <button id="addBtn">
 ➕ Dodaj dokument
 </button>
 
+
 <button>
 📋 Wszystkie lokalizacje
 </button>
+
 
 <button>
 ⚙️ Ustawienia
 </button>
 
+
 </div>
+
 
 </div>
 
@@ -54,13 +63,27 @@
 
 
 
+
+
 <main>
 
 
+<!-- WYSZUKIWANIE -->
+
 <input 
 id="searchInput"
-placeholder="🔍 Szukaj dokumentu..."
+placeholder="🔍 Szukaj dokumentu, lokalu, regału..."
 >
+
+
+
+<!-- ZAKŁADKI LOKALIZACJI -->
+
+<div id="locationTabs"></div>
+
+
+
+<!-- FILTRY -->
 
 <div id="filters">
 
@@ -72,6 +95,7 @@ Wszystkie typy
 </option>
 
 </select>
+
 
 
 <select id="shelfFilter">
@@ -86,17 +110,29 @@ Wszystkie regały
 </div>
 
 
+
+<!-- LISTA DOKUMENTÓW -->
+
 <div id="results"></div>
 
 
 
 
+
+<!-- DODAWANIE DOKUMENTU -->
+
 <section id="adminPanel" class="hidden">
 
 
 <h2>
-Dodaj dokument
+➕ Dodaj dokument
 </h2>
+
+
+
+<label>
+Lokalizacja
+</label>
 
 
 <select id="location">
@@ -118,41 +154,115 @@ Dodaj dokument
 
 
 
+
+<label>
+Numer lokalu
+</label>
+
+
 <input 
 id="number"
-placeholder="Numer lokalu"
+placeholder="np. 12A"
 >
+
+
+
+
+
+<label>
+Nazwa dokumentu
+</label>
 
 
 <input 
-id="name" 
-placeholder="Nazwa dokumentu"
+id="name"
+placeholder="np. Protokół przeglądu"
 >
+
+
+
+
+
+<label>
+Typ dokumentu
+</label>
 
 
 <input 
-id="type" 
-placeholder="Typ dokumentu"
+id="type"
+placeholder="np. Techniczny"
 >
-  
-
-<input id="shelf" placeholder="Regał">
-
-<input id="level" placeholder="Półka">
-
-<input id="folder" placeholder="Segregator">
 
 
-<textarea id="notes" placeholder="Uwagi"></textarea>
+
+
+
+<label>
+Regał
+</label>
+
+
+<input 
+id="shelf"
+placeholder="np. A"
+>
+
+
+
+
+
+<label>
+Półka
+</label>
+
+
+<input 
+id="level"
+placeholder="np. 3"
+>
+
+
+
+
+
+<label>
+Segregator
+</label>
+
+
+<input 
+id="folder"
+placeholder="np. Czerwony"
+>
+
+
+
+
+
+<label>
+Uwagi
+</label>
+
+
+<textarea 
+id="notes"
+placeholder="Dodatkowe informacje">
+</textarea>
+
+
 
 
 
 <button id="saveBtn">
-Zapisz dokument
+
+💾 Zapisz dokument
+
 </button>
 
 
+
 </section>
+
 
 
 
@@ -160,16 +270,28 @@ Zapisz dokument
 
 
 
+
+
+<!-- SKRYPTY -->
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <script src="./js/supabase.js"></script>
 
+
 <script src="./js/app.js"></script>
+
 
 <script src="./js/admin.js"></script>
 
+
 <script src="./js/menu.js"></script>
 
+
+
 </body>
+
 
 </html>
