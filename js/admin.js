@@ -1,57 +1,59 @@
-document.addEventListener("DOMContentLoaded",()=>{
+let editingId = null;
+
+
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
 
 
 const saveBtn =
 document.getElementById("saveBtn");
 
-
 const closeBtn =
 document.getElementById("closeModal");
 
 
-const closeAfterSave =
-document.getElementById("closeAfterSave");
 
 
 
 
-
-// ============================
-// ZAMKNIĘCIE X
-// ============================
-
-
-if(closeBtn){
+// =====================
+// ZAMYKANIE MODALA
+// =====================
 
 
-closeBtn.onclick=()=>{
-
+closeBtn.addEventListener(
+"click",
+()=>{
 
 closeModal();
 
-
-};
-
-
 }
 
+);
 
 
 
 
 
-// ============================
+
+
+// =====================
 // ZAPIS
-// ============================
+// =====================
 
 
-saveBtn.onclick = async ()=>{
+saveBtn.addEventListener(
+"click",
+async ()=>{
 
 
 
 
 
-const requiredFields=[
+const required=[
 
 "location",
 "number",
@@ -59,19 +61,20 @@ const requiredFields=[
 "type",
 "shelf",
 "level",
-"folder"
+"folder",
+"status"
 
 ];
 
 
 
-let emptyFields=[];
+let valid=true;
 
 
 
 
 
-requiredFields.forEach(id=>{
+required.forEach(id=>{
 
 
 const field=
@@ -82,16 +85,22 @@ document.getElementById(id);
 if(!field.value.trim()){
 
 
-emptyFields.push(id);
+field.classList.add(
+"invalid"
+);
 
 
-field.classList.add("invalid");
+valid=false;
 
 
-}else{
+}
+
+else{
 
 
-field.classList.remove("invalid");
+field.classList.remove(
+"invalid"
+);
 
 
 }
@@ -105,14 +114,12 @@ field.classList.remove("invalid");
 
 
 
-if(emptyFields.length>0){
-
+if(!valid){
 
 
 showError(
-"Uzupełnij wszystkie pola oznaczone *"
+"Uzupełnij wszystkie wymagane pola."
 );
-
 
 
 return;
@@ -126,49 +133,86 @@ return;
 
 
 
-const documentData={
+
+
+const data={
 
 
 
 lokalizacja:
-document.getElementById("location").value,
+
+document
+.getElementById("location")
+.value,
 
 
 
 numer_lokalu:
-document.getElementById("number").value,
+
+document
+.getElementById("number")
+.value,
 
 
 
 nazwa:
-document.getElementById("name").value,
+
+document
+.getElementById("name")
+.value,
 
 
 
 typ:
-document.getElementById("type").value,
+
+document
+.getElementById("type")
+.value,
 
 
 
 regal:
-document.getElementById("shelf").value,
+
+document
+.getElementById("shelf")
+.value,
 
 
 
 polka:
-document.getElementById("level").value,
+
+document
+.getElementById("level")
+.value,
 
 
 
 segregator:
-document.getElementById("folder").value,
+
+document
+.getElementById("folder")
+.value,
+
+
+
+status:
+
+document
+.getElementById("status")
+.value,
 
 
 
 uwagi:
-document.getElementById("notes").value
+
+document
+.getElementById("notes")
+.value,
 
 
+
+updated_at:
+new Date()
 
 };
 
@@ -178,9 +222,8 @@ document.getElementById("notes").value
 
 
 
+let result;
 
-
-let response;
 
 
 
@@ -194,14 +237,16 @@ if(editingId){
 
 
 
-response =
-await supabaseClient
+result = await supabaseClient
 
 .from("dokumenty")
 
-.update(documentData)
+.update(data)
 
-.eq("id",editingId);
+.eq(
+"id",
+editingId
+);
 
 
 
@@ -212,20 +257,17 @@ await supabaseClient
 
 
 
-// NOWY DOKUMENT
+// NOWY
 
 
 else{
 
 
-
-response =
-await supabaseClient
+result = await supabaseClient
 
 .from("dokumenty")
 
-.insert([documentData]);
-
+.insert([data]);
 
 
 }
@@ -237,15 +279,21 @@ await supabaseClient
 
 
 
-if(response.error){
+
+if(result.error){
 
 
-console.error(response.error);
+
+console.error(
+result.error
+);
+
 
 
 showError(
-"Wystąpił błąd podczas zapisu"
+"Błąd zapisu dokumentu."
 );
+
 
 
 return;
@@ -259,17 +307,7 @@ return;
 
 
 
-document
-.getElementById("successBox")
-.classList.remove("hidden");
-
-
-
-document
-.getElementById("errorBox")
-.classList.add("hidden");
-
-
+showSuccess();
 
 
 
@@ -283,37 +321,11 @@ loadDocuments();
 
 
 
-};
 
 
 
 
-
-
-
-
-
-
-
-// ============================
-// ZAMKNIĘCIE PO SUKCESIE
-// ============================
-
-
-if(closeAfterSave){
-
-
-closeAfterSave.onclick=()=>{
-
-
-closeModal();
-
-
-};
-
-
-}
-
+});
 
 
 
@@ -330,133 +342,150 @@ closeModal();
 
 
 
+// =====================
+// OTWÓRZ DODAWANIE
+// =====================
 
 
-// ============================
-// FUNKCJA ZAMYKANIA
-// ============================
+function openAddModal(){
+
+
+
+editingId=null;
+
+
+
+document
+.getElementById("modalOverlay")
+.classList.remove(
+"hidden"
+);
+
+
+
+document
+.getElementById("modalTitle")
+.innerText=
+"Dodaj dokument";
+
+
+
+document
+.getElementById("saveBtn")
+.innerText=
+"Zapisz dokument";
+
+
+
+clearForm();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// EDYCJA
+// =====================
+
+
+function openEditModal(doc){
+
+
+
+editingId=doc.id;
+
+
+
+document
+.getElementById("modalOverlay")
+.classList.remove(
+"hidden"
+);
+
+
+
+
+document
+.getElementById("modalTitle")
+.innerText=
+"Edytuj dokument";
+
+
+
+document
+.getElementById("saveBtn")
+.innerText=
+"Zapisz zmiany";
+
+
+
+
+
+document.getElementById("location").value=
+doc.lokalizacja || "";
+
+document.getElementById("number").value=
+doc.numer_lokalu || "";
+
+document.getElementById("name").value=
+doc.nazwa || "";
+
+document.getElementById("type").value=
+doc.typ || "";
+
+document.getElementById("shelf").value=
+doc.regal || "";
+
+document.getElementById("level").value=
+doc.polka || "";
+
+document.getElementById("folder").value=
+doc.segregator || "";
+
+document.getElementById("status").value=
+doc.status || "OK";
+
+document.getElementById("notes").value=
+doc.uwagi || "";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// ZAMKNIJ
+// =====================
 
 
 function closeModal(){
 
 
 
-const modal =
-document.getElementById("modalOverlay");
-
-
-
-if(modal){
-
-
-modal.classList.add("hidden");
-
-
-}
-
-
-
-
-
-
-
-const success =
-document.getElementById("successBox");
-
-
-
-if(success){
-
-
-success.classList.add("hidden");
-
-
-}
-
-
-
-
-
-
-
-const error =
-document.getElementById("errorBox");
-
-
-
-if(error){
-
-
-error.classList.add("hidden");
-
-
-}
-
-
-
-
-
-
-
 document
-.querySelectorAll(
-".modal input, .modal textarea"
-)
-
-.forEach(field=>{
-
-
-field.value="";
-
-
-field.classList.remove("invalid");
-
-
-});
+.getElementById("modalOverlay")
+.classList.add(
+"hidden"
+);
 
 
 
-
-
-
-
-const title =
-document.getElementById("modalTitle");
-
-
-
-if(title){
-
-
-title.innerText=
-"Dodaj dokument";
-
-
-}
-
-
-
-
-
-
-
-const button =
-document.getElementById("saveBtn");
-
-
-
-if(button){
-
-
-button.innerText=
-"Zapisz dokument";
-
-
-}
-
-
-
-
+clearForm();
 
 
 
@@ -474,24 +503,118 @@ editingId=null;
 
 
 
+// =====================
+// CZYSZCZENIE
+// =====================
 
 
-// ============================
-// BŁĄD
-// ============================
+function clearForm(){
+
+
+
+document
+.querySelectorAll(
+"#modalOverlay input, #modalOverlay textarea"
+)
+
+.forEach(field=>{
+
+
+field.value="";
+
+
+field.classList.remove(
+"invalid"
+);
+
+
+});
+
+
+
+document
+.getElementById("location")
+.value="";
+
+
+
+document
+.getElementById("status")
+.value="OK";
+
+
+
+document
+.getElementById("successBox")
+.classList.add(
+"hidden"
+);
+
+
+
+document
+.getElementById("errorBox")
+.classList.add(
+"hidden"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// KOMUNIKATY
+// =====================
+
+
+function showSuccess(){
+
+
+
+const box=
+document.getElementById(
+"successBox"
+);
+
+
+
+box.innerText=
+"Dokument został zapisany.";
+
+
+
+
+
+box.classList.remove(
+"hidden"
+);
+
+
+
+}
+
+
+
+
+
 
 
 function showError(text){
 
 
 
-const box =
-document.getElementById("errorBox");
-
-
-
-if(!box)
-return;
+const box=
+document.getElementById(
+"errorBox"
+);
 
 
 
@@ -499,7 +622,9 @@ box.innerText=text;
 
 
 
-box.classList.remove("hidden");
+box.classList.remove(
+"hidden"
+);
 
 
 
