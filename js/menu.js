@@ -1,47 +1,49 @@
-const menuBtn =
-document.getElementById("menuBtn");
+const menuBtn = document.getElementById("menuBtn");
+
+const menuList = document.getElementById("menuList");
 
 
-const menuPanel =
-document.getElementById("menuPanel");
+menuBtn.addEventListener("click", function(){
 
+    menuList.classList.toggle("show");
 
-
-menuBtn.onclick = ()=>{
-
-
-menuPanel.classList.toggle("show");
-
-
-};
+});
 
 
 
-
-document
-.getElementById("addBtn")
-.onclick=()=>{
+const addBtn = document.getElementById("addBtn");
 
 
-document
-.getElementById("adminPanel")
-.classList.toggle("hidden");
+addBtn.addEventListener("click", function(){
 
+    const panel = document.getElementById("adminPanel");
 
-};
+    panel.classList.toggle("hidden");
+
+});
 
 
 
 
-document
-.getElementById("allLocations")
-.onclick=()=>{
+const allLocations =
+document.getElementById("allLocations");
 
 
-selectedLocation="WSZYSTKIE";
+allLocations.addEventListener("click", function(){
 
 
-render();
+    if(typeof selectedLocation !== "undefined"){
+
+        selectedLocation = "WSZYSTKIE";
+
+    }
 
 
-};
+    if(typeof render === "function"){
+
+        render();
+
+    }
+
+
+});
