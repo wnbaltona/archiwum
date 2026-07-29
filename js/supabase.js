@@ -9,6 +9,3 @@ supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
-
-
-console.log("SUPABASE ZAŁADOWANY", supabaseClient);
