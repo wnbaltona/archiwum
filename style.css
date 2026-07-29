@@ -1,29 +1,31 @@
 *{
 box-sizing:border-box;
-font-family:"Inter",Arial,sans-serif;
+font-family:Inter,Arial,sans-serif;
 }
 
 
 body{
 margin:0;
-background:#f7f7f8;
+background:#f6f7f9;
 color:#1f2937;
 }
 
 
-/* HEADER */
+/* ================= HEADER ================= */
 
 .topbar{
+
 height:72px;
 background:white;
 display:flex;
 align-items:center;
 justify-content:space-between;
 padding:0 35px;
-box-shadow:0 2px 10px rgba(0,0,0,.06);
+box-shadow:0 2px 12px rgba(0,0,0,.08);
 position:sticky;
 top:0;
-z-index:50;
+z-index:20;
+
 }
 
 
@@ -33,15 +35,14 @@ font-weight:700;
 }
 
 
-
 .menu-button{
-font-size:28px;
-border:none;
+
 background:none;
+border:none;
+font-size:28px;
 cursor:pointer;
+
 }
-
-
 
 
 
@@ -61,18 +62,15 @@ gap:10px;
 }
 
 
-
 .menu-list button{
 
 border:none;
-background:#f3f4f6;
-padding:12px 20px;
+padding:12px 18px;
 border-radius:10px;
+background:#f3f4f6;
 cursor:pointer;
-font-size:15px;
 
 }
-
 
 
 .hidden{
@@ -83,14 +81,14 @@ display:none!important;
 
 
 
-/* FILTRY */
+/* ================= FILTRY ================= */
 
 
 .filters{
 
 max-width:1400px;
 margin:auto;
-padding:30px 25px 10px;
+padding:30px 25px;
 
 }
 
@@ -98,8 +96,8 @@ padding:30px 25px 10px;
 
 .location-tabs{
 
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+display:flex;
+flex-wrap:wrap;
 gap:15px;
 
 }
@@ -111,10 +109,10 @@ gap:15px;
 background:white;
 border:1px solid #e5e7eb;
 border-radius:18px;
-padding:18px;
+padding:18px 25px;
 cursor:pointer;
-transition:.25s;
-box-shadow:0 3px 10px rgba(0,0,0,.04);
+min-width:150px;
+transition:.2s;
 
 }
 
@@ -123,25 +121,28 @@ box-shadow:0 3px 10px rgba(0,0,0,.04);
 .location-card:hover{
 
 transform:translateY(-3px);
-box-shadow:0 8px 20px rgba(0,0,0,.08);
 
 }
 
 
 
-.location-card strong{
 
-font-size:16px;
-display:block;
-margin-bottom:8px;
+.location-card.active{
+
+background:#111827;
+color:white;
 
 }
+
+
 
 
 .location-card span{
 
+display:block;
+margin-top:5px;
+font-size:13px;
 color:#6b7280;
-font-size:14px;
 
 }
 
@@ -149,16 +150,27 @@ font-size:14px;
 
 
 
-#searchInput{
+.filter-box{
 
-margin-top:25px;
-width:100%;
-height:48px;
-border-radius:14px;
-border:1px solid #ddd;
-padding:0 18px;
-font-size:15px;
 background:white;
+padding:20px;
+border-radius:18px;
+display:flex;
+gap:15px;
+margin-top:20px;
+box-shadow:0 3px 12px rgba(0,0,0,.05);
+
+}
+
+
+
+.filter-box input,
+.filter-box select{
+
+height:42px;
+padding:0 14px;
+border-radius:10px;
+border:1px solid #ddd;
 
 }
 
@@ -166,25 +178,24 @@ background:white;
 
 
 
-/* DOKUMENTY */
+/* ================= ARCHIWUM ================= */
 
 
 #results{
 
 max-width:1400px;
 margin:auto;
-padding:20px 25px 50px;
+padding:0 25px 50px;
 
 }
-
 
 
 
 .archive-location{
 
 background:white;
-border-radius:22px;
-margin-bottom:25px;
+border-radius:20px;
+margin-bottom:20px;
 overflow:hidden;
 box-shadow:0 4px 15px rgba(0,0,0,.06);
 
@@ -195,77 +206,97 @@ box-shadow:0 4px 15px rgba(0,0,0,.06);
 .archive-header{
 
 padding:22px 28px;
-font-size:22px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+cursor:pointer;
+font-size:20px;
 font-weight:700;
-background:#fafafa;
-border-bottom:1px solid #eee;
 
 }
+
+
+
+.archive-header:after{
+
+content:"+";
+font-size:25px;
+
+}
+
+
+
+.archive-location.open 
+.archive-header:after{
+
+content:"−";
+
+}
+
+
+
+
+.archive-content{
+
+display:none;
+padding:0 28px 25px;
+
+}
+
+
+
+.archive-location.open 
+.archive-content{
+
+display:block;
+
+}
+
 
 
 
 
 .year-box{
 
-padding:25px 28px;
+margin-top:20px;
 
 }
+
 
 
 
 .year-box h3{
 
-margin-top:0;
-font-size:20px;
+font-size:18px;
 
 }
 
 
 
+
+
+/* dokumenty */
 
 
 .document{
 
 background:#f9fafb;
-border-radius:16px;
-padding:20px;
+border-radius:15px;
+padding:18px;
 margin-bottom:15px;
-border:1px solid #eee;
 
 }
-
-
-
-.document h4{
-
-font-size:18px;
-margin:0 0 15px;
-
-}
-
-
-
-.document p{
-
-margin:7px 0;
-color:#4b5563;
-
-}
-
-
 
 
 
 .document button{
 
-margin-top:15px;
-padding:9px 18px;
-border-radius:10px;
+padding:8px 15px;
 border:none;
+border-radius:8px;
 cursor:pointer;
 
 }
-
 
 
 .edit{
@@ -288,7 +319,10 @@ background:#fee2e2;
 
 
 
-/* MODALE */
+
+
+/* ================= MODALE ================= */
+
 
 
 .overlay{
@@ -297,23 +331,22 @@ position:fixed;
 inset:0;
 background:rgba(0,0,0,.45);
 display:flex;
-justify-content:center;
 align-items:center;
-z-index:100;
+justify-content:center;
 padding:20px;
+z-index:100;
 
 }
-
 
 
 
 .modal{
 
 background:white;
-width:100%;
-max-width:550px;
-padding:35px;
 border-radius:24px;
+width:100%;
+max-width:700px;
+padding:35px;
 max-height:90vh;
 overflow:auto;
 
@@ -321,15 +354,12 @@ overflow:auto;
 
 
 
-
 .close-button{
 
-position:absolute;
-right:25px;
-top:20px;
+float:right;
+border:none;
 background:#ef4444;
 color:white;
-border:none;
 border-radius:50%;
 width:32px;
 height:32px;
@@ -340,60 +370,120 @@ cursor:pointer;
 
 
 
-.modal h2{
 
-margin-top:0;
-
-}
+/* ================= FORMULARZ 2 KOLUMNY ================= */
 
 
+#modalOverlay .modal{
 
-
-.modal label{
 
 display:block;
-font-weight:600;
-margin-top:15px;
-margin-bottom:6px;
 
 }
 
 
 
+#modalOverlay .modal label{
 
-.modal input,
-.modal select,
-.modal textarea{
+
+margin-top:12px;
+
+}
+
+
+
+#modalOverlay .modal input,
+#modalOverlay .modal select,
+#modalOverlay .modal textarea{
 
 width:100%;
-padding:12px 14px;
-border-radius:12px;
-border:1px solid #d1d5db;
-font-size:15px;
 
 }
 
 
 
 
-.modal textarea{
+@media(min-width:700px){
 
-height:90px;
+
+#modalOverlay .modal{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px 20px;
 
 }
 
 
 
-.primary-button{
+#modalOverlay .modal h2{
 
-margin-top:25px;
+grid-column:1/-1;
+
+}
+
+
+
+#modalOverlay .modal .close-button{
+
+position:absolute;
+
+}
+
+
+
+#modalOverlay .modal textarea,
+#modalOverlay .modal .primary-button{
+
+grid-column:1/-1;
+
+}
+
+
+}
+
+
+
+
+
+/* ================= USTAWIENIA ================= */
+
+
+.settings-modal{
+
+max-width:600px;
+
+}
+
+
+
+.settings-modal h3{
+
+margin-top:30px;
+padding-bottom:10px;
+border-bottom:1px solid #eee;
+
+}
+
+
+
+.settings-modal input,
+.settings-modal select{
+
+margin-bottom:12px;
+
+}
+
+
+
+.settings-modal button:not(.close-button){
+
 width:100%;
-padding:14px;
-border-radius:14px;
+padding:12px;
 border:none;
+border-radius:12px;
 background:#111827;
 color:white;
-font-size:16px;
 cursor:pointer;
 
 }
@@ -401,34 +491,13 @@ cursor:pointer;
 
 
 
-/* MOBILE */
-
 
 @media(max-width:700px){
 
 
-.topbar{
-padding:0 18px;
-}
+.filter-box{
 
-
-.logo{
-font-size:18px;
-}
-
-
-
-.location-tabs{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-#results{
-
-padding:15px;
+flex-direction:column;
 
 }
 
