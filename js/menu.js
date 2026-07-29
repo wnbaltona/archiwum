@@ -10,6 +10,23 @@ document.getElementById("menuList");
 
 
 
+const addBtn =
+document.getElementById("addBtn");
+
+
+const allLocations =
+document.getElementById("allLocations");
+
+
+
+
+
+
+// OTWIERANIE MENU
+
+
+if(menuBtn){
+
 
 menuBtn.onclick=()=>{
 
@@ -20,24 +37,30 @@ menuList.classList.toggle("active");
 };
 
 
+}
 
 
 
 
-// OTWARCIE FORMULARZA DODAWANIA
 
 
-const addBtn =
-document.getElementById("addBtn");
 
+// DODAJ DOKUMENT
+
+
+if(addBtn){
 
 
 addBtn.onclick=()=>{
 
 
-document
-.getElementById("modalOverlay")
-.classList.remove("hidden");
+
+const modal =
+document.getElementById("modalOverlay");
+
+
+
+modal.classList.remove("hidden");
 
 
 
@@ -55,9 +78,45 @@ document
 
 
 
+
+
+
+// czyszczenie formularza
+
+
 document
-.getElementById("successBox")
-.classList.add("hidden");
+.querySelectorAll(
+".modal input, .modal textarea"
+)
+
+.forEach(field=>{
+
+
+field.value="";
+
+
+field.classList.remove("invalid");
+
+
+});
+
+
+
+
+
+const location =
+document.getElementById("location");
+
+
+
+if(location){
+
+
+location.value="";
+
+
+}
+
 
 
 
@@ -65,11 +124,31 @@ editingId=null;
 
 
 
+
+document
+.getElementById("successBox")
+.classList.add("hidden");
+
+
+
+document
+.getElementById("errorBox")
+.classList.add("hidden");
+
+
+
+
+
 menuList.classList.remove("active");
 
 
-
 };
+
+
+}
+
+
+
 
 
 
@@ -79,8 +158,7 @@ menuList.classList.remove("active");
 // WSZYSTKIE LOKALIZACJE
 
 
-const allLocations =
-document.getElementById("allLocations");
+if(allLocations){
 
 
 
@@ -90,15 +168,24 @@ allLocations.onclick=()=>{
 selectedLocation="WSZYSTKIE";
 
 
+if(typeof render==="function"){
+
+
 render();
+
+
+}
 
 
 
 menuList.classList.remove("active");
 
 
+
 };
 
+
+}
 
 
 
