@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Archiwum Dokumentów</title>
@@ -18,6 +17,7 @@
 
 
 <header>
+
 
 <div class="logo">
 Archiwum Dokumentów
@@ -44,11 +44,6 @@ Dodaj dokument
 
 <button id="allLocations">
 Wszystkie lokalizacje
-</button>
-
-
-<button id="deleteBtn">
-Usuń dokument
 </button>
 
 
@@ -107,10 +102,18 @@ Wszystkie regały
 <div id="results"></div>
 
 
+</main>
 
 
 
-<section id="adminPanel" class="hidden">
+
+
+<!-- OKNO DODAWANIA -->
+
+<div id="modalOverlay" class="modal-overlay hidden">
+
+
+<div class="modal">
 
 
 <h2>
@@ -138,46 +141,25 @@ Dodaj dokument
 
 
 
-<input 
-id="number"
-placeholder="Numer lokalu"
->
+<input id="number" placeholder="Numer lokalu">
 
 
-<input 
-id="name"
-placeholder="Nazwa dokumentu"
->
+<input id="name" placeholder="Nazwa dokumentu">
 
 
-<input 
-id="type"
-placeholder="Typ dokumentu"
->
+<input id="type" placeholder="Typ dokumentu">
 
 
-<input 
-id="shelf"
-placeholder="Regał"
->
+<input id="shelf" placeholder="Regał">
 
 
-<input 
-id="level"
-placeholder="Półka"
->
+<input id="level" placeholder="Półka">
 
 
-<input 
-id="folder"
-placeholder="Segregator"
->
+<input id="folder" placeholder="Segregator">
 
 
-<textarea 
-id="notes"
-placeholder="Uwagi">
-</textarea>
+<textarea id="notes" placeholder="Uwagi"></textarea>
 
 
 
@@ -186,10 +168,39 @@ Zapisz dokument
 </button>
 
 
-</section>
+<button id="closeModal">
+Zamknij
+</button>
 
 
-</main>
+
+
+<div id="successBox" class="hidden">
+
+
+<p>
+Dokument został dodany.
+</p>
+
+
+<button id="addAnother">
+Dodaj kolejny dokument
+</button>
+
+
+<button id="closeAfterSave">
+Zamknij
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
 
 
 
