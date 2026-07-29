@@ -1,70 +1,100 @@
-const menuButton = document.getElementById("menuBtn");
-const menuDropdown = document.getElementById("menuList");
+document.addEventListener("DOMContentLoaded",()=>{
 
 
-if(menuButton && menuDropdown){
+const menuBtn =
+document.getElementById("menuBtn");
 
-    menuButton.addEventListener("click", () => {
 
-        menuDropdown.classList.toggle("active");
+const menuList =
+document.getElementById("menuList");
 
-    });
+
+
+menuBtn.onclick=()=>{
+
+menuList.classList.toggle("active");
+
+};
+
+
+
+
+
+document.getElementById("addBtn").onclick=()=>{
+
+
+document
+.getElementById("modalOverlay")
+.classList.remove("hidden");
+
+
+menuList.classList.remove("active");
+
+
+};
+
+
+
+
+
+document.getElementById("closeModal").onclick=()=>{
+
+
+document
+.getElementById("modalOverlay")
+.classList.add("hidden");
+
+
+};
+
+
+
+
+
+document.getElementById("closeAfterSave").onclick=()=>{
+
+
+document
+.getElementById("modalOverlay")
+.classList.add("hidden");
+
+
+};
+
+
+
+
+
+document.getElementById("addAnother").onclick=()=>{
+
+
+document
+.getElementById("successBox")
+.classList.add("hidden");
+
+
+};
+
+
+
+document.getElementById("allLocations").onclick=()=>{
+
+
+if(typeof selectedLocation !== "undefined"){
+
+selectedLocation="WSZYSTKIE";
 
 }
 
 
+if(typeof render==="function"){
 
-// otwieranie formularza
-
-const addDocumentButton = document.getElementById("addBtn");
-
-
-if(addDocumentButton){
-
-    addDocumentButton.addEventListener("click", () => {
-
-
-        const panel = document.getElementById("adminPanel");
-
-
-        if(panel){
-
-            panel.classList.toggle("hidden");
-
-        }
-
-
-    });
+render();
 
 }
 
 
-
-// wszystkie lokalizacje
-
-const allLocationsButton =
-document.getElementById("allLocations");
+};
 
 
-if(allLocationsButton){
-
-    allLocationsButton.addEventListener("click",()=>{
-
-
-        if(typeof selectedLocation !== "undefined"){
-
-            selectedLocation="WSZYSTKIE";
-
-        }
-
-
-        if(typeof render === "function"){
-
-            render();
-
-        }
-
-
-    });
-
-}
+});
