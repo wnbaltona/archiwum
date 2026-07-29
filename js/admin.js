@@ -79,11 +79,15 @@ document
 .classList.remove("hidden");
 
 
+};
+
+
+
 
 
 
 document
-.getElementById("addAnother")
+.getElementById("closeAfterSave")
 .onclick=()=>{
 
 
@@ -92,8 +96,9 @@ document
 .classList.add("hidden");
 
 
-};
-
+document
+.getElementById("modalOverlay")
+.classList.add("hidden");
 
 
 };
