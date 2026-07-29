@@ -23,5 +23,3 @@ selectedLocation="WSZYSTKIE";
 render();
 
 });
-
-});
