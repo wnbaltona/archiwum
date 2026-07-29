@@ -5,7 +5,6 @@ let selectedLocation = "WSZYSTKIE";
 
 const DEFAULT_LOCATIONS = [
 
-"WSZYSTKIE",
 "OKĘCIE",
 "RADOM",
 "MODLIN",
@@ -22,8 +21,6 @@ const DEFAULT_LOCATIONS = [
 "KATOWICE"
 
 ];
-
-
 
 
 
@@ -71,8 +68,6 @@ render
 
 
 
-
-
 async function loadDocuments(){
 
 
@@ -81,7 +76,9 @@ const {
 data,
 error
 }
+
 =
+
 await supabaseClient
 
 .from("dokumenty")
@@ -98,7 +95,6 @@ ascending:false
 
 
 
-
 if(error){
 
 console.error(error);
@@ -110,9 +106,7 @@ return;
 
 
 
-
-documents =
-data || [];
+documents = data || [];
 
 
 
@@ -123,8 +117,8 @@ createYears();
 render();
 
 
-}
 
+}
 
 
 
@@ -139,6 +133,7 @@ function createLocations(){
 
 
 const box =
+
 document.getElementById(
 "locationTabs"
 );
@@ -157,24 +152,40 @@ box.innerHTML="";
 
 
 
-DEFAULT_LOCATIONS.forEach(location=>{
+const allLocations = [
+
+"WSZYSTKIE",
+
+...DEFAULT_LOCATIONS
+
+];
+
+
+
+
+
+
+
+allLocations.forEach(location=>{
+
 
 
 let count;
 
 
+
 if(location==="WSZYSTKIE"){
 
-count =
-documents.length;
+
+count = documents.length;
+
 
 }
+
 else{
 
 
-count =
-
-documents.filter(doc=>
+count = documents.filter(doc=>
 
 doc.lokalizacja===location
 
@@ -188,26 +199,29 @@ doc.lokalizacja===location
 
 
 
-const btn =
+const button =
 document.createElement(
 "button"
 );
 
 
 
-btn.className =
+button.className =
 "location-card";
 
 
 
 
-btn.innerHTML =
+
+button.innerHTML =
+
 
 `
 
 <strong>
 ${location}
 </strong>
+
 
 <span>
 ${count} dokumentów
@@ -218,14 +232,18 @@ ${count} dokumentów
 
 
 
-btn.onclick=()=>{
+
+
+button.onclick=()=>{
 
 
 selectedLocation =
 location;
 
 
+
 render();
+
 
 
 };
@@ -233,7 +251,8 @@ render();
 
 
 
-box.appendChild(btn);
+
+box.appendChild(button);
 
 
 
@@ -256,6 +275,7 @@ function createYears(){
 
 
 const select =
+
 document.getElementById(
 "yearFilter"
 );
@@ -269,10 +289,12 @@ return;
 
 
 
-let years =
+const years =
 
 [
+
 ...
+
 new Set(
 
 documents
@@ -294,7 +316,8 @@ documents
 
 
 
-select.innerHTML=
+select.innerHTML =
+
 
 `
 
@@ -312,6 +335,7 @@ years.forEach(year=>{
 
 
 select.innerHTML +=
+
 
 `
 
@@ -341,6 +365,7 @@ function render(){
 
 
 const results =
+
 document.getElementById(
 "results"
 );
@@ -352,13 +377,16 @@ return;
 
 
 
-
 results.innerHTML="";
 
 
 
 
-let list =
+
+
+
+let filtered =
+
 [...documents];
 
 
@@ -367,22 +395,20 @@ let list =
 
 
 
-if(selectedLocation!=="WSZYSTKIE"){
+if(
+selectedLocation !== "WSZYSTKIE"
+){
 
 
+filtered = filtered.filter(doc=>
 
-list =
-
-list.filter(doc=>
-
-doc.lokalizacja===selectedLocation
+doc.lokalizacja === selectedLocation
 
 );
 
 
 
 }
-
 
 
 
@@ -409,13 +435,11 @@ document
 
 
 
+
 if(search){
 
 
-
-list =
-
-list.filter(doc=>
+filtered = filtered.filter(doc=>
 
 JSON.stringify(doc)
 
@@ -449,19 +473,19 @@ document
 
 
 
-
 if(year){
 
-list =
 
-list.filter(doc=>
+filtered = filtered.filter(doc=>
 
 String(doc.rok)===year
 
 );
 
 
+
 }
+
 
 
 
@@ -484,12 +508,11 @@ document
 
 
 
+
 if(status){
 
 
-list =
-
-list.filter(doc=>
+filtered = filtered.filter(doc=>
 
 doc.status===status
 
@@ -513,19 +536,32 @@ const grouped={};
 
 
 
-list.forEach(doc=>{
+
+DEFAULT_LOCATIONS.forEach(location=>{
+
+
+grouped[location]=[];
+
+
+});
+
+
+
+
+
+
+filtered.forEach(doc=>{
 
 
 if(!grouped[doc.lokalizacja]){
+
 
 grouped[doc.lokalizacja]=[];
 
 }
 
 
-
-grouped[doc.lokalizacja]
-.push(doc);
+grouped[doc.lokalizacja].push(doc);
 
 
 
@@ -540,7 +576,8 @@ grouped[doc.lokalizacja]
 
 Object.entries(grouped)
 
-.forEach(([location,docs])=>{
+.forEach(
+([location,docs])=>{
 
 
 
@@ -574,39 +611,52 @@ container
 
 
 
-const locationBox =
+const section =
+
 document.createElement(
-"section"
+"div"
 );
 
 
 
-locationBox.className =
+section.className =
 "archive-location";
 
 
 
 
 
+section.innerHTML =
 
-locationBox.innerHTML =
 
 `
 
 <div class="archive-header">
 
-<span>
-▼
+
+<span class="arrow">
+▶
 </span>
+
+
 
 <strong>
 ${location}
 </strong>
 
 
+
+<span class="counter">
+
+${docs.length} dokumentów
+
+</span>
+
+
 </div>
 
-<div class="location-content">
+
+<div class="location-content hidden">
 
 </div>
 
@@ -617,17 +667,30 @@ ${location}
 
 
 
+
+
 const header =
-locationBox.querySelector(
+
+section.querySelector(
 ".archive-header"
 );
 
 
 
 const content =
-locationBox.querySelector(
+
+section.querySelector(
 ".location-content"
 );
+
+
+
+const arrow =
+
+section.querySelector(
+".arrow"
+);
+
 
 
 
@@ -643,7 +706,33 @@ content.classList.toggle(
 );
 
 
+
+if(
+content.classList.contains(
+"hidden"
+)
+
+){
+
+
+arrow.textContent="▶";
+
+
+}
+
+else{
+
+
+arrow.textContent="▼";
+
+
+}
+
+
 };
+
+
+
 
 
 
@@ -656,22 +745,29 @@ const years={};
 
 
 
-
 docs.forEach(doc=>{
 
 
-if(!years[doc.rok]){
+const year =
+doc.rok || "Brak roku";
 
-years[doc.rok]=[];
+
+
+if(!years[year]){
+
+
+years[year]=[];
 
 }
 
 
-years[doc.rok].push(doc);
+
+years[year].push(doc);
 
 
 
 });
+
 
 
 
@@ -685,11 +781,15 @@ Object.entries(years)
 (a,b)=>b[0]-a[0]
 )
 
-.forEach(([year,items])=>{
+.forEach(
+([year,items])=>{
+
+
 
 
 
 const yearBox =
+
 document.createElement(
 "div"
 );
@@ -704,6 +804,7 @@ yearBox.className =
 
 
 yearBox.innerHTML =
+
 
 `
 
@@ -724,6 +825,7 @@ items.forEach(doc=>{
 
 
 const card =
+
 document.createElement(
 "div"
 );
@@ -736,12 +838,16 @@ card.className =
 
 
 
+
+
+
 card.innerHTML =
+
 
 `
 
 <h4>
-${doc.nazwa}
+${doc.nazwa || "-"}
 </h4>
 
 
@@ -769,7 +875,6 @@ ${doc.status || "-"}
 </p>
 
 
-
 <button class="edit">
 Edytuj
 </button>
@@ -780,6 +885,7 @@ Usuń
 </button>
 
 `;
+
 
 
 
@@ -798,12 +904,14 @@ openEditModal(doc);
 
 
 
+
 card.querySelector(".delete")
 .onclick=()=>{
 
 deleteDocument(doc.id);
 
 };
+
 
 
 
@@ -821,6 +929,7 @@ yearBox.appendChild(card);
 
 
 
+
 content.appendChild(yearBox);
 
 
@@ -832,11 +941,12 @@ content.appendChild(yearBox);
 
 
 
-container.appendChild(locationBox);
+container.appendChild(section);
 
 
 
 }
+
 
 
 
@@ -862,6 +972,16 @@ return;
 
 
 
+
+
+const {
+
+error
+
+}
+
+=
+
 await supabaseClient
 
 .from("dokumenty")
@@ -872,6 +992,20 @@ await supabaseClient
 "id",
 id
 );
+
+
+
+
+
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
 
 
 
