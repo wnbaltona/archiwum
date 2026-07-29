@@ -3,14 +3,13 @@ document.addEventListener(
 ()=>{
 
 
-const menuBtn =
+const btn =
 document.getElementById(
 "menuBtn"
 );
 
 
-
-const menuList =
+const menu =
 document.getElementById(
 "menuList"
 );
@@ -19,29 +18,23 @@ document.getElementById(
 
 
 
-if(
-!menuBtn ||
-!menuList
-)
+if(!btn || !menu)
 return;
 
 
 
 
 
-
-menuBtn.addEventListener(
-"click",
-()=>{
+btn.onclick=()=>{
 
 
-menuList.classList.toggle(
+menu.classList.toggle(
 "hidden"
 );
 
 
+};
 
-});
 
 
 
@@ -55,16 +48,16 @@ document.addEventListener(
 
 if(
 
-!menuBtn.contains(e.target)
+!menu.contains(e.target)
 
 &&
 
-!menuList.contains(e.target)
+!btn.contains(e.target)
 
 ){
 
 
-menuList.classList.add(
+menu.classList.add(
 "hidden"
 );
 
