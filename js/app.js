@@ -2,6 +2,34 @@ let documents = [];
 
 let selectedLocation = "WSZYSTKIE";
 
+function documentText(number){
+
+number = Number(number);
+
+
+if(number === 1){
+
+return "dokument";
+
+}
+
+
+if(
+number % 10 >= 2 &&
+number % 10 <= 4 &&
+(number % 100 < 12 || number % 100 > 14)
+){
+
+return "dokumenty";
+
+}
+
+
+return "dokumentów";
+
+
+}
+
 
 
 const results = document.getElementById("results");
@@ -34,7 +62,10 @@ const locations = [
 "FRANCJA",
 "BYDGOSZCZ",
 "POZNAŃ",
-"WROCŁAW"
+"WROCŁAW",
+"GDAŃSK",
+"GDYNIA",
+"ŚWINOUJŚCIE"
 
 ];
 
@@ -172,7 +203,7 @@ ${location}
 </strong>
 
 <span>
-${count} dokumentów
+${count} ${documentText(count)}
 </span>
 
 `;
@@ -580,7 +611,7 @@ ${location}
 
 
 <span>
-${docs.length} dokumentów
+${docs.length} ${documentText(docs.length)}
 </span>
 
 
