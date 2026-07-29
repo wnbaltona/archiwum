@@ -140,10 +140,6 @@ documents=data || [];
 
 
 
-updateDashboard();
-
-
-
 createLocationTabs();
 
 
