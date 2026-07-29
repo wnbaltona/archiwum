@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,39 +12,89 @@
 
 </head>
 
+
 <body>
 
-<header>
-    <h1>📁 Archiwum Dokumentów</h1>
-    <p>Szybkie wyszukiwanie lokalizacji dokumentów</p>
-</header>
+
+<header class="topbar">
 
 
-<main>
+<div class="logo">
+📁 Archiwum Dokumentów
+</div>
 
-<section class="search-section">
 
-<input 
-id="searchInput"
-type="text"
-placeholder="🔍 Wpisz nazwę dokumentu, miasto lub lokal..."
->
 
-</section>
+<div class="menu">
+
+
+<button id="menuButton">
+☰ Menu
+</button>
+
+
+
+<div id="dropdown" class="dropdown">
+
 
 <button id="showAdmin">
 ➕ Dodaj dokument
 </button>
 
 
+<button>
+📋 Wszystkie dokumenty
+</button>
+
+
+<button>
+⚙️ Ustawienia
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</header>
+
+
+
+
+<main>
+
+
+<div class="search-box">
+
+
+<input 
+id="searchInput"
+placeholder="🔍 Szukaj dokumentu, miasta, lokalu..."
+>
+
+
+</div>
+
+
+
+<section id="results"></section>
+
+
+
+
 <section id="adminPanel" class="hidden">
 
-<h2>Dodaj nowy dokument</h2>
+
+<h3>
+➕ Dodaj dokument
+</h3>
 
 
 <input id="name" placeholder="Nazwa dokumentu">
 
-<input id="type" placeholder="Typ dokumentu">
+<input id="type" placeholder="Typ">
 
 <input id="city" placeholder="Miasto">
 
@@ -58,18 +110,15 @@ placeholder="🔍 Wpisz nazwę dokumentu, miasto lub lokal..."
 
 
 <button id="addDocument">
-Zapisz dokument
+Zapisz
 </button>
 
 
 </section>
 
-<section id="results">
-
-</section>
-
 
 </main>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -78,5 +127,9 @@ Zapisz dokument
 
 <script src="js/app.js"></script>
 
+<script src="js/admin.js"></script>
+
+
 </body>
+
 </html>
