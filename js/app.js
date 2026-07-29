@@ -5,13 +5,14 @@ let selectedLocation = "WSZYSTKIE";
 
 
 
-// START
 
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
+
 loadDocuments();
+
 
 
 document
@@ -22,15 +23,37 @@ render
 );
 
 
+
+document
+.getElementById("yearFilter")
+?.addEventListener(
+"change",
+render
+);
+
+
+
+document
+.getElementById("statusFilter")
+?.addEventListener(
+"change",
+render
+);
+
+
+
 });
 
 
 
 
 
-// ===============================
+
+
+
+// ==========================
 // POBIERANIE DOKUMENTÓW
-// ===============================
+// ==========================
 
 
 async function loadDocuments(){
@@ -63,10 +86,11 @@ ascending:false
 
 
 
+
 if(error){
 
 console.error(
-"Błąd pobierania:",
+"Błąd pobierania dokumentów:",
 error
 );
 
@@ -82,7 +106,15 @@ documents=data || [];
 
 
 
+
 createLocations();
+
+
+
+
+createYearFilter();
+
+
 
 
 render();
@@ -99,9 +131,9 @@ render();
 
 
 
-// ===============================
-// FILTRY LOKALIZACJI
-// ===============================
+// ==========================
+// LOKALIZACJE
+// ==========================
 
 
 function createLocations(){
@@ -125,6 +157,8 @@ box.innerHTML="";
 
 
 
+
+
 let locations=[
 
 "WSZYSTKIE",
@@ -136,7 +170,7 @@ let locations=[
 
 
 
-// dodaj lokalizacje z bazy
+
 
 documents.forEach(doc=>{
 
@@ -168,10 +202,13 @@ locations=[
 
 
 
+
 locations.forEach(location=>{
 
 
+
 const count =
+
 
 location==="WSZYSTKIE"
 
@@ -182,6 +219,7 @@ documents.length
 :
 
 documents.filter(
+
 doc=>
 
 doc.lokalizacja===location
@@ -203,6 +241,21 @@ document.createElement(
 
 button.className=
 "location-card";
+
+
+
+
+
+if(
+selectedLocation===location
+){
+
+button.classList.add(
+"active"
+);
+
+}
+
 
 
 
@@ -235,6 +288,9 @@ selectedLocation=location;
 render();
 
 
+createLocations();
+
+
 };
 
 
@@ -250,7 +306,6 @@ box.appendChild(button);
 
 
 
-
 }
 
 
@@ -261,37 +316,82 @@ box.appendChild(button);
 
 
 
-
-// ===============================
-// ODMIANA
-// ===============================
-
-
-function documentText(number){
+// ==========================
+// FILTR LAT
+// ==========================
 
 
-
-if(number===1)
-
-return "dokument";
+function createYearFilter(){
 
 
+const select =
+document.getElementById(
+"yearFilter"
+);
 
-if(
 
-number%10>=2 &&
 
-number%10<=4 &&
+if(!select)
+return;
 
-(number%100<12 || number%100>14)
+
+
+
+
+const years=[
+
+...new Set(
+
+documents
+
+.map(doc=>doc.rok)
+
+.filter(Boolean)
 
 )
 
-return "dokumenty";
+]
+
+.sort(
+(a,b)=>b-a
+);
 
 
 
-return "dokumentów";
+
+
+
+select.innerHTML=
+
+`
+
+<option value="">
+Wszystkie lata
+</option>
+
+`;
+
+
+
+
+
+years.forEach(year=>{
+
+
+select.innerHTML +=
+
+`
+
+<option value="${year}">
+${year}
+</option>
+
+`;
+
+
+
+});
+
 
 
 }
@@ -304,9 +404,9 @@ return "dokumentów";
 
 
 
-// ===============================
+// ==========================
 // WYŚWIETLANIE
-// ===============================
+// ==========================
 
 
 function render(){
@@ -326,7 +426,9 @@ return;
 
 
 
+
 results.innerHTML="";
+
 
 
 
@@ -337,8 +439,7 @@ let list=[...documents];
 
 
 
-
-// filtr lokalizacji
+// lokalizacja
 
 
 if(
@@ -356,6 +457,7 @@ doc.lokalizacja===selectedLocation
 
 
 }
+
 
 
 
@@ -387,6 +489,7 @@ document
 if(search){
 
 
+
 list=list.filter(
 
 doc=>
@@ -408,22 +511,36 @@ JSON.stringify(doc)
 
 
 
-if(!list.length){
 
 
-results.innerHTML=
 
-`
+// rok
 
-<div class="empty">
 
-Brak dokumentów
+const year =
 
-</div>
+document
 
-`;
+.getElementById(
+"yearFilter"
+)
 
-return;
+?.value;
+
+
+
+
+
+if(year){
+
+
+list=list.filter(
+
+doc=>
+
+String(doc.rok)===year
+
+);
 
 
 }
@@ -434,17 +551,89 @@ return;
 
 
 
-// sortowanie po roku
+
+
+// status
+
+
+const status =
+
+document
+
+.getElementById(
+"statusFilter"
+)
+
+?.value;
+
+
+
+
+
+if(status){
+
+
+
+list=list.filter(
+
+doc=>
+
+doc.status===status
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if(!list.length){
+
+
+results.innerHTML=
+
+`
+
+<div class="document">
+
+Brak dokumentów
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+
+
+
+
+
+
+
+// sortowanie
+
 
 list.sort(
 
 (a,b)=>
 
-Number(b.rok || 0)
+Number(b.rok||0)
 
 -
 
-Number(a.rok || 0)
+Number(a.rok||0)
 
 );
 
@@ -456,7 +645,7 @@ Number(a.rok || 0)
 
 
 
-// grupowanie lokalizacja
+// grupowanie
 
 
 const grouped={};
@@ -464,14 +653,18 @@ const grouped={};
 
 
 
+
+
 list.forEach(doc=>{
 
 
-const location =
+
+const location=
 
 doc.lokalizacja ||
 
 "Brak lokalizacji";
+
 
 
 
@@ -483,13 +676,11 @@ grouped[location]=[];
 }
 
 
-
 grouped[location].push(doc);
 
 
 
 });
-
 
 
 
@@ -509,7 +700,7 @@ Object.entries(grouped)
 
 
 
-const locationBox =
+const box=
 
 document.createElement(
 "div"
@@ -517,7 +708,7 @@ document.createElement(
 
 
 
-locationBox.className=
+box.className=
 "archive-location";
 
 
@@ -525,13 +716,20 @@ locationBox.className=
 
 
 
-locationBox.innerHTML=
+
+
+box.innerHTML=
 
 `
 
 <div class="archive-header">
 
 ${location}
+
+</div>
+
+
+<div class="archive-content">
 
 </div>
 
@@ -543,9 +741,37 @@ ${location}
 
 
 
+const content=
+
+box.querySelector(
+".archive-content"
+);
 
 
-// grupowanie rok
+
+
+
+
+box
+
+.querySelector(
+".archive-header"
+)
+
+.onclick=()=>{
+
+
+box.classList.toggle(
+"open"
+);
+
+
+};
+
+
+
+
+
 
 
 const years={};
@@ -554,22 +780,23 @@ const years={};
 
 
 
+
 docs.forEach(doc=>{
 
 
-const year=
-
+const y=
 doc.rok || "Brak roku";
 
 
+if(!years[y]){
 
-if(!years[year])
+years[y]=[];
 
-years[year]=[];
+}
 
 
 
-years[year].push(doc);
+years[y].push(doc);
 
 
 
@@ -580,26 +807,17 @@ years[year].push(doc);
 
 
 
-
-
 Object.entries(years)
 
 .sort(
 
-(a,b)=>
-
-Number(b[0])
-
--
-
-Number(a[0])
+(a,b)=>Number(b[0])-Number(a[0])
 
 )
 
 .forEach(
 
 ([year,yearDocs])=>{
-
 
 
 
@@ -639,9 +857,6 @@ yearDocs.forEach(doc=>{
 
 
 
-
-
-
 const card=
 
 document.createElement(
@@ -656,8 +871,6 @@ card.className=
 
 
 
-
-
 card.innerHTML=
 
 `
@@ -665,12 +878,6 @@ card.innerHTML=
 <h4>
 ${doc.nazwa}
 </h4>
-
-
-<p>
-Lokalizacja:
-${doc.lokalizacja}
-</p>
 
 
 <p>
@@ -716,29 +923,22 @@ ${doc.status}
 
 
 <p>
-Rok:
-${doc.rok || "-"}
+Uwagi:
+${doc.uwagi || "-"}
 </p>
 
 
+
 <button class="edit">
-
 Edytuj
-
 </button>
 
 
 <button class="delete">
-
 Usuń
-
 </button>
 
 `;
-
-
-
-
 
 
 
@@ -748,9 +948,7 @@ card
 
 .querySelector(".edit")
 
-.onclick=
-
-()=>{
+.onclick=()=>{
 
 openEditModal(doc);
 
@@ -760,20 +958,15 @@ openEditModal(doc);
 
 
 
-
-
 card
 
 .querySelector(".delete")
 
-.onclick=
-
-()=>{
+.onclick=()=>{
 
 deleteDocument(doc.id);
 
 };
-
 
 
 
@@ -789,7 +982,8 @@ yearBox.appendChild(card);
 
 
 
-locationBox.appendChild(yearBox);
+
+content.appendChild(yearBox);
 
 
 
@@ -799,12 +993,12 @@ locationBox.appendChild(yearBox);
 
 
 
-results.appendChild(locationBox);
+
+results.appendChild(box);
 
 
 
 });
-
 
 
 
@@ -818,9 +1012,51 @@ results.appendChild(locationBox);
 
 
 
-// ===============================
+// ==========================
+// ODMIANA
+// ==========================
+
+
+function documentText(number){
+
+
+if(number===1)
+
+return "dokument";
+
+
+
+if(
+
+number%10>=2 &&
+
+number%10<=4 &&
+
+(number%100<12 || number%100>14)
+
+)
+
+return "dokumenty";
+
+
+
+return "dokumentów";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==========================
 // USUWANIE
-// ===============================
+// ==========================
 
 
 async function deleteDocument(id){
@@ -863,13 +1099,10 @@ id
 
 
 
+
 if(error){
 
-
-alert(
-error.message
-);
-
+alert(error.message);
 
 return;
 
