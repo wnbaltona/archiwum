@@ -29,9 +29,7 @@ Archiwum dokumentów
 <button 
 id="menuBtn"
 class="menu-button">
-
 ☰
-
 </button>
 
 
@@ -68,12 +66,9 @@ Eksport
 <section class="filters">
 
 
-<div 
-id="locationTabs"
+<div id="locationTabs"
 class="location-tabs">
-
 </div>
-
 
 
 
@@ -83,6 +78,7 @@ class="location-tabs">
 <input 
 id="searchInput"
 placeholder="Szukaj dokumentu...">
+
 
 
 <select id="yearFilter">
@@ -95,22 +91,21 @@ Wszystkie lata
 
 
 
-
 <select id="statusFilter">
 
 <option value="">
 Wszystkie statusy
 </option>
 
-<option>
+<option value="OK">
 OK
 </option>
 
-<option>
+<option value="DO UZUPEŁNIENIA">
 DO UZUPEŁNIENIA
 </option>
 
-<option>
+<option value="BRAK">
 BRAK
 </option>
 
@@ -119,7 +114,6 @@ BRAK
 
 </div>
 
-
 </section>
 
 
@@ -127,9 +121,7 @@ BRAK
 
 
 
-<main id="results">
-
-</main>
+<main id="results"></main>
 
 
 
@@ -139,9 +131,7 @@ BRAK
 
 
 
-<!-- ==========================
-DODAJ / EDYTUJ DOKUMENT
-========================== -->
+<!-- MODAL DOKUMENT -->
 
 
 <div 
@@ -152,32 +142,22 @@ class="overlay hidden">
 <div class="modal document-modal">
 
 
-
 <button 
 id="closeModal"
 class="close-button">
-
 X
-
 </button>
 
 
 
-
 <h2 id="modalTitle">
-
 Dodaj dokument
-
 </h2>
 
 
 
 
-
-
 <div class="form-grid">
-
-
 
 
 
@@ -221,8 +201,6 @@ Najpierw wybierz lokalizację
 
 
 
-
-
 <div class="form-group">
 
 <label>
@@ -237,8 +215,6 @@ Nazwa dokumentu
 
 
 
-
-
 <div class="form-group">
 
 <label>
@@ -248,8 +224,6 @@ Typ dokumentu
 <input id="type">
 
 </div>
-
-
 
 
 
@@ -271,8 +245,6 @@ type="number">
 
 
 
-
-
 <div class="form-group">
 
 <label>
@@ -286,13 +258,10 @@ Kontrahent
 Wybierz kontrahenta
 </option>
 
-
 </select>
 
 
 </div>
-
-
 
 
 
@@ -312,8 +281,6 @@ Regał
 
 
 
-
-
 <div class="form-group">
 
 <label>
@@ -323,8 +290,6 @@ Półka
 <input id="level">
 
 </div>
-
-
 
 
 
@@ -344,38 +309,30 @@ Segregator
 
 
 
-
-
 <div class="form-group">
 
 <label>
 Status
 </label>
 
-
 <select id="status">
-
 
 <option>
 OK
 </option>
 
-
 <option>
 DO UZUPEŁNIENIA
 </option>
-
 
 <option>
 BRAK
 </option>
 
-
 </select>
 
 
 </div>
-
 
 
 
@@ -388,9 +345,7 @@ BRAK
 Uwagi
 </label>
 
-
 <textarea id="notes"></textarea>
-
 
 </div>
 
@@ -425,117 +380,7 @@ Zapisz dokument
 
 
 
-
-<!-- ==========================
-USTAWIENIA
-========================== -->
-
-
-<div 
-id="settingsOverlay"
-class="overlay hidden">
-
-
-<div class="modal settings-modal">
-
-
-
-<button 
-id="closeSettings"
-class="close-button">
-
-X
-
-</button>
-
-
-
-
-<h2>
-Ustawienia
-</h2>
-
-
-
-
-
-<h3>
-Dodaj kontrahenta
-</h3>
-
-
-
-<input 
-id="newContractor"
-placeholder="Nazwa kontrahenta">
-
-
-
-<button 
-id="addContractorBtn">
-
-Dodaj kontrahenta
-
-</button>
-
-
-
-
-
-
-
-<h3>
-Dodaj lokal
-</h3>
-
-
-
-
-<input 
-id="localMPK"
-placeholder="MPK">
-
-
-
-<input 
-id="localName"
-placeholder="Nazwa lokalu">
-
-
-
-<select id="localLocation">
-
-</select>
-
-
-
-
-
-<button 
-id="addLocalBtn">
-
-Dodaj lokal
-
-</button>
-
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
 <script src="js/supabase.js"></script>
 
@@ -550,7 +395,6 @@ Dodaj lokal
 <script src="js/menu.js"></script>
 
 <script src="js/export.js"></script>
-
 
 
 </body>
