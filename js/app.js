@@ -2,66 +2,90 @@ let documents = [];
 
 let selectedLocation = "WSZYSTKIE";
 
+let editingId = null;
+
+
 
 const results = document.getElementById("results");
+
 const searchInput = document.getElementById("searchInput");
+
 const typeFilter = document.getElementById("typeFilter");
+
 const shelfFilter = document.getElementById("shelfFilter");
+
 const locationTabs = document.getElementById("locationTabs");
 
 
+
+
+
 const locations = [
-    "WSZYSTKIE",
-    "OKĘCIE",
-    "RADOM",
-    "MODLIN",
-    "SONATA",
-    "RZESZÓW",
-    "KATOWICE",
-    "KRAKÓW",
-    "ZIELONA GÓRA",
-    "FRANCJA",
-    "BYDGOSZCZ",
-    "POZNAŃ",
-    "WROCŁAW"
+
+"WSZYSTKIE",
+
+"OKĘCIE",
+
+"RADOM",
+
+"MODLIN",
+
+"SONATA",
+
+"RZESZÓW",
+
+"KATOWICE",
+
+"KRAKÓW",
+
+"ZIELONA GÓRA",
+
+"FRANCJA",
+
+"BYDGOSZCZ",
+
+"POZNAŃ",
+
+"WROCŁAW"
+
 ];
 
 
 
-// ===============================
-// POBIERANIE DOKUMENTÓW
-// ===============================
+
+
+
+
+// ==================================
+// POBIERANIE DANYCH
+// ==================================
 
 
 async function loadDocuments(){
 
 
-    const { data, error } = await supabaseClient
-        .from("dokumenty")
-        .select("*")
-        .order("lokalizacja");
+const {data,error}=await supabaseClient
+
+.from("dokumenty")
+
+.select("*")
+
+.order("lokalizacja");
 
 
-    if(error){
-
-        console.error(error);
-
-        results.innerHTML =
-        "Błąd pobierania dokumentów";
-
-        return;
-
-    }
 
 
-    documents = data || [];
+if(error){
 
 
-    createLocations();
+console.error(error);
 
-    createFilters();
 
-    render();
+results.innerHTML =
+"Nie udało się pobrać dokumentów";
+
+
+return;
 
 
 }
@@ -69,46 +93,15 @@ async function loadDocuments(){
 
 
 
-// ===============================
-// LOKALIZACJE
-// ===============================
+documents=data || [];
 
 
-function createLocations(){
 
+createLocationTabs();
 
-    if(!locationTabs)
-    return;
+createFilters();
 
-
-    locationTabs.innerHTML="";
-
-
-    locations.forEach(location=>{
-
-
-        const button =
-        document.createElement("button");
-
-
-        button.textContent = location;
-
-
-        button.onclick = ()=>{
-
-
-            selectedLocation = location;
-
-            render();
-
-
-        };
-
-
-        locationTabs.appendChild(button);
-
-
-    });
+render();
 
 
 }
@@ -119,88 +112,175 @@ function createLocations(){
 
 
 
-// ===============================
+
+
+// ==================================
+// ZAKŁADKI LOKALIZACJI
+// ==================================
+
+
+function createLocationTabs(){
+
+
+if(!locationTabs)
+return;
+
+
+
+locationTabs.innerHTML="";
+
+
+
+locations.forEach(location=>{
+
+
+const button =
+document.createElement("button");
+
+
+
+button.textContent=location;
+
+
+
+button.onclick=()=>{
+
+
+selectedLocation=location;
+
+
+render();
+
+
+};
+
+
+
+locationTabs.appendChild(button);
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================
 // FILTRY
-// ===============================
+// ==================================
 
 
 function createFilters(){
 
 
-    if(!typeFilter || !shelfFilter)
-    return;
+
+if(!typeFilter || !shelfFilter)
+return;
 
 
 
-    const types =
-    [
-        ...new Set(
-            documents
-            .map(d=>d.typ)
-            .filter(Boolean)
-        )
-    ];
+const types=[
+
+...new Set(
+
+documents
+
+.map(d=>d.typ)
+
+.filter(Boolean)
+
+)
+
+];
 
 
 
-    const shelves =
-    [
-        ...new Set(
-            documents
-            .map(d=>d.regal)
-            .filter(Boolean)
-        )
-    ];
 
+const shelves=[
 
+...new Set(
 
-    typeFilter.innerHTML =
-    `
-    <option value="">
-    Wszystkie typy
-    </option>
-    `;
+documents
 
+.map(d=>d.regal)
 
+.filter(Boolean)
 
-    types.forEach(type=>{
+)
 
-
-        typeFilter.innerHTML +=
-        `
-        <option value="${type}">
-        ${type}
-        </option>
-        `;
-
-
-    });
+];
 
 
 
 
 
-    shelfFilter.innerHTML =
-    `
-    <option value="">
-    Wszystkie regały
-    </option>
-    `;
+typeFilter.innerHTML=`
+
+<option value="">
+Wszystkie typy
+</option>
+
+`;
 
 
 
-    shelves.forEach(shelf=>{
+
+types.forEach(type=>{
 
 
-        shelfFilter.innerHTML +=
-        `
-        <option value="${shelf}">
-        ${shelf}
-        </option>
-        `;
+typeFilter.innerHTML+=`
+
+<option value="${type}">
+${type}
+</option>
+
+`;
 
 
-    });
+
+});
+
+
+
+
+
+
+
+shelfFilter.innerHTML=`
+
+<option value="">
+Wszystkie regały
+</option>
+
+`;
+
+
+
+
+
+shelves.forEach(shelf=>{
+
+
+shelfFilter.innerHTML+=`
+
+<option value="${shelf}">
+${shelf}
+</option>
+
+`;
+
+
+
+});
+
 
 
 }
@@ -208,354 +288,141 @@ function createFilters(){
 
 
 
-if(typeFilter){
+
 
 typeFilter.addEventListener(
 "change",
 render
 );
 
-}
 
-
-
-if(shelfFilter){
 
 shelfFilter.addEventListener(
 "change",
 render
 );
 
-}
 
 
 
 
 
 
-
-// ===============================
+// ==================================
 // WYŚWIETLANIE
-// ===============================
+// ==================================
 
 
 function render(){
 
 
-    if(!results)
-    return;
+results.innerHTML="";
 
 
 
-    results.innerHTML="";
+let filtered=[...documents];
 
 
 
-    let filtered =
-    [...documents];
 
 
+if(selectedLocation!=="WSZYSTKIE"){
 
-    if(selectedLocation !== "WSZYSTKIE"){
 
+filtered=filtered.filter(
 
-        filtered =
-        filtered.filter(
-            d =>
-            d.lokalizacja === selectedLocation
-        );
+d=>d.lokalizacja===selectedLocation
 
-
-    }
-
-
-
-
-
-    if(typeFilter && typeFilter.value){
-
-
-        filtered =
-        filtered.filter(
-            d =>
-            d.typ === typeFilter.value
-        );
-
-
-    }
-
-
-
-
-    if(shelfFilter && shelfFilter.value){
-
-
-        filtered =
-        filtered.filter(
-            d =>
-            d.regal === shelfFilter.value
-        );
-
-
-    }
-
-
-
-
-
-    const search =
-    searchInput ?
-    searchInput.value.toLowerCase()
-    :
-    "";
-
-
-
-    if(search){
-
-
-        filtered =
-        filtered.filter(doc=>
-
-            JSON.stringify(doc)
-            .toLowerCase()
-            .includes(search)
-
-        );
-
-
-    }
-
-
-
-
-
-    if(filtered.length===0){
-
-
-        results.innerHTML =
-        `
-        <div class="location">
-        Brak dokumentów
-        </div>
-        `;
-
-
-        return;
-
-    }
-
-
-
-
-
-
-    const grouped = {};
-
-
-
-    filtered.forEach(doc=>{
-
-
-        if(!grouped[doc.lokalizacja]){
-
-
-            grouped[doc.lokalizacja]=[];
-
-        }
-
-
-        grouped[doc.lokalizacja]
-        .push(doc);
-
-
-
-    });
-
-
-
-
-
-
-
-    Object.keys(grouped).forEach(location=>{
-
-
-        let locationBox =
-        document.createElement("div");
-
-
-        locationBox.className="location";
-
-
-
-        locationBox.innerHTML =
-        `
-        <h2>
-        ${location}
-        </h2>
-        `;
-
-
-
-
-
-        const locals={};
-
-
-
-        grouped[location]
-        .forEach(doc=>{
-
-
-            const local =
-            doc.numer_lokalu || "Brak numeru";
-
-
-
-            if(!locals[local]){
-
-
-                locals[local]=[];
-
-            }
-
-
-            locals[local].push(doc);
-
-
-
-        });
-
-
-
-
-
-
-
-
-        Object.keys(locals)
-        .forEach(local=>{
-
-
-
-            let localBox =
-            document.createElement("div");
-
-
-            localBox.className="card";
-
-
-
-            localBox.innerHTML =
-            `
-            <h3>
-            Lokal: ${local}
-            </h3>
-            `;
-
-
-
-
-
-
-            locals[local]
-            .forEach(doc=>{
-
-
-                localBox.innerHTML +=
-                `
-
-                <div class="document">
-
-
-                <strong>
-                ${doc.nazwa || "Brak nazwy"}
-                </strong>
-
-
-
-                <p>
-                Typ: ${doc.typ || "-"}
-                </p>
-
-
-                <p>
-                Regał: ${doc.regal || "-"}
-                </p>
-
-
-                <p>
-                Półka: ${doc.polka || "-"}
-                </p>
-
-
-                <p>
-                Segregator: ${doc.segregator || "-"}
-                </p>
-
-
-                <p>
-                Uwagi: ${doc.uwagi || "-"}
-                </p>
-
-
-
-                <button onclick="editDocument('${doc.id}')">
-                Edytuj
-                </button>
-
-
-
-                <button onclick="deleteDocument('${doc.id}')">
-                Usuń
-                </button>
-
-
-                </div>
-
-                <hr>
-
-                `;
-
-
-
-            });
-
-
-
-
-            locationBox.appendChild(localBox);
-
-
-
-        });
-
-
-
-
-        results.appendChild(locationBox);
-
-
-
-    });
-
-
-
-}
-
-
-
-
-
-
-if(searchInput){
-
-searchInput.addEventListener(
-"input",
-render
 );
 
+
+}
+
+
+
+
+
+if(typeFilter.value){
+
+
+filtered=filtered.filter(
+
+d=>d.typ===typeFilter.value
+
+);
+
+
+}
+
+
+
+
+
+
+if(shelfFilter.value){
+
+
+filtered=filtered.filter(
+
+d=>d.regal===shelfFilter.value
+
+);
+
+
+}
+
+
+
+
+
+
+const search=
+searchInput.value
+.toLowerCase();
+
+
+
+
+
+if(search){
+
+
+filtered=filtered.filter(doc=>
+
+
+JSON.stringify(doc)
+
+.toLowerCase()
+
+.includes(search)
+
+
+);
+
+
+}
+
+
+
+
+
+
+if(filtered.length===0){
+
+
+results.innerHTML=`
+
+<div class="location">
+
+Brak dokumentów
+
+</div>
+
+`;
+
+return;
+
+
 }
 
 
@@ -564,47 +431,304 @@ render
 
 
 
-// ===============================
+const grouped={};
+
+
+
+
+filtered.forEach(doc=>{
+
+
+if(!grouped[doc.lokalizacja]){
+
+
+grouped[doc.lokalizacja]=[];
+
+}
+
+
+grouped[doc.lokalizacja].push(doc);
+
+
+
+});
+
+
+
+
+
+
+
+
+Object.keys(grouped).forEach(location=>{
+
+
+
+const locationBox=
+document.createElement("div");
+
+
+locationBox.className="location";
+
+
+
+locationBox.innerHTML=`
+
+<h2>
+
+${location}
+
+</h2>
+
+`;
+
+
+
+
+
+
+const locals={};
+
+
+
+
+grouped[location].forEach(doc=>{
+
+
+
+const local=
+doc.numer_lokalu || "Brak numeru";
+
+
+
+if(!locals[local]){
+
+
+locals[local]=[];
+
+}
+
+
+
+locals[local].push(doc);
+
+
+
+});
+
+
+
+
+
+
+
+
+Object.keys(locals).forEach(local=>{
+
+
+
+const localBox=
+document.createElement("div");
+
+
+
+localBox.className="card";
+
+
+
+localBox.innerHTML=`
+
+<h3>
+
+Lokal: ${local}
+
+</h3>
+
+`;
+
+
+
+
+
+
+
+locals[local].forEach(doc=>{
+
+
+
+localBox.innerHTML+=`
+
+<div class="document">
+
+
+<strong>
+
+${doc.nazwa || "Brak nazwy"}
+
+</strong>
+
+
+
+<p>
+Typ: ${doc.typ || "-"}
+</p>
+
+
+
+<p>
+Regał: ${doc.regal || "-"}
+</p>
+
+
+
+<p>
+Półka: ${doc.polka || "-"}
+</p>
+
+
+
+<p>
+Segregator: ${doc.segregator || "-"}
+</p>
+
+
+
+<p>
+Uwagi: ${doc.uwagi || "-"}
+</p>
+
+
+
+
+<button onclick="editDocument('${doc.id}')">
+
+Edytuj
+
+</button>
+
+
+
+<button onclick="deleteDocument('${doc.id}')">
+
+Usuń
+
+</button>
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+
+
+locationBox.appendChild(localBox);
+
+
+
+});
+
+
+
+
+
+results.appendChild(locationBox);
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+searchInput.addEventListener(
+
+"input",
+
+render
+
+);
+
+
+
+
+
+
+
+
+
+// ==================================
 // USUWANIE
-// ===============================
+// ==================================
 
 
 async function deleteDocument(id){
 
 
-    const confirmDelete =
-    confirm(
-    "Czy na pewno usunąć dokument?"
-    );
 
-
-    if(!confirmDelete)
-    return;
+const answer=
+confirm(
+"Czy na pewno usunąć dokument?"
+);
 
 
 
-
-    const {error}=await supabaseClient
-    .from("dokumenty")
-    .delete()
-    .eq("id",id);
+if(!answer)
+return;
 
 
 
 
-    if(error){
 
-        console.error(error);
+const {error}=await supabaseClient
 
-        alert("Nie udało się usunąć dokumentu");
+.from("dokumenty")
 
-        return;
+.delete()
 
-    }
-
+.eq("id",id);
 
 
-    loadDocuments();
+
+
+
+
+if(error){
+
+
+console.error(error);
+
+
+alert(
+"Nie udało się usunąć dokumentu"
+);
+
+
+return;
+
+
+}
+
+
+
+
+loadDocuments();
+
 
 
 }
@@ -617,155 +741,100 @@ async function deleteDocument(id){
 
 
 
-// ===============================
+// ==================================
 // EDYCJA
-// ===============================
+// ==================================
 
 
 async function editDocument(id){
 
 
-    const doc =
-    documents.find(
-        d=>d.id == id
-    );
 
+const doc =
+documents.find(
+d=>d.id==id
+);
 
-    if(!doc)
-    return;
 
 
 
+if(!doc)
+return;
 
-    document
-    .getElementById("modalOverlay")
-    .classList.remove("hidden");
 
 
 
 
-    document.getElementById("location").value =
-    doc.lokalizacja || "";
+editingId=id;
 
 
-    document.getElementById("number").value =
-    doc.numer_lokalu || "";
 
 
-    document.getElementById("name").value =
-    doc.nazwa || "";
 
+document
+.getElementById("modalOverlay")
+.classList.remove("hidden");
 
-    document.getElementById("type").value =
-    doc.typ || "";
 
 
-    document.getElementById("shelf").value =
-    doc.regal || "";
+document
+.getElementById("modalTitle")
+.innerText=
+"Edytuj dokument";
 
 
-    document.getElementById("level").value =
-    doc.polka || "";
 
+document
+.getElementById("saveBtn")
+.innerText=
+"Zapisz zmiany";
 
-    document.getElementById("folder").value =
-    doc.segregator || "";
 
 
-    document.getElementById("notes").value =
-    doc.uwagi || "";
 
 
+document.getElementById("location").value=
+doc.lokalizacja || "";
 
 
 
-    const saveBtn =
-    document.getElementById("saveBtn");
+document.getElementById("number").value=
+doc.numer_lokalu || "";
 
 
 
-    saveBtn.onclick = async ()=>{
+document.getElementById("name").value=
+doc.nazwa || "";
 
 
-        const updateData={
 
+document.getElementById("type").value=
+doc.typ || "";
 
-            lokalizacja:
-            document.getElementById("location").value,
 
 
-            numer_lokalu:
-            document.getElementById("number").value,
+document.getElementById("shelf").value=
+doc.regal || "";
 
 
-            nazwa:
-            document.getElementById("name").value,
 
+document.getElementById("level").value=
+doc.polka || "";
 
-            typ:
-            document.getElementById("type").value,
 
 
-            regal:
-            document.getElementById("shelf").value,
+document.getElementById("folder").value=
+doc.segregator || "";
 
 
-            polka:
-            document.getElementById("level").value,
 
-
-            segregator:
-            document.getElementById("folder").value,
-
-
-            uwagi:
-            document.getElementById("notes").value
-
-        };
-
-
-
-
-        const {error}=await supabaseClient
-
-        .from("dokumenty")
-
-        .update(updateData)
-
-        .eq("id",id);
-
-
-
-
-
-        if(error){
-
-            console.error(error);
-
-            alert("Błąd edycji");
-
-            return;
-
-        }
-
-
-
-
-        document
-        .getElementById("modalOverlay")
-        .classList.add("hidden");
-
-
-
-        loadDocuments();
-
-
-
-    };
+document.getElementById("notes").value=
+doc.uwagi || "";
 
 
 
 }
+
 
 
 loadDocuments();
