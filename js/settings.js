@@ -42,7 +42,6 @@ addLocal
 loadSettingsLocations();
 
 
-
 });
 
 
@@ -51,23 +50,28 @@ loadSettingsLocations();
 
 
 
-
-// =============================
+// ==============================
 // OTWIERANIE USTAWIEŃ
-// =============================
+// ==============================
 
 
 function openSettings(){
 
 
 document
-.getElementById("settingsOverlay")
+
+.getElementById(
+"settingsOverlay"
+)
+
 .classList
-.remove("hidden");
+
+.remove(
+"hidden"
+);
 
 
 }
-
 
 
 
@@ -78,9 +82,16 @@ function closeSettings(){
 
 
 document
-.getElementById("settingsOverlay")
+
+.getElementById(
+"settingsOverlay"
+)
+
 .classList
-.add("hidden");
+
+.add(
+"hidden"
+);
 
 
 }
@@ -93,9 +104,9 @@ document
 
 
 
-// =============================
-// LOKALIZACJE W USTAWIENIACH
-// =============================
+// ==============================
+// LISTA LOKALIZACJI
+// ==============================
 
 
 function loadSettingsLocations(){
@@ -103,6 +114,7 @@ function loadSettingsLocations(){
 
 
 const select =
+
 document.getElementById(
 "localLocation"
 );
@@ -118,12 +130,12 @@ return;
 select.innerHTML=
 
 `
+
 <option value="">
 Wybierz lokalizację
 </option>
 
 `;
-
 
 
 
@@ -137,9 +149,7 @@ select.innerHTML +=
 `
 
 <option value="${location}">
-
 ${location}
-
 </option>
 
 `;
@@ -147,7 +157,6 @@ ${location}
 
 
 });
-
 
 
 }
@@ -160,9 +169,9 @@ ${location}
 
 
 
-// =============================
+// ==============================
 // DODAJ KONTRAHENTA
-// =============================
+// ==============================
 
 
 async function addContractor(){
@@ -170,6 +179,7 @@ async function addContractor(){
 
 
 const input =
+
 document.getElementById(
 "newContractor"
 );
@@ -177,7 +187,9 @@ document.getElementById(
 
 
 const name =
+
 input.value.trim();
+
 
 
 
@@ -193,7 +205,9 @@ alert(
 
 return;
 
+
 }
+
 
 
 
@@ -231,9 +245,13 @@ if(error){
 
 
 alert(
+
 "Błąd dodawania kontrahenta: "
+
 +
+
 error.message
+
 );
 
 
@@ -241,7 +259,6 @@ return;
 
 
 }
-
 
 
 
@@ -267,9 +284,9 @@ input.value="";
 
 
 
-// =============================
+// ==============================
 // DODAJ LOKAL
-// =============================
+// ==============================
 
 
 async function addLocal(){
@@ -292,6 +309,7 @@ document
 
 
 
+
 const name =
 
 document
@@ -303,6 +321,7 @@ document
 .value
 
 .trim();
+
 
 
 
@@ -337,14 +356,18 @@ if(
 
 
 alert(
-"Uzupełnij wszystkie pola lokalu"
+"Uzupełnij wszystkie pola"
 );
 
 
 
 return;
 
+
 }
+
+
+
 
 
 
@@ -382,6 +405,7 @@ lokalizacja:location
 
 
 
+
 if(error){
 
 
@@ -407,6 +431,7 @@ return;
 
 
 
+
 alert(
 "Lokal dodany"
 );
@@ -417,19 +442,31 @@ alert(
 
 
 document
-.getElementById("localMPK")
+
+.getElementById(
+"localMPK"
+)
+
 .value="";
 
 
 
 document
-.getElementById("localName")
+
+.getElementById(
+"localName"
+)
+
 .value="";
 
 
 
 document
-.getElementById("localLocation")
+
+.getElementById(
+"localLocation"
+)
+
 .value="";
 
 
