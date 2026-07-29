@@ -3,74 +3,20 @@ document.addEventListener(
 ()=>{
 
 
-const excelBtn =
+const btn =
 document.getElementById(
-"exportExcelBtn"
-);
-
-
-const csvBtn =
-document.getElementById(
-"exportCsvBtn"
-);
-
-
-const missingBtn =
-document.getElementById(
-"missingBtn"
+"exportBtn"
 );
 
 
 
+if(btn){
 
 
-if(excelBtn){
+btn.onclick=()=>{
 
 
-excelBtn.onclick=()=>{
-
-
-exportExcel();
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-if(csvBtn){
-
-
-csvBtn.onclick=()=>{
-
-
-exportCSV();
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-if(missingBtn){
-
-
-missingBtn.onclick=()=>{
-
-
-exportMissing();
+exportDocuments();
 
 
 };
@@ -88,17 +34,50 @@ exportMissing();
 
 
 
-
-
-function exportExcel(){
+async function exportDocuments(){
 
 
 
-if(!documents.length){
+const {
+
+data,
+
+error
+
+}
+
+=
+
+await supabaseClient
+
+.from("dokumenty")
+
+.select(`
+
+*,
+
+lokale(
+mpk,
+nazwa,
+lokalizacja
+),
+
+kontrahenci(
+nazwa
+)
+
+`);
+
+
+
+
+
+
+if(error){
 
 
 alert(
-"Brak dokumentów do eksportu"
+"Błąd eksportu"
 );
 
 
@@ -112,116 +91,45 @@ return;
 
 
 
-const data =
-
-documents.map(doc=>({
-
-
-Lokalizacja:
-doc.lokalizacja,
-
-
-"Lokal":
-doc.numer_lokalu,
-
-
-Dokument:
-doc.nazwa,
-
-
-Typ:
-doc.typ,
-
-
-Regał:
-doc.regal,
-
-
-Półka:
-doc.polka,
-
-
-Segregator:
-doc.segregator,
-
-
-Status:
-doc.status,
-
-
-Uwagi:
-doc.uwagi
-
-
-}));
-
-
-
-
-
-
-const sheet =
-
-XLSX.utils.json_to_sheet(data);
-
-
-
-const workbook =
-
-XLSX.utils.book_new();
-
-
-
-XLSX.utils.book_append_sheet(
-
-workbook,
-
-sheet,
-
-"Archiwum"
-
-);
-
-
-
-XLSX.writeFile(
-
-workbook,
-
-"archiwum_dokumentow.xlsx"
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-function exportCSV(){
-
-
 
 let csv =
 
-"Lokalizacja;Lokal;Dokument;Typ;Regal;Polka;Segregator;Status;Uwagi\n";
+"Dokument,Lokalizacja,Lokal,MPK,Kontrahent,Rok,Typ,Regał,Półka,Status\n";
 
 
 
 
 
-documents.forEach(doc=>{
+
+
+data.forEach(doc=>{
 
 
 csv +=
 
-`${doc.lokalizacja};${doc.numer_lokalu};${doc.nazwa};${doc.typ};${doc.regal};${doc.polka};${doc.segregator};${doc.status};${doc.uwagi}\n`;
+`
+
+"${doc.nazwa || ""}",
+
+"${doc.lokale?.lokalizacja || ""}",
+
+"${doc.lokale?.nazwa || ""}",
+
+"${doc.lokale?.mpk || ""}",
+
+"${doc.kontrahenci?.nazwa || ""}",
+
+"${doc.rok || ""}",
+
+"${doc.typ || ""}",
+
+"${doc.regal || ""}",
+
+"${doc.polka || ""}",
+
+"${doc.status || ""}"
+
+\n`;
 
 
 
@@ -235,36 +143,43 @@ csv +=
 
 
 const blob =
-
 new Blob(
-
-[csv],
-
+[
+csv
+],
 {
 type:"text/csv;charset=utf-8;"
 }
-
 );
+
+
+
+
+
+
+
+const url =
+URL.createObjectURL(
+blob
+);
+
 
 
 
 
 
 const link =
+document.createElement(
+"a"
+);
 
-document.createElement("a");
 
 
-
-link.href=
-
-URL.createObjectURL(blob);
-
+link.href=url;
 
 
 link.download=
-
-"archiwum.csv";
+"archiwum_dokumentow.csv";
 
 
 
@@ -272,134 +187,10 @@ link.click();
 
 
 
-}
 
-
-
-
-
-
-
-
-
-function exportMissing(){
-
-
-
-const missing =
-
-documents.filter(doc=>
-
-doc.status==="Do uzupełnienia"
-
-||
-
-doc.status==="Brak dokumentu"
-
+URL.revokeObjectURL(
+url
 );
-
-
-
-
-
-
-if(!missing.length){
-
-
-alert(
-"Brak dokumentów wymagających uzupełnienia"
-);
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-let text=
-
-"RAPORT BRAKUJĄCYCH DOKUMENTÓW\n\n";
-
-
-
-
-
-
-
-missing.forEach(doc=>{
-
-
-text +=
-
-`
-Lokalizacja:
-${doc.lokalizacja}
-
-Lokal:
-${doc.numer_lokalu}
-
-Dokument:
-${doc.nazwa}
-
-Status:
-${doc.status}
-
-
-------------------
-
-`;
-
-
-
-});
-
-
-
-
-
-
-
-const blob=
-
-new Blob(
-
-[text],
-
-{
-type:"text/plain"
-}
-
-);
-
-
-
-
-
-const link=
-
-document.createElement("a");
-
-
-
-link.href=
-
-URL.createObjectURL(blob);
-
-
-
-link.download=
-
-"raport_brakow.txt";
-
-
-
-link.click();
 
 
 
