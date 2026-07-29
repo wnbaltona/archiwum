@@ -3,38 +3,36 @@ let documents = [];
 let selectedLocation = "WSZYSTKIE";
 
 
-const results =
-document.getElementById("results");
 
+const results = document.getElementById("results");
 
-const searchInput =
-document.getElementById("searchInput");
+const searchInput = document.getElementById("searchInput");
 
+const typeFilter = document.getElementById("typeFilter");
 
-const typeFilter =
-document.getElementById("typeFilter");
+const shelfFilter = document.getElementById("shelfFilter");
 
+const locationTabs = document.getElementById("locationTabs");
 
-const shelfFilter =
-document.getElementById("shelfFilter");
 
 
 
 const locations = [
-"WSZYSTKIE",
-"OKĘCIE",
-"RADOM",
-"MODLIN",
-"SONATA",
-"RZESZÓW",
-"KATOWICE",
-"KRAKÓW",
-"ZIELONA GÓRA",
-"FRANCJA",
-"BYDGOSZCZ",
-"POZNAŃ",
-"WROCŁAW"
+    "WSZYSTKIE",
+    "OKĘCIE",
+    "RADOM",
+    "MODLIN",
+    "SONATA",
+    "RZESZÓW",
+    "KATOWICE",
+    "KRAKÓW",
+    "ZIELONA GÓRA",
+    "FRANCJA",
+    "BYDGOSZCZ",
+    "POZNAŃ",
+    "WROCŁAW"
 ];
+
 
 
 
@@ -43,35 +41,35 @@ const locations = [
 // POBIERANIE DANYCH
 // =====================
 
-
 async function loadDocuments(){
 
 
-const {data,error}=await supabaseClient
-.from("dokumenty")
-.select("*")
-.order("lokalizacja");
+    const {data,error} = await supabaseClient
+    .from("dokumenty")
+    .select("*")
+    .order("lokalizacja");
 
 
+    if(error){
 
-if(error){
+        console.error(error);
 
-console.log(error);
+        results.innerHTML =
+        "Nie udało się pobrać dokumentów.";
 
-return;
+        return;
 
-}
-
-
-
-documents=data || [];
+    }
 
 
-createLocations();
+    documents = data || [];
 
-createFilters();
 
-render();
+    createLocationTabs();
+
+    createFilters();
+
+    render();
 
 
 }
@@ -81,47 +79,46 @@ render();
 
 
 // =====================
-// ZAKŁADKI
+// ZAKŁADKI LOKALIZACJI
 // =====================
 
 
-function createLocations(){
+function createLocationTabs(){
 
 
-const box =
-document.getElementById("locationTabs");
+    if(!locationTabs) return;
 
 
-box.innerHTML="";
+    locationTabs.innerHTML="";
 
 
-
-locations.forEach(loc=>{
-
-
-let btn=document.createElement("button");
-
-btn.innerText=loc;
+    locations.forEach(location=>{
 
 
-
-btn.onclick=()=>{
-
-
-selectedLocation=loc;
-
-render();
+        const button =
+        document.createElement("button");
 
 
-};
+        button.textContent = location;
 
 
 
-box.appendChild(btn);
+        button.onclick = ()=>{
+
+
+            selectedLocation = location;
+
+            render();
+
+
+        };
 
 
 
-});
+        locationTabs.appendChild(button);
+
+
+    });
 
 
 }
@@ -139,75 +136,73 @@ box.appendChild(btn);
 function createFilters(){
 
 
-let types=[
-
-...new Set(
-documents.map(d=>d.typ)
-.filter(Boolean)
-)
-
-];
-
-
-let shelves=[
-
-...new Set(
-documents.map(d=>d.regal)
-.filter(Boolean)
-)
-
-];
+    if(!typeFilter || !shelfFilter) return;
 
 
 
-typeFilter.innerHTML=
-`
-<option value="">
-Wszystkie typy
-</option>
-`;
+    const types = [
+        ...new Set(
+            documents
+            .map(d=>d.typ)
+            .filter(Boolean)
+        )
+    ];
 
 
 
-types.forEach(t=>{
-
-
-typeFilter.innerHTML+=`
-
-<option value="${t}">
-${t}
-</option>
-
-`;
-
-});
+    const shelves = [
+        ...new Set(
+            documents
+            .map(d=>d.regal)
+            .filter(Boolean)
+        )
+    ];
 
 
 
 
-
-shelfFilter.innerHTML=
-`
-<option value="">
-Wszystkie regały
-</option>
-`;
+    typeFilter.innerHTML =
+    `<option value="">
+    Wszystkie typy
+    </option>`;
 
 
+    types.forEach(type=>{
 
-shelves.forEach(s=>{
+
+        typeFilter.innerHTML +=
+        `
+        <option value="${type}">
+        ${type}
+        </option>
+        `;
 
 
-shelfFilter.innerHTML+=`
+    });
 
-<option value="${s}">
-${s}
-</option>
 
-`;
 
-});
 
+
+    shelfFilter.innerHTML =
+    `<option value="">
+    Wszystkie regały
+    </option>`;
+
+
+
+    shelves.forEach(shelf=>{
+
+
+        shelfFilter.innerHTML +=
+        `
+        <option value="${shelf}">
+        ${shelf}
+        </option>
+        `;
+
+
+    });
 
 
 }
@@ -216,9 +211,25 @@ ${s}
 
 
 
-typeFilter.onchange=render;
+if(typeFilter){
 
-shelfFilter.onchange=render;
+    typeFilter.addEventListener(
+        "change",
+        render
+    );
+
+}
+
+
+
+if(shelfFilter){
+
+    shelfFilter.addEventListener(
+        "change",
+        render
+    );
+
+}
 
 
 
@@ -232,22 +243,264 @@ shelfFilter.onchange=render;
 function render(){
 
 
-results.innerHTML="";
+    if(!results) return;
+
+
+    results.innerHTML="";
 
 
 
-let data=[...documents];
+    let filtered = [...documents];
+
+
+
+    if(selectedLocation !== "WSZYSTKIE"){
+
+
+        filtered =
+        filtered.filter(
+            d =>
+            d.lokalizacja === selectedLocation
+        );
+
+
+    }
 
 
 
 
 
-if(selectedLocation !== "WSZYSTKIE"){
+    if(typeFilter && typeFilter.value){
 
 
-data=data.filter(
-d=>d.lokalizacja===selectedLocation
-);
+        filtered =
+        filtered.filter(
+            d =>
+            d.typ === typeFilter.value
+        );
+
+
+    }
+
+
+
+
+    if(shelfFilter && shelfFilter.value){
+
+
+        filtered =
+        filtered.filter(
+            d =>
+            d.regal === shelfFilter.value
+        );
+
+
+    }
+
+
+
+
+
+    const search =
+    searchInput ?
+    searchInput.value.toLowerCase()
+    :
+    "";
+
+
+
+    if(search){
+
+
+        filtered =
+        filtered.filter(doc=>
+
+            JSON.stringify(doc)
+            .toLowerCase()
+            .includes(search)
+
+        );
+
+
+    }
+
+
+
+
+
+
+    if(filtered.length===0){
+
+
+        results.innerHTML =
+        `
+        <div class="location">
+        Brak dokumentów.
+        </div>
+        `;
+
+
+        return;
+
+    }
+
+
+
+
+
+    const grouped = {};
+
+
+
+    filtered.forEach(doc=>{
+
+
+        if(!grouped[doc.lokalizacja]){
+
+            grouped[doc.lokalizacja]=[];
+
+        }
+
+
+        grouped[doc.lokalizacja].push(doc);
+
+
+
+    });
+
+
+
+
+
+
+
+    Object.keys(grouped).forEach(location=>{
+
+
+        const locationBox =
+        document.createElement("div");
+
+
+        locationBox.className="location";
+
+
+
+        locationBox.innerHTML =
+        `
+        <h2>
+        ${location}
+        </h2>
+        `;
+
+
+
+        const locals = {};
+
+
+
+        grouped[location].forEach(doc=>{
+
+
+            const local =
+            doc.numer_lokalu || "Brak numeru";
+
+
+            if(!locals[local]){
+
+                locals[local]=[];
+
+            }
+
+
+            locals[local].push(doc);
+
+
+
+        });
+
+
+
+
+
+
+
+        Object.keys(locals).forEach(local=>{
+
+
+            const localBox =
+            document.createElement("div");
+
+
+            localBox.className="card";
+
+
+
+            localBox.innerHTML =
+            `
+            <h3>
+            Lokal: ${local}
+            </h3>
+            `;
+
+
+
+
+            locals[local].forEach(doc=>{
+
+
+                localBox.innerHTML +=
+                `
+
+                <div class="document">
+
+                <strong>
+                ${doc.nazwa || "Bez nazwy"}
+                </strong>
+
+                <p>
+                Typ: ${doc.typ || "-"}
+                </p>
+
+                <p>
+                Regał: ${doc.regal || "-"}
+                </p>
+
+                <p>
+                Półka: ${doc.polka || "-"}
+                </p>
+
+                <p>
+                Segregator: ${doc.segregator || "-"}
+                </p>
+
+                <p>
+                Uwagi: ${doc.uwagi || "-"}
+                </p>
+
+
+                </div>
+
+                `;
+
+
+            });
+
+
+
+            locationBox.appendChild(localBox);
+
+
+        });
+
+
+
+        results.appendChild(locationBox);
+
+
+
+    });
+
+
 
 }
 
@@ -255,233 +508,15 @@ d=>d.lokalizacja===selectedLocation
 
 
 
-if(typeFilter.value){
+if(searchInput){
 
-
-data=data.filter(
-d=>d.typ===typeFilter.value
-);
-
-
-}
-
-
-
-
-
-if(shelfFilter.value){
-
-
-data=data.filter(
-d=>d.regal===shelfFilter.value
-);
-
+    searchInput.addEventListener(
+        "input",
+        render
+    );
 
 }
 
-
-
-
-
-
-
-let search =
-searchInput.value.toLowerCase();
-
-
-
-if(search){
-
-
-data=data.filter(d=>
-
-JSON.stringify(d)
-.toLowerCase()
-.includes(search)
-
-);
-
-
-}
-
-
-
-
-// grupowanie lokalizacjami
-
-
-let grouped={};
-
-
-
-data.forEach(doc=>{
-
-
-if(!grouped[doc.lokalizacja]){
-
-grouped[doc.lokalizacja]=[];
-
-}
-
-
-grouped[doc.lokalizacja].push(doc);
-
-
-});
-
-
-
-
-
-
-Object.keys(grouped).forEach(location=>{
-
-
-
-results.innerHTML+=`
-
-<div class="location">
-
-
-<h2>
-📍 ${location}
-</h2>
-
-
-
-${groupDocuments(grouped[location])}
-
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-function groupDocuments(docs){
-
-
-
-let locals={};
-
-
-
-docs.forEach(doc=>{
-
-
-let local =
-doc.numer_lokalu || "Brak numeru";
-
-
-
-if(!locals[local]){
-
-locals[local]=[];
-
-}
-
-
-locals[local].push(doc);
-
-
-
-});
-
-
-
-let html="";
-
-
-
-Object.keys(locals).forEach(local=>{
-
-
-html+=`
-
-<div class="card">
-
-
-<h3>
-🚪 Lokal: ${local}
-</h3>
-
-
-
-${locals[local].map(doc=>`
-
-<div>
-
-📄 <b>${doc.nazwa}</b>
-
-<br>
-
-🗂 Typ:
-${doc.typ || "-"}
-
-<br>
-
-🗄 Regał:
-${doc.regal || "-"}
-
-<br>
-
-📚 Półka:
-${doc.polka || "-"}
-
-<br>
-
-📂 Segregator:
-${doc.segregator || "-"}
-
-<br>
-
-📝 ${doc.uwagi || ""}
-
-
-</div>
-
-<hr>
-
-`).join("")}
-
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-
-return html;
-
-
-}
-
-
-
-
-
-
-searchInput.addEventListener(
-"input",
-render
-);
 
 
 
