@@ -775,7 +775,14 @@ document
 .getElementById("modalOverlay")
 .classList.remove("hidden");
 
+document
+.getElementById("errorBox")
+.classList.add("hidden");
 
+
+document
+.getElementById("successBox")
+.classList.add("hidden");
 
 document
 .getElementById("modalTitle")
