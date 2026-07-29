@@ -6,6 +6,7 @@ document.getElementById("saveBtn");
 
 
 
+
 saveBtn.onclick = async ()=>{
 
 
@@ -50,6 +51,7 @@ document.getElementById("notes").value
 
 
 
+
 const {error}=await supabaseClient
 
 .from("dokumenty")
@@ -60,15 +62,21 @@ const {error}=await supabaseClient
 
 
 
+
 if(error){
+
 
 console.error(error);
 
-alert("Błąd zapisu");
+
+alert("Błąd zapisu dokumentu");
+
 
 return;
 
+
 }
+
 
 
 
@@ -79,7 +87,25 @@ document
 .classList.remove("hidden");
 
 
+
+
+
+document
+.getElementById("saveBtn")
+.disabled=true;
+
+
+
+if(typeof loadDocuments==="function"){
+
+loadDocuments();
+
+}
+
+
+
 };
+
 
 
 
@@ -92,16 +118,26 @@ document
 
 
 document
-.getElementById("successBox")
-.classList.add("hidden");
-
-
-document
 .getElementById("modalOverlay")
 .classList.add("hidden");
 
 
+
+document
+.getElementById("successBox")
+.classList.add("hidden");
+
+
+
+document
+.getElementById("saveBtn")
+.disabled=false;
+
+
+
 };
+
+
 
 
 
