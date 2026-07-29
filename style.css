@@ -1,54 +1,44 @@
 *{
 box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
+font-family:"Inter",Arial,sans-serif;
 }
 
 
 body{
-
 margin:0;
-background:#f5f6f8;
+background:#f7f7f8;
 color:#1f2937;
-
 }
 
 
-/* =====================
-   GÓRNY PASEK
-===================== */
-
+/* HEADER */
 
 .topbar{
-
-height:70px;
+height:72px;
 background:white;
 display:flex;
 align-items:center;
 justify-content:space-between;
-padding:0 30px;
-box-shadow:0 2px 10px rgba(0,0,0,.08);
+padding:0 35px;
+box-shadow:0 2px 10px rgba(0,0,0,.06);
 position:sticky;
 top:0;
-z-index:20;
-
+z-index:50;
 }
 
 
 .logo{
-
-font-size:22px;
+font-size:24px;
 font-weight:700;
-
 }
 
 
-.menu-button{
 
+.menu-button{
+font-size:28px;
 border:none;
 background:none;
-font-size:28px;
 cursor:pointer;
-
 }
 
 
@@ -59,11 +49,11 @@ cursor:pointer;
 
 position:absolute;
 right:30px;
-top:60px;
+top:65px;
 background:white;
 padding:15px;
-border-radius:12px;
-box-shadow:0 5px 20px rgba(0,0,0,.15);
+border-radius:16px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
 display:flex;
 flex-direction:column;
 gap:10px;
@@ -71,47 +61,36 @@ gap:10px;
 }
 
 
+
 .menu-list button{
 
-padding:10px 20px;
 border:none;
 background:#f3f4f6;
-border-radius:8px;
+padding:12px 20px;
+border-radius:10px;
 cursor:pointer;
+font-size:15px;
 
 }
-
-
-.menu-list button:hover{
-
-background:#e5e7eb;
-
-}
-
 
 
 
 .hidden{
-
 display:none!important;
-
 }
 
 
 
 
 
-
-/* =====================
-   FILTRY
-===================== */
+/* FILTRY */
 
 
 .filters{
 
-padding:25px;
 max-width:1400px;
 margin:auto;
+padding:30px 25px 10px;
 
 }
 
@@ -119,13 +98,11 @@ margin:auto;
 
 .location-tabs{
 
-display:flex;
-flex-wrap:wrap;
-gap:12px;
-margin-bottom:20px;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:15px;
 
 }
-
 
 
 
@@ -133,12 +110,11 @@ margin-bottom:20px;
 
 background:white;
 border:1px solid #e5e7eb;
-border-radius:14px;
-padding:14px 20px;
+border-radius:18px;
+padding:18px;
 cursor:pointer;
-min-width:130px;
-text-align:center;
-transition:.2s;
+transition:.25s;
+box-shadow:0 3px 10px rgba(0,0,0,.04);
 
 }
 
@@ -146,8 +122,8 @@ transition:.2s;
 
 .location-card:hover{
 
-transform:translateY(-2px);
-box-shadow:0 5px 15px rgba(0,0,0,.08);
+transform:translateY(-3px);
+box-shadow:0 8px 20px rgba(0,0,0,.08);
 
 }
 
@@ -155,29 +131,34 @@ box-shadow:0 5px 15px rgba(0,0,0,.08);
 
 .location-card strong{
 
+font-size:16px;
 display:block;
-font-size:15px;
+margin-bottom:8px;
 
 }
 
 
 .location-card span{
 
-font-size:13px;
 color:#6b7280;
+font-size:14px;
 
 }
+
 
 
 
 
 #searchInput{
 
+margin-top:25px;
 width:100%;
-padding:15px;
-border-radius:12px;
+height:48px;
+border-radius:14px;
 border:1px solid #ddd;
-font-size:16px;
+padding:0 18px;
+font-size:15px;
+background:white;
 
 }
 
@@ -185,18 +166,14 @@ font-size:16px;
 
 
 
-
-
-/* =====================
-   DOKUMENTY
-===================== */
+/* DOKUMENTY */
 
 
 #results{
 
 max-width:1400px;
 margin:auto;
-padding:0 25px 40px;
+padding:20px 25px 50px;
 
 }
 
@@ -206,21 +183,21 @@ padding:0 25px 40px;
 .archive-location{
 
 background:white;
-border-radius:18px;
-margin-bottom:20px;
+border-radius:22px;
+margin-bottom:25px;
 overflow:hidden;
-box-shadow:0 2px 8px rgba(0,0,0,.06);
+box-shadow:0 4px 15px rgba(0,0,0,.06);
 
 }
 
 
 
-
 .archive-header{
 
-padding:20px 25px;
-font-size:20px;
-font-weight:bold;
+padding:22px 28px;
+font-size:22px;
+font-weight:700;
+background:#fafafa;
 border-bottom:1px solid #eee;
 
 }
@@ -228,21 +205,18 @@ border-bottom:1px solid #eee;
 
 
 
-
-
 .year-box{
 
-padding:20px 25px;
+padding:25px 28px;
 
 }
-
 
 
 
 .year-box h3{
 
 margin-top:0;
-color:#374151;
+font-size:20px;
 
 }
 
@@ -253,28 +227,27 @@ color:#374151;
 .document{
 
 background:#f9fafb;
-border-radius:14px;
-padding:18px;
+border-radius:16px;
+padding:20px;
 margin-bottom:15px;
+border:1px solid #eee;
 
 }
-
 
 
 
 .document h4{
 
-margin:0 0 10px;
 font-size:18px;
+margin:0 0 15px;
 
 }
 
 
 
-
 .document p{
 
-margin:6px 0;
+margin:7px 0;
 color:#4b5563;
 
 }
@@ -282,11 +255,12 @@ color:#4b5563;
 
 
 
+
 .document button{
 
-margin-top:10px;
-padding:8px 15px;
-border-radius:8px;
+margin-top:15px;
+padding:9px 18px;
+border-radius:10px;
 border:none;
 cursor:pointer;
 
@@ -313,40 +287,19 @@ background:#fee2e2;
 
 
 
-.empty{
 
-background:white;
-padding:40px;
-border-radius:15px;
-text-align:center;
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================
-   MODALE
-===================== */
+/* MODALE */
 
 
 .overlay{
 
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+inset:0;
 background:rgba(0,0,0,.45);
 display:flex;
-align-items:center;
 justify-content:center;
-z-index:50;
+align-items:center;
+z-index:100;
 padding:20px;
 
 }
@@ -358,12 +311,11 @@ padding:20px;
 
 background:white;
 width:100%;
-max-width:600px;
+max-width:550px;
+padding:35px;
+border-radius:24px;
 max-height:90vh;
 overflow:auto;
-padding:30px;
-border-radius:20px;
-position:relative;
 
 }
 
@@ -373,15 +325,14 @@ position:relative;
 .close-button{
 
 position:absolute;
-right:15px;
-top:15px;
-width:35px;
-height:35px;
-border-radius:50%;
-border:none;
+right:25px;
+top:20px;
 background:#ef4444;
 color:white;
-font-weight:bold;
+border:none;
+border-radius:50%;
+width:32px;
+height:32px;
 cursor:pointer;
 
 }
@@ -401,11 +352,12 @@ margin-top:0;
 .modal label{
 
 display:block;
-margin-top:15px;
-margin-bottom:5px;
 font-weight:600;
+margin-top:15px;
+margin-bottom:6px;
 
 }
+
 
 
 
@@ -413,25 +365,22 @@ font-weight:600;
 .modal select,
 .modal textarea{
 
-
 width:100%;
-padding:12px;
+padding:12px 14px;
+border-radius:12px;
 border:1px solid #d1d5db;
-border-radius:10px;
 font-size:15px;
 
 }
 
 
 
+
 .modal textarea{
 
-min-height:90px;
-resize:vertical;
+height:90px;
 
 }
-
-
 
 
 
@@ -440,10 +389,10 @@ resize:vertical;
 margin-top:25px;
 width:100%;
 padding:14px;
+border-radius:14px;
 border:none;
 background:#111827;
 color:white;
-border-radius:12px;
 font-size:16px;
 cursor:pointer;
 
@@ -451,53 +400,27 @@ cursor:pointer;
 
 
 
-.primary-button:hover{
 
-background:#000;
-
-}
-
-
-
-
-
-
-/* =====================
-   RESPONSYWNOŚĆ
-===================== */
+/* MOBILE */
 
 
 @media(max-width:700px){
 
 
-
 .topbar{
-
-padding:0 15px;
-
+padding:0 18px;
 }
-
 
 
 .logo{
-
-font-size:17px;
-
+font-size:18px;
 }
 
 
 
-.filters{
+.location-tabs{
 
-padding:15px;
-
-}
-
-
-
-.location-card{
-
-width:100%;
+grid-template-columns:1fr;
 
 }
 
@@ -505,18 +428,9 @@ width:100%;
 
 #results{
 
-padding:0 15px;
+padding:15px;
 
 }
-
-
-
-.modal{
-
-padding:20px;
-
-}
-
 
 
 }
