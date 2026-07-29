@@ -1,23 +1,35 @@
-// ======================================
-// USTAWIENIA - KONTRAHENCI I LOKALE
-// ======================================
-
-
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
 
 const settingsBtn =
-document.getElementById("settingsBtn");
-
-
-const settingsOverlay =
-document.getElementById("settingsOverlay");
+document.getElementById(
+"settingsBtn"
+);
 
 
 const closeSettings =
-document.getElementById("closeSettings");
+document.getElementById(
+"closeSettings"
+);
+
+
+
+const addContractorBtn =
+document.getElementById(
+"addContractorBtn"
+);
+
+
+
+const addLocalBtn =
+document.getElementById(
+"addLocalBtn"
+);
+
+
+
 
 
 
@@ -27,20 +39,14 @@ if(settingsBtn){
 settingsBtn.onclick=()=>{
 
 
-settingsOverlay
-.classList
-.remove("hidden");
-
-
-
-loadLocationsForSettings();
+openSettings();
 
 
 };
 
 
-
 }
+
 
 
 
@@ -53,13 +59,10 @@ if(closeSettings){
 closeSettings.onclick=()=>{
 
 
-settingsOverlay
-.classList
-.add("hidden");
+closeSettingsModal();
 
 
 };
-
 
 
 }
@@ -68,7 +71,44 @@ settingsOverlay
 
 
 
-loadContractors();
+
+
+
+if(addContractorBtn){
+
+
+addContractorBtn.onclick=()=>{
+
+
+addContractor();
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+if(addLocalBtn){
+
+
+addLocalBtn.onclick=()=>{
+
+
+addLocal();
+
+
+};
+
+
+}
+
+
 
 
 });
@@ -81,34 +121,84 @@ loadContractors();
 
 
 
-// ======================================
-// DODAWANIE KONTRAHENTA
-// ======================================
+// ==============================
+// OTWIERANIE
+// ==============================
 
 
-const addContractorBtn =
+function openSettings(){
 
-document.getElementById(
-"addContractorBtn"
+
+
+document
+
+.getElementById(
+"settingsOverlay"
+)
+
+.classList
+
+.remove(
+"hidden"
 );
 
 
 
-if(addContractorBtn){
+}
 
 
 
-addContractorBtn.onclick =
-async()=>{
+
+
+
+
+
+// ==============================
+// ZAMYKANIE
+// ==============================
+
+
+function closeSettingsModal(){
+
+
+
+document
+
+.getElementById(
+"settingsOverlay"
+)
+
+.classList
+
+.add(
+"hidden"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// KONTRAHENT
+// ==============================
+
+
+async function addContractor(){
 
 
 
 const input =
-
 document.getElementById(
 "newContractor"
 );
-
 
 
 
@@ -119,11 +209,12 @@ input.value.trim();
 
 
 
+
 if(!name){
 
 
 alert(
-"Wpisz nazwę kontrahenta"
+"Podaj nazwę kontrahenta"
 );
 
 
@@ -137,7 +228,14 @@ return;
 
 
 
-const {error}=
+
+const {
+
+error
+
+}
+
+=
 
 await supabaseClient
 
@@ -145,14 +243,15 @@ await supabaseClient
 
 .insert([
 
+
 {
 
 nazwa:name
 
 }
 
-]);
 
+]);
 
 
 
@@ -163,7 +262,7 @@ if(error){
 
 
 alert(
-"Błąd dodawania kontrahenta:\n"
+"Błąd dodawania kontrahenta: "
 +
 error.message
 );
@@ -179,22 +278,27 @@ return;
 
 
 
-
-input.value="";
-
-
-
 alert(
 "Kontrahent dodany"
 );
 
 
 
-loadContractors();
+
+
+input.value="";
 
 
 
-};
+
+
+if(typeof loadFormData==="function"){
+
+
+loadFormData();
+
+
+}
 
 
 
@@ -208,285 +312,12 @@ loadContractors();
 
 
 
-// ======================================
-// LISTA KONTRAHENTÓW
-// ======================================
+// ==============================
+// LOKAL
+// ==============================
 
 
-async function loadContractors(){
-
-
-
-const select =
-
-document.getElementById(
-"contractor"
-);
-
-
-
-
-if(!select)
-return;
-
-
-
-
-
-const {
-
-data,
-
-error
-
-}=
-
-await supabaseClient
-
-.from("kontrahenci")
-
-.select("*")
-
-.order(
-"nazwa"
-);
-
-
-
-
-
-
-if(error){
-
-console.log(error);
-
-return;
-
-}
-
-
-
-
-
-
-
-select.innerHTML=
-
-`
-
-<option value="">
-Wybierz kontrahenta
-</option>
-
-`;
-
-
-
-
-
-
-data.forEach(item=>{
-
-
-
-select.innerHTML +=
-
-`
-
-<option value="${item.id}">
-
-${item.nazwa}
-
-</option>
-
-`;
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ======================================
-// LOKALIZACJE W USTAWIENIACH
-// ======================================
-
-
-async function loadLocationsForSettings(){
-
-
-
-const selects=[
-
-document.getElementById(
-"localLocation"
-),
-
-document.getElementById(
-"location"
-)
-
-];
-
-
-
-
-
-
-const {
-
-data,
-
-error
-
-}=
-
-await supabaseClient
-
-.from("dokumenty")
-
-.select(
-"lokalizacja"
-);
-
-
-
-
-
-
-
-if(error)
-return;
-
-
-
-
-
-
-
-const locations=[
-
-
-...
-
-new Set(
-
-data
-
-.map(
-x=>x.lokalizacja
-)
-
-.filter(Boolean)
-
-)
-
-];
-
-
-
-
-
-
-
-
-
-selects.forEach(select=>{
-
-
-
-if(!select)
-return;
-
-
-
-
-
-select.innerHTML=
-
-`
-
-<option value="">
-Wybierz lokalizację
-</option>
-
-`;
-
-
-
-
-
-locations.forEach(location=>{
-
-
-
-select.innerHTML +=
-
-`
-
-<option>
-
-${location}
-
-</option>
-
-`;
-
-
-
-});
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ======================================
-// DODAWANIE LOKALU
-// ======================================
-
-
-
-const addLocalBtn =
-
-document.getElementById(
-"addLocalBtn"
-);
-
-
-
-
-
-if(addLocalBtn){
-
-
-
-addLocalBtn.onclick =
-async()=>{
-
-
-
+async function addLocal(){
 
 
 
@@ -498,7 +329,10 @@ document
 "localMPK"
 )
 
-.value.trim();
+.value
+
+.trim();
+
 
 
 
@@ -513,7 +347,10 @@ document
 "localName"
 )
 
-.value.trim();
+.value
+
+.trim();
+
 
 
 
@@ -538,13 +375,12 @@ document
 
 
 
+
 if(
 !mpk ||
 !name ||
 !location
-
 ){
-
 
 
 alert(
@@ -555,24 +391,29 @@ alert(
 
 return;
 
-
-
 }
 
 
 
+ 
 
 
 
 
+const {
 
-const {error}=
+error
+
+}
+
+=
 
 await supabaseClient
 
 .from("lokale")
 
 .insert([
+
 
 {
 
@@ -583,6 +424,7 @@ nazwa:name,
 lokalizacja:location
 
 }
+
 
 ]);
 
@@ -596,10 +438,9 @@ lokalizacja:location
 if(error){
 
 
-
 alert(
 
-"Błąd dodawania lokalu:\n"
+"Błąd dodawania lokalu: "
 
 +
 
@@ -608,13 +449,20 @@ error.message
 );
 
 
-
 return;
-
 
 
 }
 
+
+
+
+
+
+
+alert(
+"Lokal dodany"
+);
 
 
 
@@ -642,16 +490,27 @@ document
 
 
 
+document
+
+.getElementById(
+"localLocation"
+)
+
+.value="";
 
 
-alert(
-"Lokal dodany"
-);
 
 
 
 
-};
+
+if(typeof loadLocations==="function"){
+
+
+loadLocations();
+
+
+}
 
 
 
