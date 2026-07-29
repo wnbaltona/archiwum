@@ -1,13 +1,16 @@
-const menuButton =
-document.getElementById("menuButton");
+const menuBtn =
+document.getElementById("menuBtn");
 
 
-const dropdown =
-document.getElementById("dropdown");
+const menuList =
+document.getElementById("menuList");
 
 
-menuButton.onclick = ()=>{
 
-dropdown.classList.toggle("show");
+menuBtn.addEventListener("click", ()=>{
 
-};
+
+menuList.classList.toggle("show");
+
+
+});
