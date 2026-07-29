@@ -4,52 +4,53 @@ let selectedLocation = "WSZYSTKIE";
 
 
 
+
+// START
+
 document.addEventListener(
 "DOMContentLoaded",
-function(){
+()=>{
 
 loadDocuments();
 
-}
+
+document
+.getElementById("searchInput")
+?.addEventListener(
+"input",
+render
 );
 
 
+});
 
 
-// =================================
-// POBIERANIE DANYCH
-// =================================
+
+
+
+// ===============================
+// POBIERANIE DOKUMENTÓW
+// ===============================
 
 
 async function loadDocuments(){
 
 
 const {
+
 data,
+
 error
+
 }
+
 =
+
 await supabaseClient
 
 .from("dokumenty")
 
-.select(`
-
-*,
-
-lokale(
-id,
-mpk,
-nazwa,
-lokalizacja
-),
-
-kontrahenci(
-id,
-nazwa
-)
-
-`)
+.select("*")
 
 .order(
 "rok",
@@ -60,9 +61,14 @@ ascending:false
 
 
 
+
+
 if(error){
 
-console.error(error);
+console.error(
+"Błąd pobierania:",
+error
+);
 
 return;
 
@@ -70,11 +76,13 @@ return;
 
 
 
-documents = data || [];
+
+
+documents=data || [];
 
 
 
-await createLocations();
+createLocations();
 
 
 render();
@@ -91,12 +99,12 @@ render();
 
 
 
-// =================================
-// LOKALIZACJE
-// =================================
+// ===============================
+// FILTRY LOKALIZACJI
+// ===============================
 
 
-async function createLocations(){
+function createLocations(){
 
 
 const box =
@@ -111,65 +119,32 @@ return;
 
 
 
-box.innerHTML="";
 
+box.innerHTML="";
 
 
 
 
 let locations=[
 
-
 "WSZYSTKIE",
 
-"WARSZAWA",
-
-"GDAŃSK",
-
-"GDYNIA",
-
-"ŚWINOUJŚCIE"
-
+...LOCATIONS
 
 ];
 
 
 
 
+// dodaj lokalizacje z bazy
+
+documents.forEach(doc=>{
 
 
-// pobieranie dodatkowych lokalizacji z lokali
-
-const {
-
-data
-
-}
-
-=
-
-await supabaseClient
-
-.from("lokale")
-
-.select(
-"lokalizacja"
-);
-
-
-
-
-
-if(data){
-
-
-data.forEach(item=>{
-
-
-if(item.lokalizacja){
+if(doc.lokalizacja){
 
 locations.push(
-item.lokalizacja
+doc.lokalizacja
 );
 
 }
@@ -178,25 +153,15 @@ item.lokalizacja
 });
 
 
-}
-
-
 
 
 
 
 locations=[
 
-...
-
-new Set(
-locations
-.filter(Boolean)
-)
+...new Set(locations)
 
 ];
-
-
 
 
 
@@ -206,37 +171,22 @@ locations
 locations.forEach(location=>{
 
 
+const count =
 
-let count=0;
+location==="WSZYSTKIE"
 
+?
 
+documents.length
 
+:
 
+documents.filter(
+doc=>
 
-if(location==="WSZYSTKIE"){
+doc.lokalizacja===location
 
-
-count=documentumentsCount();
-
-
-
-}
-
-else{
-
-
-count=
-
-documents.filter(doc=>
-
-doc.lokale?.lokalizacja===location
-
-)
-
-.length;
-
-
-}
+).length;
 
 
 
@@ -244,8 +194,7 @@ doc.lokale?.lokalizacja===location
 
 
 
-const button=
-
+const button =
 document.createElement(
 "button"
 );
@@ -258,24 +207,16 @@ button.className=
 
 
 
-
 button.innerHTML=
 
 `
 
 <strong>
-
 ${location}
-
 </strong>
 
-
 <span>
-
-${count}
-
-${documentText(count)}
-
+${count} ${documentText(count)}
 </span>
 
 `;
@@ -285,8 +226,7 @@ ${documentText(count)}
 
 
 
-button.onclick=function(){
-
+button.onclick=()=>{
 
 
 selectedLocation=location;
@@ -295,9 +235,7 @@ selectedLocation=location;
 render();
 
 
-
 };
-
 
 
 
@@ -312,19 +250,6 @@ box.appendChild(button);
 
 
 
-}
-
-
-
-
-
-
-
-
-
-function documentCount(){
-
-return documents.length;
 
 }
 
@@ -336,12 +261,14 @@ return documents.length;
 
 
 
-// =================================
+
+// ===============================
 // ODMIANA
-// =================================
+// ===============================
 
 
 function documentText(number){
+
 
 
 if(number===1)
@@ -366,6 +293,7 @@ return "dokumenty";
 
 return "dokumentów";
 
+
 }
 
 
@@ -376,17 +304,16 @@ return "dokumentów";
 
 
 
-// =================================
+// ===============================
 // WYŚWIETLANIE
-// =================================
+// ===============================
 
 
 function render(){
 
 
 
-const results=
-
+const results =
 document.getElementById(
 "results"
 );
@@ -398,8 +325,8 @@ return;
 
 
 
-results.innerHTML="";
 
+results.innerHTML="";
 
 
 
@@ -411,15 +338,19 @@ let list=[...documents];
 
 
 
-
-if(selectedLocation!=="WSZYSTKIE"){
-
-
-list=list.filter(doc=>
+// filtr lokalizacji
 
 
-doc.lokale?.lokalizacja===selectedLocation
+if(
+selectedLocation !== "WSZYSTKIE"
+){
 
+
+list=list.filter(
+
+doc=>
+
+doc.lokalizacja===selectedLocation
 
 );
 
@@ -431,10 +362,14 @@ doc.lokale?.lokalizacja===selectedLocation
 
 
 
+// wyszukiwarka
 
-const search=
 
-document.getElementById(
+const search =
+
+document
+
+.getElementById(
 "searchInput"
 )
 
@@ -442,7 +377,7 @@ document.getElementById(
 
 .toLowerCase()
 
-|| "";
+.trim();
 
 
 
@@ -452,7 +387,9 @@ document.getElementById(
 if(search){
 
 
-list=list.filter(doc=>
+list=list.filter(
+
+doc=>
 
 JSON.stringify(doc)
 
@@ -471,8 +408,7 @@ JSON.stringify(doc)
 
 
 
-
-if(list.length===0){
+if(!list.length){
 
 
 results.innerHTML=
@@ -487,7 +423,6 @@ Brak dokumentów
 
 `;
 
-
 return;
 
 
@@ -498,33 +433,58 @@ return;
 
 
 
-// grupowanie lokalizacji
 
-const groups={};
+// sortowanie po roku
+
+list.sort(
+
+(a,b)=>
+
+Number(b.rok || 0)
+
+-
+
+Number(a.rok || 0)
+
+);
+
+
+
+
+
+
+
+
+
+// grupowanie lokalizacja
+
+
+const grouped={};
+
 
 
 
 list.forEach(doc=>{
 
 
+const location =
 
-const location=
-
-doc.lokale?.lokalizacja
-
-||
+doc.lokalizacja ||
 
 "Brak lokalizacji";
 
 
 
-if(!groups[location])
-
-groups[location]=[];
+if(!grouped[location]){
 
 
+grouped[location]=[];
 
-groups[location].push(doc);
+}
+
+
+
+grouped[location].push(doc);
 
 
 
@@ -536,7 +496,10 @@ groups[location].push(doc);
 
 
 
-Object.entries(groups)
+
+
+
+Object.entries(grouped)
 
 .forEach(
 
@@ -544,7 +507,9 @@ Object.entries(groups)
 
 
 
-const locationBox=
+
+
+const locationBox =
 
 document.createElement(
 "div"
@@ -558,15 +523,15 @@ locationBox.className=
 
 
 
+
+
 locationBox.innerHTML=
 
 `
 
 <div class="archive-header">
 
-<strong>
 ${location}
-</strong>
 
 </div>
 
@@ -577,7 +542,15 @@ ${location}
 
 
 
+
+
+
+// grupowanie rok
+
+
 const years={};
+
+
 
 
 
@@ -595,7 +568,9 @@ if(!years[year])
 years[year]=[];
 
 
+
 years[year].push(doc);
+
 
 
 });
@@ -613,7 +588,9 @@ Object.entries(years)
 
 (a,b)=>
 
-Number(b[0])-
+Number(b[0])
+
+-
 
 Number(a[0])
 
@@ -622,6 +599,7 @@ Number(a[0])
 .forEach(
 
 ([year,yearDocs])=>{
+
 
 
 
@@ -641,15 +619,12 @@ yearBox.className=
 
 
 
-
 yearBox.innerHTML=
 
 `
 
 <h3>
-
 ${year}
-
 </h3>
 
 `;
@@ -660,8 +635,8 @@ ${year}
 
 
 
-
 yearDocs.forEach(doc=>{
+
 
 
 
@@ -683,65 +658,66 @@ card.className=
 
 
 
-
-const local=
-
-doc.lokale
-
-?
-
-`${doc.lokale.nazwa} (${doc.lokale.mpk})`
-
-:
-
-"-";
-
-
-
-
-
-
-
-
-
 card.innerHTML=
 
 `
 
 <h4>
-
-${doc.nazwa || "Bez nazwy"}
-
+${doc.nazwa}
 </h4>
 
 
 <p>
+Lokalizacja:
+${doc.lokalizacja}
+</p>
+
+
+<p>
 Lokal:
-${local}
+${doc.numer_lokalu}
 </p>
 
 
 <p>
 Kontrahent:
-${doc.kontrahenci?.nazwa || "-"}
+${doc.nazwa_kontrahenta || "-"}
 </p>
 
 
 <p>
 Typ:
-${doc.typ || "-"}
+${doc.typ}
+</p>
+
+
+<p>
+Regał:
+${doc.regal}
+</p>
+
+
+<p>
+Półka:
+${doc.polka}
+</p>
+
+
+<p>
+Segregator:
+${doc.segregator}
+</p>
+
+
+<p>
+Status:
+${doc.status}
 </p>
 
 
 <p>
 Rok:
 ${doc.rok || "-"}
-</p>
-
-
-<p>
-Status:
-${doc.status || "-"}
 </p>
 
 
@@ -767,36 +743,37 @@ Usuń
 
 
 
-card.querySelector(".delete")
+
+card
+
+.querySelector(".edit")
 
 .onclick=
 
-function(){
-
-deleteDocument(doc.id);
-
-};
-
-
-
-
-
-
-if(typeof openEditModal==="function"){
-
-
-card.querySelector(".edit")
-
-.onclick=
-
-function(){
+()=>{
 
 openEditModal(doc);
 
 };
 
 
-}
+
+
+
+
+
+card
+
+.querySelector(".delete")
+
+.onclick=
+
+()=>{
+
+deleteDocument(doc.id);
+
+};
+
 
 
 
@@ -812,14 +789,11 @@ yearBox.appendChild(card);
 
 
 
-
 locationBox.appendChild(yearBox);
 
 
 
 });
-
-
 
 
 
@@ -833,6 +807,7 @@ results.appendChild(locationBox);
 
 
 
+
 }
 
 
@@ -843,17 +818,18 @@ results.appendChild(locationBox);
 
 
 
-// =================================
+// ===============================
 // USUWANIE
-// =================================
+// ===============================
 
 
 async function deleteDocument(id){
 
 
+
 if(
 !confirm(
-"Usunąć dokument?"
+"Czy usunąć dokument?"
 )
 
 )
@@ -864,12 +840,13 @@ return;
 
 
 
-
 const {
 
 error
 
-}=
+}
+
+=
 
 await supabaseClient
 
@@ -888,13 +865,15 @@ id
 
 if(error){
 
-alert(error.message);
+
+alert(
+error.message
+);
+
 
 return;
 
 }
-
-
 
 
 
