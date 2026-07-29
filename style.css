@@ -664,5 +664,95 @@ min-height:auto;
 margin-top:0;
 
 }
+/* =========================
+NOWY UKŁAD ARCHIWUM
+========================= */
 
+
+.location-tabs{
+
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+
+}
+
+
+
+
+.location-card{
+
+background:white;
+border-radius:16px;
+padding:15px 20px;
+border:none;
+cursor:pointer;
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+
+
+.archive-location{
+
+background:white;
+border-radius:20px;
+margin-bottom:20px;
+overflow:hidden;
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+
+}
+
+
+
+
+.archive-header{
+
+padding:22px 30px;
+display:flex;
+gap:15px;
+align-items:center;
+cursor:pointer;
+font-size:20px;
+background:#fff;
+
+}
+
+
+
+
+.location-content{
+
+padding:0 30px 25px;
+
+}
+
+
+
+
+.year-box h3{
+
+margin-top:20px;
+
+}
+
+
+
+
+.document{
+
+background:#f8fafc;
+padding:20px;
+border-radius:15px;
+margin-bottom:15px;
+
+}
+
+
+
+.document h4{
+
+margin-top:0;
+
+}
 }
