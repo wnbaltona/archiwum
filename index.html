@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Archiwum Dokumentów</title>
+<title>Archiwum dokumentów</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -21,12 +21,8 @@
 
 
 <div class="logo">
-Archiwum Dokumentów
+Archiwum dokumentów
 </div>
-
-
-
-<div class="menu">
 
 
 <button id="menuBtn" class="menu-button">
@@ -35,27 +31,19 @@ Archiwum Dokumentów
 
 
 
-
-<div id="menuList" class="dropdown hidden">
-
+<div id="menuList" class="menu-list hidden">
 
 <button id="addBtn">
 Dodaj dokument
 </button>
 
-
 <button id="settingsBtn">
 Ustawienia
 </button>
 
-
 <button id="exportBtn">
 Eksport
 </button>
-
-
-</div>
-
 
 </div>
 
@@ -66,19 +54,10 @@ Eksport
 
 
 
+<main>
 
 
-<main class="container">
-
-
-
-<section class="locations-section">
-
-
-<h2>
-Lokalizacje
-</h2>
-
+<section class="filters">
 
 
 <div id="locationTabs" class="location-tabs">
@@ -87,28 +66,13 @@ Lokalizacje
 
 
 
-</section>
-
-
-
-
-
-
-
-
-<section class="toolbar">
-
-
-<input
-
+<input 
 id="searchInput"
-
+type="text"
 placeholder="Szukaj dokumentu..."
-
 >
 
 
-
 </section>
 
 
@@ -117,12 +81,10 @@ placeholder="Szukaj dokumentu..."
 
 
 
-<div id="results">
-
-</div>
+<section id="results">
 
 
-
+</section>
 
 
 
@@ -134,230 +96,131 @@ placeholder="Szukaj dokumentu..."
 
 
 
+<!-- MODAL DOKUMENT -->
 
-
-<!-- =====================
-MODAL DODAWANIA / EDYCJI
-===================== -->
-
-
-<div id="modalOverlay" class="modal-overlay hidden">
-
+<div id="modalOverlay" class="overlay hidden">
 
 
 <div class="modal">
 
 
-<button id="closeModal" class="close-modal">
-
-×
-
+<button 
+id="closeModal"
+class="close-button">
+X
 </button>
 
 
-
 <h2 id="modalTitle">
-
 Dodaj dokument
-
 </h2>
 
 
 
 
-
-
-<div class="form-grid">
-
-
-
-<div class="form-group">
-
 <label>
-Lokalizacja *
+Lokalizacja
 </label>
-
 
 <select id="location">
 
-<option value="">
+<option>
 Wybierz lokalizację
 </option>
 
 </select>
 
-</div>
 
 
 
-
-
-
-
-<div class="form-group">
 
 <label>
-Lokal *
+Lokal
 </label>
 
 
 <select id="local">
 
-<option value="">
+<option>
 Najpierw wybierz lokalizację
 </option>
 
 </select>
 
-</div>
+
+
+
+
+<label>
+Nazwa dokumentu
+</label>
+
+<input id="name">
 
 
 
 
 
+<label>
+Typ dokumentu
+</label>
+
+<input id="type">
 
 
 
-<div class="form-group">
+
+
+<label>
+Rok
+</label>
+
+<input 
+id="year"
+type="number">
+
+
+
+
+
+<label>
+Regał
+</label>
+
+<input id="shelf">
+
+
+
+
+
+<label>
+Półka
+</label>
+
+<input id="level">
+
+
+
+
+
+<label>
+Segregator
+</label>
+
+<input id="folder">
+
+
+
 
 
 <label>
 Kontrahent
 </label>
 
+<input id="contractor">
 
-<select id="contractor">
 
-<option value="">
-Wybierz kontrahenta
-</option>
 
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-Nazwa dokumentu *
-</label>
-
-
-<input id="name">
-
-</div>
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-Typ dokumentu *
-</label>
-
-
-<input id="type">
-
-</div>
-
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-Rok *
-</label>
-
-
-<input 
-id="year"
-type="number">
-
-</div>
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-Regał *
-</label>
-
-
-<input id="shelf">
-
-</div>
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-Półka *
-</label>
-
-
-<input id="level">
-
-</div>
-
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-Segregator *
-</label>
-
-
-<input id="folder">
-
-</div>
-
-
-
-
-
-
-
-
-<div class="form-group">
 
 
 <label>
@@ -367,32 +230,26 @@ Status
 
 <select id="status">
 
-<option>
+
+<option value="OK">
 OK
 </option>
 
-<option>
-Do uzupełnienia
+
+<option value="DO UZUPEŁNIENIA">
+DO UZUPEŁNIENIA
 </option>
 
-<option>
-Brak dokumentu
+
+<option value="BRAK">
+BRAK
 </option>
 
 
 </select>
 
 
-</div>
 
-
-
-
-
-
-
-
-<div class="form-group full">
 
 
 <label>
@@ -403,33 +260,22 @@ Uwagi
 <textarea id="notes"></textarea>
 
 
-</div>
 
 
 
-</div>
+<button id="saveBtn" class="primary-button">
 
-
-
-
-
-
-
-
-<button id="saveBtn" class="primary-btn">
-
-Zapisz dokument
+Zapisz
 
 </button>
 
 
 
-
+</div>
 
 </div>
 
 
-</div>
 
 
 
@@ -437,26 +283,20 @@ Zapisz dokument
 
 
 
+<!-- USTAWIENIA -->
 
 
-<!-- =====================
-USTAWIENIA
-===================== -->
+<div id="settingsOverlay" class="overlay hidden">
 
 
-<div id="settingsOverlay" class="modal-overlay hidden">
+<div class="modal settings-modal">
 
 
-
-<div class="modal">
-
-
-<button id="closeSettings" class="close-modal">
-
-×
-
+<button 
+id="closeSettings"
+class="close-button">
+X
 </button>
-
 
 
 
@@ -467,48 +307,22 @@ Ustawienia
 
 
 
-
-
-
-
-<section class="settings-box">
-
-
 <h3>
 Dodaj kontrahenta
 </h3>
 
 
-
-<input
-
+<input 
 id="newContractor"
-
-placeholder="Nazwa kontrahenta"
-
->
+placeholder="Nazwa kontrahenta">
 
 
-
-
-<button id="addContractorBtn" class="primary-btn">
-
+<button id="addContractorBtn">
 Dodaj kontrahenta
-
 </button>
 
 
 
-</section>
-
-
-
-
-
-
-
-
-<section class="settings-box">
 
 
 <h3>
@@ -516,29 +330,14 @@ Dodaj lokal
 </h3>
 
 
-
-
-<input
-
+<input 
 id="localMPK"
-
-placeholder="MPK"
-
->
+placeholder="MPK">
 
 
-
-
-
-<input
-
+<input 
 id="localName"
-
-placeholder="Nazwa lokalu"
-
->
-
-
+placeholder="Nazwa lokalu">
 
 
 
@@ -547,30 +346,9 @@ placeholder="Nazwa lokalu"
 <select id="localLocation">
 
 
-<option value="">
+<option>
 Wybierz lokalizację
 </option>
-
-
-<option>
-WARSZAWA
-</option>
-
-
-<option>
-GDAŃSK
-</option>
-
-
-<option>
-GDYNIA
-</option>
-
-
-<option>
-ŚWINOUJŚCIE
-</option>
-
 
 
 </select>
@@ -579,9 +357,7 @@ GDYNIA
 
 
 
-
-
-<button id="addLocalBtn" class="primary-btn">
+<button id="addLocalBtn">
 
 Dodaj lokal
 
@@ -589,15 +365,6 @@ Dodaj lokal
 
 
 
-
-</section>
-
-
-
-
-
-
-
 </div>
 
 
@@ -611,17 +378,19 @@ Dodaj lokal
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 
+<script src="js/config.js"></script>
 
-<script src="./js/supabase.js"></script>
-<script src="./js/config.js"></script>
-<script src="./js/app.js"></script>
-<script src="./js/admin.js"></script>
-<script src="./js/settings.js"></script>
-<script src="./js/menu.js"></script>
-<script src="./js/export.js"></script>
+<script src="js/app.js"></script>
 
+<script src="js/admin.js"></script>
+
+<script src="js/settings.js"></script>
+
+<script src="js/menu.js"></script>
+
+<script src="js/export.js"></script>
 
 
 </body>
