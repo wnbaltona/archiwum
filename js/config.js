@@ -1,0 +1,18 @@
+const APP_LOCATIONS = [
+
+"OKĘCIE",
+"RADOM",
+"MODLIN",
+"BYDGOSZCZ",
+"KRAKÓW",
+"POZNAŃ",
+"WROCŁAW",
+"ŚWINOUJŚCIE",
+"GDAŃSK",
+"GDYNIA",
+"ZIELONA GÓRA",
+"RZESZÓW",
+"FRANCJA",
+"KATOWICE"
+
+];
