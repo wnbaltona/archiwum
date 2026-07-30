@@ -5,7 +5,24 @@
 
 let documents = [];
 
-let locations = [];
+let locations = [
+
+"OKĘCIE",
+"MODLIN",
+"RADOM",
+"RZESZÓW",
+"ŚWINOUJŚCIE",
+"POZNAŃ",
+"WROCŁAW",
+"KATOWICE",
+"ZIELONA GÓRA",
+"KRAKÓW",
+"GDAŃSK",
+"GDYNIA",
+"FRANCJA",
+"SONATA"
+
+];
 
 let selectedLocation = "";
 
@@ -121,25 +138,36 @@ documents = docs || [];
 
 
 
-locations = [
+const databaseLocations = [
 
 ...new Set(
 
 locs.map(
-
 x=>x.lokalizacja
-
 )
 
 )
 
 ]
+.filter(Boolean);
 
-.filter(Boolean)
+
+
+locations = [
+
+...new Set(
+
+[
+...locations,
+...databaseLocations
+
+]
+
+)
+
+]
 
 .sort();
-
-
 
 
 
