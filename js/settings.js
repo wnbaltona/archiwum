@@ -3,7 +3,7 @@
 // ===============================
 
 
-const AVAILABLE_LOCATIONS = [
+const SETTINGS_LOCATIONS = [
 
 "OKĘCIE",
 "MODLIN",
@@ -163,31 +163,6 @@ document
 
 
 
-// ===============================
-// MENU USTAWIEŃ
-// ===============================
-
-
-function showSettingsMenu(){
-
-
-document.getElementById(
-"settingsContent"
-)
-
-.innerHTML="";
-
-
-
-}
-
-
-
-
-
-
-
-
 
 // ===============================
 // DODAJ KONTRAHENTA
@@ -197,14 +172,11 @@ document.getElementById(
 function showAddContractor(){
 
 
-const box =
 document.getElementById(
 "settingsContent"
-);
+)
 
-
-
-box.innerHTML =
+.innerHTML =
 
 
 `
@@ -212,7 +184,6 @@ box.innerHTML =
 <h3>
 Dodaj kontrahenta
 </h3>
-
 
 
 <div class="settings-form">
@@ -225,8 +196,7 @@ Nazwa kontrahenta
 
 <input 
 id="contractorName"
-placeholder="Nazwa kontrahenta">
-
+placeholder="Wpisz nazwę">
 
 
 <button id="saveContractor">
@@ -268,17 +238,18 @@ addContractor;
 async function addContractor(){
 
 
+
 const name =
 
-document
-
-.getElementById(
+document.getElementById(
 "contractorName"
 )
 
 .value
 
 .trim();
+
+
 
 
 
@@ -293,6 +264,7 @@ alert(
 return;
 
 }
+
 
 
 
@@ -321,7 +293,6 @@ nazwa:name
 
 
 
-
 if(error){
 
 alert(error.message);
@@ -340,7 +311,7 @@ alert(
 
 
 
-showSettingsMenu();
+loadContractors();
 
 
 
@@ -407,12 +378,12 @@ await supabaseClient
 
 if(error){
 
-box.innerHTML=error.message;
+box.innerHTML =
+error.message;
 
 return;
 
 }
-
 
 
 
@@ -435,30 +406,6 @@ Lista kontrahentów
 
 
 
-
-if(!data.length){
-
-
-box.innerHTML +=
-
-`
-
-<p>
-Brak kontrahentów
-</p>
-
-`;
-
-return;
-
-}
-
-
-
-
-
-
-
 data.forEach(
 item=>{
 
@@ -471,11 +418,11 @@ box.innerHTML +=
 <div class="setting-row">
 
 
-<span>
+<div>
 
 ${item.nazwa}
 
-</span>
+</div>
 
 
 
@@ -490,6 +437,7 @@ Usuń
 
 </div>
 
+
 `;
 
 
@@ -499,6 +447,8 @@ Usuń
 
 
 }
+
+
 
 
 
@@ -518,6 +468,28 @@ if(
 )
 
 return;
+
+
+
+
+
+
+// odpinanie dokumentów
+
+await supabaseClient
+
+.from("dokumenty")
+
+.update({
+
+kontrahent_id:null
+
+})
+
+.eq(
+"kontrahent_id",
+id
+);
 
 
 
@@ -562,6 +534,14 @@ return;
 
 
 
+
+
+alert(
+"Usunięto kontrahenta"
+);
+
+
+
 loadContractors();
 
 
@@ -585,29 +565,18 @@ function showAddLocal(){
 
 
 
-const box =
-document.getElementById(
-"settingsContent"
-);
-
-
-
-
-
 let options =
 
-AVAILABLE_LOCATIONS
+SETTINGS_LOCATIONS
 
 .map(
 
-loc=>
+x=>
 
 `
-
-<option value="${loc}">
-${loc}
+<option value="${x}">
+${x}
 </option>
-
 `
 
 )
@@ -620,7 +589,11 @@ ${loc}
 
 
 
-box.innerHTML =
+document.getElementById(
+"settingsContent"
+)
+
+.innerHTML =
 
 
 `
@@ -681,7 +654,6 @@ ${options}
 
 
 
-
 <button id="saveLocal">
 
 Zapisz lokal
@@ -689,8 +661,8 @@ Zapisz lokal
 </button>
 
 
-
 </div>
+
 
 `;
 
@@ -724,7 +696,8 @@ async function addLocal(){
 
 
 
-const data = {
+const data={
+
 
 
 mpk:
@@ -733,9 +706,7 @@ document.getElementById(
 "localMPK"
 )
 
-.value
-
-.trim(),
+.value.trim(),
 
 
 
@@ -745,9 +716,7 @@ document.getElementById(
 "localName"
 )
 
-.value
-
-.trim(),
+.value.trim(),
 
 
 
@@ -769,30 +738,15 @@ document.getElementById(
 
 
 
-
-if(!data.nazwa){
+if(!data.nazwa || !data.lokalizacja){
 
 alert(
-"Wpisz nazwę lokalu"
+"Uzupełnij dane"
 );
 
 return;
 
 }
-
-
-
-
-if(!data.lokalizacja){
-
-alert(
-"Wybierz lokalizację"
-);
-
-return;
-
-}
-
 
 
 
@@ -832,13 +786,14 @@ return;
 
 
 
+
 alert(
 "Dodano lokal"
 );
 
 
 
-showSettingsMenu();
+loadLocals();
 
 
 
@@ -906,7 +861,8 @@ await supabaseClient
 
 if(error){
 
-box.innerHTML=error.message;
+box.innerHTML =
+error.message;
 
 return;
 
@@ -934,29 +890,6 @@ Lista lokali
 
 
 
-
-if(!data.length){
-
-box.innerHTML +=
-
-`
-
-<p>
-Brak lokali
-</p>
-
-`;
-
-return;
-
-}
-
-
-
-
-
-
-
 data.forEach(
 item=>{
 
@@ -969,20 +902,22 @@ box.innerHTML +=
 <div class="setting-row">
 
 
-<span>
+<div>
 
-<strong>${item.nazwa}</strong>
+<strong>
+${item.nazwa}
+</strong>
 
 <br>
 
-MPK: ${item.mpk || "-"}
+MPK:
+${item.mpk || "-"}
 
 <br>
 
 ${item.lokalizacja}
 
-</span>
-
+</div>
 
 
 
@@ -1027,6 +962,28 @@ if(
 )
 
 return;
+
+
+
+
+
+
+// odpinanie dokumentów
+
+await supabaseClient
+
+.from("dokumenty")
+
+.update({
+
+lokal_id:null
+
+})
+
+.eq(
+"lokal_id",
+id
+);
 
 
 
