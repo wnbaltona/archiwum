@@ -7,6 +7,7 @@ let editingDocumentId = null;
 
 
 
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -45,14 +46,9 @@ document
 "change",
 (e)=>{
 
-loadLocals(
-e.target.value
-);
+loadLocals(e.target.value);
 
-}
-
-);
-
+});
 
 
 });
@@ -66,7 +62,7 @@ e.target.value
 
 
 // ===============================
-// OTWÓRZ DODAWANIE
+// DODAJ DOKUMENT
 // ===============================
 
 
@@ -94,14 +90,23 @@ await loadContractors();
 
 
 
+
 document
-.getElementById("modalOverlay")
+
+.getElementById(
+"modalOverlay"
+)
+
 .classList
-.remove("hidden");
+
+.remove(
+"hidden"
+);
 
 
 
 }
+
 
 
 
@@ -118,18 +123,7 @@ document
 window.openEditModal = async function(doc){
 
 
-
 editingDocumentId = doc.id;
-
-
-
-
-document.getElementById(
-"modalTitle"
-).innerText =
-"Edytuj dokument";
-
-
 
 
 
@@ -141,9 +135,14 @@ await loadContractors();
 
 
 
-document.getElementById(
-"location"
-).value =
+document.getElementById("modalTitle")
+.innerText =
+"Edytuj dokument";
+
+
+
+document.getElementById("location")
+.value =
 doc.lokalizacja || "";
 
 
@@ -154,85 +153,79 @@ doc.lokalizacja
 
 
 
-
-document.getElementById(
-"local"
-).value =
+document.getElementById("local")
+.value =
 doc.numer_lokalu || "";
 
 
 
-document.getElementById(
-"name"
-).value =
+document.getElementById("name")
+.value =
 doc.nazwa || "";
 
 
 
-document.getElementById(
-"type"
-).value =
+document.getElementById("type")
+.value =
 doc.typ || "";
 
 
 
-document.getElementById(
-"year"
-).value =
+document.getElementById("year")
+.value =
 doc.rok || "";
 
 
 
-document.getElementById(
-"contractor"
-).value =
+document.getElementById("contractor")
+.value =
 doc.nazwa_kontrahenta || "";
 
 
 
-document.getElementById(
-"shelf"
-).value =
+document.getElementById("shelf")
+.value =
 doc.regal || "";
 
 
 
-document.getElementById(
-"level"
-).value =
+document.getElementById("level")
+.value =
 doc.polka || "";
 
 
 
-document.getElementById(
-"folder"
-).value =
+document.getElementById("folder")
+.value =
 doc.segregator || "";
 
 
 
-document.getElementById(
-"status"
-).value =
+document.getElementById("status")
+.value =
 doc.status || "OK";
 
 
 
-document.getElementById(
-"notes"
-).value =
+document.getElementById("notes")
+.value =
 doc.uwagi || "";
 
 
 
 
 
-
-
 document
-.getElementById("modalOverlay")
+
+.getElementById(
+"modalOverlay"
+)
+
 .classList
-.remove("hidden");
+
+.remove(
+"hidden"
+);
 
 
 
@@ -262,17 +255,22 @@ document.getElementById(
 
 
 
+
+
 const {
 data,
 error
 }
 
 =
+
 await supabaseClient
 
 .from("lokale")
 
 .select("lokalizacja");
+
+
 
 
 
@@ -289,7 +287,10 @@ return;
 
 
 
-const locations = [
+
+
+
+const list = [
 
 ...new Set(
 
@@ -300,6 +301,9 @@ x=>x.lokalizacja
 )
 
 ]
+
+.filter(Boolean)
+
 .sort();
 
 
@@ -322,8 +326,10 @@ Wybierz lokalizację
 
 
 
-locations.forEach(
-loc=>{
+
+
+list.forEach(
+item=>{
 
 
 select.innerHTML +=
@@ -331,8 +337,8 @@ select.innerHTML +=
 
 `
 
-<option value="${loc}">
-${loc}
+<option value="${item}">
+${item}
 </option>
 
 `;
@@ -361,6 +367,7 @@ ${loc}
 async function loadLocals(location){
 
 
+
 const select =
 document.getElementById(
 "local"
@@ -368,14 +375,19 @@ document.getElementById(
 
 
 
+
+
 if(!location){
+
 
 select.innerHTML =
 
 `
 
 <option>
+
 Najpierw wybierz lokalizację
+
 </option>
 
 `;
@@ -388,12 +400,15 @@ return;
 
 
 
+
+
 const {
 data,
 error
 }
 
 =
+
 await supabaseClient
 
 .from("lokale")
@@ -414,6 +429,7 @@ location
 
 
 
+
 if(error){
 
 console.error(error);
@@ -421,6 +437,7 @@ console.error(error);
 return;
 
 }
+
 
 
 
@@ -441,6 +458,7 @@ Wybierz lokal
 
 
 
+
 data.forEach(
 lokal=>{
 
@@ -452,7 +470,9 @@ select.innerHTML +=
 
 <option value="${lokal.nazwa}">
 
-${lokal.nazwa} (${lokal.mpk})
+${lokal.nazwa}
+
+(${lokal.mpk || ""})
 
 </option>
 
@@ -492,12 +512,14 @@ document.getElementById(
 
 
 
+
 const {
 data,
 error
 }
 
 =
+
 await supabaseClient
 
 .from("kontrahenci")
@@ -507,6 +529,7 @@ await supabaseClient
 .order(
 "nazwa"
 );
+
 
 
 
@@ -526,9 +549,7 @@ return;
 
 
 
-
 select.innerHTML =
-
 
 `
 
@@ -537,6 +558,9 @@ Wybierz kontrahenta
 </option>
 
 `;
+
+
+
 
 
 
@@ -584,7 +608,7 @@ async function saveDocument(){
 
 
 
-const data = {
+const documentData = {
 
 
 lokalizacja:
@@ -621,12 +645,17 @@ document.getElementById(
 
 rok:
 
+document.getElementById(
+"year"
+).value
+?
 Number(
 document.getElementById(
 "year"
 ).value
 )
-|| null,
+:
+null,
 
 
 
@@ -685,8 +714,8 @@ document.getElementById(
 
 
 
-let result;
 
+let result;
 
 
 
@@ -699,7 +728,7 @@ result = await supabaseClient
 
 .from("dokumenty")
 
-.update(data)
+.update(documentData)
 
 .eq(
 "id",
@@ -716,12 +745,13 @@ result = await supabaseClient
 
 .from("dokumenty")
 
-.insert(data);
+.insert(
+documentData
+);
 
 
 
 }
-
 
 
 
@@ -739,12 +769,14 @@ return;
 
 
 
+
+
 closeModal();
 
 
 
 if(
-typeof loadDocuments === "function"
+typeof loadDocuments==="function"
 ){
 
 loadDocuments();
@@ -771,20 +803,21 @@ loadDocuments();
 function clearForm(){
 
 
+
 document
+
 .querySelectorAll(
 "#modalOverlay input, #modalOverlay textarea"
 )
 
 .forEach(
-field=>{
+el=>{
 
-field.value="";
+el.value="";
 
 }
 
 );
-
 
 
 
@@ -797,7 +830,7 @@ document.getElementById(
 
 document.getElementById(
 "local"
-).innerHTML =
+).innerHTML=
 
 `
 
@@ -818,14 +851,21 @@ Najpierw wybierz lokalizację
 
 
 
+
 function closeModal(){
 
 
-
 document
-.getElementById("modalOverlay")
+
+.getElementById(
+"modalOverlay"
+)
+
 .classList
-.add("hidden");
+
+.add(
+"hidden"
+);
 
 
 
