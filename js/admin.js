@@ -7,7 +7,7 @@ let editingDocumentId = null;
 
 
 
-const LOCATIONS = [
+window.LOCATIONS = [
 
 "OKĘCIE",
 "MODLIN",
