@@ -1,3 +1,8 @@
+// ===============================
+// EXPORT.JS
+// ===============================
+
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -5,18 +10,21 @@ document.addEventListener(
 
 document
 
-.getElementById(
-"exportBtn"
-)
+.getElementById("exportBtn")
 
 ?.addEventListener(
+
 "click",
+
 exportDocuments
+
 );
 
 
 
 });
+
+
 
 
 
@@ -52,16 +60,11 @@ await supabaseClient
 
 if(error){
 
-
 alert(
-"Błąd eksportu: "
-+
-error.message
+"Błąd eksportu: " + error.message
 );
 
-
 return;
-
 
 }
 
@@ -75,7 +78,7 @@ if(!data || data.length===0){
 
 
 alert(
-"Brak danych do eksportu"
+"Brak dokumentów do eksportu"
 );
 
 
@@ -90,24 +93,23 @@ return;
 
 
 
+const headers =
+
+Object.keys(
+data[0]
+);
+
+
+
+
+
+
+
 let csv =
 
-[
-[
-"Lokalizacja",
-"Lokal",
-"Nazwa",
-"Typ",
-"Regał",
-"Półka",
-"Segregator",
-"Status",
-"Kontrahent",
-"Rok",
-"Uwagi"
-]
-
-];
+headers.join(";")
++
+"\n";
 
 
 
@@ -115,68 +117,37 @@ let csv =
 
 
 
-data.forEach(doc=>{
+data.forEach(
+row=>{
 
 
+csv +=
 
-csv.push([
+headers.map(
 
+h=>
 
-doc.lokalizacja || "",
+`"${
 
-doc.numer_lokalu || "",
+(row[h] ?? "")
 
-doc.nazwa || "",
+.toString()
 
-doc.typ || "",
+.replaceAll('"','""')
 
-doc.regal || "",
-
-doc.polka || "",
-
-doc.segregator || "",
-
-doc.status || "",
-
-doc.nazwa_kontrahenta || "",
-
-doc.rok || "",
-
-doc.uwagi || ""
-
-
-]);
-
-
-
-});
-
-
-
-
-
-
-
-
-const content =
-
-csv
-
-.map(row=>
-
-row
-
-.map(value=>
-
-`"${String(value).replaceAll('"','""')}"`
+}"`
 
 )
 
 .join(";")
 
-)
++
 
-.join("\n");
+"\n";
+
+
+
+});
 
 
 
@@ -189,14 +160,20 @@ const blob =
 new Blob(
 
 [
-content
+
+"\ufeff" + csv
+
 ],
 
 {
-type:"text/csv;charset=utf-8;"
+
+type:
+"text/csv;charset=utf-8;"
+
 }
 
 );
+
 
 
 
@@ -208,6 +185,7 @@ const url =
 URL.createObjectURL(
 blob
 );
+
 
 
 
@@ -226,16 +204,24 @@ link.href=url;
 
 
 
-link.download=
-
+link.download =
 "archiwum_dokumentow.csv";
 
+
+
+document.body.appendChild(
+link
+);
 
 
 
 link.click();
 
 
+
+document.body.removeChild(
+link
+);
 
 
 

@@ -7,13 +7,12 @@ let documents = [];
 
 let selectedLocation = "";
 
-let openedLocations = [];
+let expandedLocations = [];
 
 
 
 
-
-
+// START
 
 document.addEventListener(
 "DOMContentLoaded",
@@ -31,7 +30,6 @@ loadDocuments();
 
 
 
-
 // ===============================
 // POBIERANIE DOKUMENTÓW
 // ===============================
@@ -41,24 +39,15 @@ async function loadDocuments(){
 
 
 const {
-
 data,
-
 error
-
 }
 
 =
-
 await supabaseClient
-
 .from("dokumenty")
-
 .select("*")
-
-.order(
-"lokalizacja"
-);
+.order("lokalizacja");
 
 
 
@@ -80,11 +69,9 @@ documents = data || [];
 
 
 
-createLocationButtons();
+createLocationFilters();
 
-
-fillYearFilter();
-
+createYearFilter();
 
 renderDocuments();
 
@@ -99,48 +86,44 @@ renderDocuments();
 
 
 
-
 // ===============================
-// LOKALIZACJE
+// FILTRY LOKALIZACJI
 // ===============================
 
 
-function createLocationButtons(){
+function createLocationFilters(){
 
 
-const box =
+const container =
 document.getElementById(
 "locationTabs"
 );
 
 
 
-if(!box)
+if(!container)
 return;
 
 
 
-const locations =
+container.innerHTML="";
 
-[
+
+
+
+const locations = [
 
 ...new Set(
 
 documents.map(
-
 d=>d.lokalizacja
-
 )
 
 )
 
-];
-
-
-
-
-
-box.innerHTML="";
+]
+.filter(Boolean)
+.sort();
 
 
 
@@ -152,17 +135,15 @@ locations.forEach(location=>{
 const count =
 
 documents.filter(
-
 d=>d.lokalizacja===location
-
-).length;
+)
+.length;
 
 
 
 
 
 const button =
-
 document.createElement(
 "button"
 );
@@ -171,6 +152,7 @@ document.createElement(
 
 button.className =
 "location-card";
+
 
 
 
@@ -192,6 +174,8 @@ ${count} dokumentów
 
 
 
+
+
 button.onclick = ()=>{
 
 
@@ -204,7 +188,6 @@ selectedLocation="";
 button.classList.remove(
 "active"
 );
-
 
 
 }
@@ -223,11 +206,10 @@ document
 )
 
 .forEach(
-
-b=>b.classList.remove(
+b=>
+b.classList.remove(
 "active"
 )
-
 );
 
 
@@ -252,7 +234,11 @@ renderDocuments();
 
 
 
-box.appendChild(button);
+
+
+container.appendChild(
+button
+);
 
 
 
@@ -269,6 +255,7 @@ box.appendChild(button);
 
 
 
+
 // ===============================
 // RENDER
 // ===============================
@@ -277,9 +264,7 @@ box.appendChild(button);
 function renderDocuments(){
 
 
-
 const results =
-
 document.getElementById(
 "results"
 );
@@ -293,9 +278,8 @@ return;
 
 
 
-
-let filtered = [...documents];
-
+let filtered =
+[...documents];
 
 
 
@@ -311,13 +295,11 @@ if(selectedLocation){
 filtered =
 
 filtered.filter(
+doc=>
 
-d=>
-
-d.lokalizacja===selectedLocation
+doc.lokalizacja===selectedLocation
 
 );
-
 
 
 }
@@ -326,8 +308,7 @@ d.lokalizacja===selectedLocation
 
 
 
-
-// wyszukiwarka
+// wyszukiwanie
 
 
 const search =
@@ -338,7 +319,7 @@ document
 "searchInput"
 )
 
-?.value
+.value
 
 .toLowerCase();
 
@@ -352,10 +333,9 @@ if(search){
 filtered =
 
 filtered.filter(
+doc=>
 
-d=>
-
-JSON.stringify(d)
+JSON.stringify(doc)
 
 .toLowerCase()
 
@@ -366,7 +346,6 @@ JSON.stringify(d)
 
 
 }
-
 
 
 
@@ -384,7 +363,7 @@ document
 "yearFilter"
 )
 
-?.value;
+.value;
 
 
 
@@ -396,17 +375,14 @@ if(year){
 filtered =
 
 filtered.filter(
+doc=>
 
-d=>
-
-String(d.rok)===year
+String(doc.rok)===year
 
 );
 
 
-
 }
-
 
 
 
@@ -424,7 +400,7 @@ document
 "statusFilter"
 )
 
-?.value;
+.value;
 
 
 
@@ -436,17 +412,15 @@ if(status){
 filtered =
 
 filtered.filter(
+doc=>
 
-d=>
-
-d.status===status
+doc.status===status
 
 );
 
 
 
 }
-
 
 
 
@@ -461,7 +435,8 @@ results.innerHTML="";
 
 
 
-const grouped = {};
+const grouped={};
+
 
 
 
@@ -471,7 +446,6 @@ filtered.forEach(doc=>{
 
 
 if(!grouped[doc.lokalizacja]){
-
 
 grouped[doc.lokalizacja]=[];
 
@@ -490,21 +464,18 @@ grouped[doc.lokalizacja].push(doc);
 
 
 
+Object
 
-
-Object.keys(grouped)
+.keys(grouped)
 
 .sort()
 
 .forEach(location=>{
 
 
-createLocationBlock(
-
+renderLocation(
 location,
-
 grouped[location]
-
 );
 
 
@@ -528,7 +499,7 @@ grouped[location]
 // ===============================
 
 
-function createLocationBlock(
+function renderLocation(
 location,
 docs
 ){
@@ -536,24 +507,30 @@ docs
 
 
 const results =
-
 document.getElementById(
 "results"
 );
 
 
 
+const opened =
+
+expandedLocations.includes(
+location
+);
 
 
-const wrapper =
 
+
+
+const box =
 document.createElement(
 "div"
 );
 
 
 
-wrapper.className =
+box.className =
 "archive-location";
 
 
@@ -562,21 +539,7 @@ wrapper.className =
 
 
 
-const opened =
-
-openedLocations.includes(
-location
-);
-
-
-
-
-
-
-
-wrapper.innerHTML =
-
-
+box.innerHTML =
 
 `
 
@@ -598,6 +561,7 @@ ${location}
 </strong>
 
 
+
 <div class="counter">
 
 ${docs.length}
@@ -613,7 +577,6 @@ ${docs.length}
 
 </div>
 
-
 `;
 
 
@@ -621,32 +584,26 @@ ${docs.length}
 
 
 
-const header =
 
-wrapper.querySelector(
+
+box
+.querySelector(
 ".archive-header"
-);
+)
 
-
-
-
-
-header.onclick=()=>{
+.onclick=()=>{
 
 
 if(
-openedLocations.includes(location)
+expandedLocations.includes(location)
 ){
 
 
-openedLocations =
+expandedLocations =
 
-openedLocations.filter(
-
+expandedLocations.filter(
 x=>x!==location
-
 );
-
 
 
 }
@@ -654,10 +611,9 @@ x=>x!==location
 else{
 
 
-openedLocations.push(
+expandedLocations.push(
 location
 );
-
 
 
 }
@@ -675,10 +631,9 @@ renderDocuments();
 
 
 
-
 const content =
 
-wrapper.querySelector(
+box.querySelector(
 ".location-content"
 );
 
@@ -688,21 +643,7 @@ wrapper.querySelector(
 
 
 
-docs
-
-.sort(
-
-(a,b)=>
-
-(b.rok||0)
-
--
-
-(a.rok||0)
-
-)
-
-.forEach(doc=>{
+docs.forEach(doc=>{
 
 
 content.innerHTML +=
@@ -714,28 +655,28 @@ content.innerHTML +=
 
 
 <h4>
+
 ${doc.nazwa}
+
 </h4>
 
 
-
 <p>
-Typ: ${doc.typ}
+Typ:
+${doc.typ}
 </p>
 
 
-
 <p>
-Lokal: ${doc.numer_lokalu}
+Lokal:
+${doc.numer_lokalu}
 </p>
-
 
 
 <p>
 Kontrahent:
 ${doc.nazwa_kontrahenta || "-"}
 </p>
-
 
 
 <p>
@@ -754,8 +695,8 @@ Edytuj
 </button>
 
 
-
 </div>
+
 
 `;
 
@@ -767,9 +708,7 @@ Edytuj
 
 
 
-
-
-results.appendChild(wrapper);
+results.appendChild(box);
 
 
 
@@ -784,19 +723,15 @@ results.appendChild(wrapper);
 
 
 // ===============================
-// LATA
+// FILTR LAT
 // ===============================
 
 
-function fillYearFilter(){
-
+function createYearFilter(){
 
 
 const select =
-
-document
-
-.getElementById(
+document.getElementById(
 "yearFilter"
 );
 
@@ -809,9 +744,7 @@ return;
 
 
 
-const years =
-
-[
+const years = [
 
 ...new Set(
 
@@ -826,8 +759,10 @@ d=>d.rok
 )
 
 ]
+.sort(
+(a,b)=>b-a
+);
 
-.sort();
 
 
 
@@ -835,7 +770,6 @@ d=>d.rok
 
 
 select.innerHTML =
-
 
 `
 
@@ -849,12 +783,10 @@ Wszystkie lata
 
 
 
-
 years.forEach(year=>{
 
 
 select.innerHTML +=
-
 
 `
 
@@ -881,22 +813,22 @@ ${year}
 
 
 // ===============================
-// FILTRY
+// NASŁUCH FILTRÓW
 // ===============================
 
 
 document.addEventListener(
 "input",
-e=>{
+(e)=>{
 
 
 if(
-
 e.target.id==="searchInput"
-
-)
+){
 
 renderDocuments();
+
+}
 
 
 
@@ -905,9 +837,11 @@ renderDocuments();
 
 
 
+
+
 document.addEventListener(
 "change",
-e=>{
+(e)=>{
 
 
 if(
@@ -923,9 +857,11 @@ e.target.id
 
 )
 
-)
+){
 
 renderDocuments();
+
+}
 
 
 

@@ -14,73 +14,50 @@
 </head>
 
 
-
 <body>
 
 
 <header class="topbar">
 
-
-<div class="logo">
-
-Archiwum dokumentów
-
-</div>
+    <div class="logo">
+        Archiwum dokumentów
+    </div>
 
 
+    <div class="menu-wrapper">
+
+        <button 
+        id="menuBtn"
+        class="menu-button">
+            ☰
+        </button>
 
 
-<div class="menu-wrapper">
+        <div 
+        id="menuList"
+        class="menu-list hidden">
 
 
-<button 
-id="menuBtn"
-class="menu-button">
-
-☰
-
-</button>
+            <button id="addBtn">
+                Dodaj dokument
+            </button>
 
 
-
-<div 
-id="menuList"
-class="menu-list hidden">
-
-
-<button id="addBtn">
-
-Dodaj dokument
-
-</button>
+            <button id="settingsBtn">
+                Ustawienia
+            </button>
 
 
-
-<button id="settingsBtn">
-
-Ustawienia
-
-</button>
+            <button id="exportBtn">
+                Eksport
+            </button>
 
 
+        </div>
 
-<button id="exportBtn">
-
-Eksport
-
-</button>
-
-
-</div>
-
-
-</div>
-
+    </div>
 
 </header>
-
-
-
 
 
 
@@ -89,84 +66,58 @@ Eksport
 <section class="filters">
 
 
-
-<div 
-id="locationTabs"
-class="location-tabs">
-
-</div>
+    <div 
+    id="locationTabs"
+    class="location-tabs">
+    </div>
 
 
 
+    <div class="filter-box">
 
 
-<div class="filter-box">
-
-
-<input 
-id="searchInput"
-placeholder="Szukaj dokumentu...">
-
+        <input 
+        id="searchInput"
+        placeholder="Szukaj dokumentu...">
 
 
 
+        <select id="yearFilter">
 
-<select id="yearFilter">
+            <option value="">
+                Wszystkie lata
+            </option>
 
-
-<option value="">
-
-Wszystkie lata
-
-</option>
-
-
-</select>
+        </select>
 
 
 
 
+        <select id="statusFilter">
 
-<select id="statusFilter">
+            <option value="">
+                Wszystkie statusy
+            </option>
 
+            <option value="OK">
+                OK
+            </option>
 
-<option value="">
+            <option value="DO UZUPEŁNIENIA">
+                DO UZUPEŁNIENIA
+            </option>
 
-Wszystkie statusy
+            <option value="BRAK">
+                BRAK
+            </option>
 
-</option>
-
-
-<option value="OK">
-
-OK
-
-</option>
-
-
-<option value="DO UZUPEŁNIENIA">
-
-DO UZUPEŁNIENIA
-
-</option>
+        </select>
 
 
-<option value="BRAK">
-
-BRAK
-
-</option>
-
-
-</select>
-
-
-</div>
-
+    </div>
 
 
 </section>
-
 
 
 
@@ -190,21 +141,16 @@ DODAJ / EDYTUJ DOKUMENT
 ========================= -->
 
 
-<div
-
+<div 
 id="modalOverlay"
-
 class="overlay hidden">
-
 
 
 <div class="modal document-modal">
 
 
-<button
-
+<button 
 id="closeModal"
-
 class="close-button">
 
 X
@@ -214,9 +160,7 @@ X
 
 
 <h2 id="modalTitle">
-
 Dodaj dokument
-
 </h2>
 
 
@@ -230,19 +174,14 @@ Dodaj dokument
 <div class="form-group">
 
 <label>
-
 Lokalizacja
-
 </label>
 
 
 <select id="location">
 
-
 <option value="">
-
 Wybierz lokalizację
-
 </option>
 
 
@@ -257,22 +196,15 @@ Wybierz lokalizację
 
 <div class="form-group">
 
-
 <label>
-
 Lokal
-
 </label>
-
 
 
 <select id="local">
 
-
-<option>
-
+<option value="">
 Najpierw wybierz lokalizację
-
 </option>
 
 
@@ -285,16 +217,11 @@ Najpierw wybierz lokalizację
 
 
 
-
 <div class="form-group">
 
-
 <label>
-
 Nazwa dokumentu
-
 </label>
-
 
 
 <input id="name">
@@ -306,13 +233,11 @@ Nazwa dokumentu
 
 
 
+
 <div class="form-group">
 
-
 <label>
-
 Typ dokumentu
-
 </label>
 
 
@@ -325,13 +250,11 @@ Typ dokumentu
 
 
 
+
 <div class="form-group">
 
-
 <label>
-
 Rok
-
 </label>
 
 
@@ -348,21 +271,15 @@ type="number">
 
 <div class="form-group">
 
-
 <label>
-
 Kontrahent
-
 </label>
 
 
 <select id="contractor">
 
-
-<option>
-
+<option value="">
 Wybierz kontrahenta
-
 </option>
 
 
@@ -375,14 +292,10 @@ Wybierz kontrahenta
 
 
 
-
 <div class="form-group">
 
-
 <label>
-
 Regał
-
 </label>
 
 
@@ -397,11 +310,8 @@ Regał
 
 <div class="form-group">
 
-
 <label>
-
 Półka
-
 </label>
 
 
@@ -416,11 +326,8 @@ Półka
 
 <div class="form-group">
 
-
 <label>
-
 Segregator
-
 </label>
 
 
@@ -435,35 +342,26 @@ Segregator
 
 <div class="form-group">
 
-
 <label>
-
 Status
-
 </label>
 
 
 <select id="status">
 
 
-<option>
-
+<option value="OK">
 OK
-
 </option>
 
 
-<option>
-
+<option value="DO UZUPEŁNIENIA">
 DO UZUPEŁNIENIA
-
 </option>
 
 
-<option>
-
+<option value="BRAK">
 BRAK
-
 </option>
 
 
@@ -480,9 +378,7 @@ BRAK
 
 
 <label>
-
 Uwagi
-
 </label>
 
 
@@ -495,16 +391,11 @@ Uwagi
 
 
 
-
-<button
-
+<button 
 id="saveBtn"
-
 class="primary-button full-width">
 
-
 Zapisz dokument
-
 
 </button>
 
@@ -532,21 +423,17 @@ USTAWIENIA
 ========================= -->
 
 
-<div
-
+<div 
 id="settingsOverlay"
-
 class="overlay hidden">
-
 
 
 <div class="modal settings-modal">
 
 
-<button
 
+<button 
 id="closeSettings"
-
 class="close-button">
 
 X
@@ -555,11 +442,8 @@ X
 
 
 
-
 <h2>
-
 Ustawienia
-
 </h2>
 
 
@@ -568,43 +452,32 @@ Ustawienia
 <div class="settings-buttons">
 
 
-
 <button id="showAddContractor">
-
 Dodaj kontrahenta
-
 </button>
-
 
 
 
 <button id="showContractors">
-
 Lista kontrahentów
-
 </button>
-
 
 
 
 <button id="showAddLocal">
-
 Dodaj lokal
-
 </button>
 
 
 
-
 <button id="showLocals">
-
 Lista lokali
-
 </button>
 
 
 
 </div>
+
 
 
 
@@ -617,8 +490,8 @@ Lista lokali
 
 </div>
 
-
 </div>
+
 
 
 
@@ -645,8 +518,6 @@ Lista lokali
 <script src="js/export.js"></script>
 
 
-
 </body>
-
 
 </html>
