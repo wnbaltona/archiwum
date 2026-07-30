@@ -1,206 +1,932 @@
 // ===============================
-// APP.JS (POPRAWIONY)
+// APP.JS
 // ===============================
 
+
 let documents = [];
-let locations = [
-  "OKĘCIE", "MODLIN", "RADOM", "RZESZÓW", "ŚWINOUJŚCIE",
-  "POZNAŃ", "WROCŁAW", "KATOWICE", "ZIELONA GÓRA", "KRAKÓW",
-  "GDAŃSK", "GDYNIA", "FRANCJA", "SONATA"
-];
 
 let selectedLocation = "";
-let expandedLocations = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadDocuments();
+let openedLocations = [];
+
+
+
+
+
+
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+
+loadDocuments();
+
+
 });
 
-async function loadDocuments() {
-  const { data, error } = await supabaseClient
-    .from("dokumenty")
-    .select(`
-      *,
-      lokale(id, nazwa, mpk, lokalizacja),
-      kontrahenci(id, nazwa)
-    `)
-    .order("lokalizacja");
 
-  if (error) {
-    console.error(error);
-    return;
-  }
 
-  documents = data || [];
 
-  createLocationFilters();
-  createYearFilter();
-  renderDocuments();
+
+
+
+
+// ===============================
+// POBIERANIE DOKUMENTÓW
+// ===============================
+
+
+async function loadDocuments(){
+
+
+const {
+
+data,
+
+error
+
 }
 
-function createLocationFilters() {
-  const box = document.getElementById("locationTabs");
-  if (!box) return;
-  box.innerHTML = "";
+=
 
-  locations.forEach(location => {
-    const count = documents.filter(d => d.lokalizacja === location).length;
+await supabaseClient
 
-    const btn = document.createElement("button");
-    btn.className = "location-card";
-    if (selectedLocation === location) {
-      btn.classList.add("active");
-    }
+.from("dokumenty")
 
-    btn.innerHTML = `
-      <strong>${location}</strong>
-      <span>${documentText(count)}</span>
-    `;
+.select("*")
 
-    btn.onclick = () => {
-      selectedLocation = selectedLocation === location ? "" : location;
-      createLocationFilters();
-      renderDocuments();
-    };
+.order(
+"lokalizacja"
+);
 
-    box.appendChild(btn);
-  });
+
+
+
+
+if(error){
+
+console.error(error);
+
+return;
+
 }
 
-function renderDocuments() {
-  const results = document.getElementById("results");
-  if (!results) return;
-  results.innerHTML = "";
 
-  let filtered = [...documents];
 
-  // Filtr lokalizacji
-  if (selectedLocation) {
-    filtered = filtered.filter(d => d.lokalizacja === selectedLocation);
-  }
 
-  // Filtr wyszukiwania
-  const searchEl = document.getElementById("searchInput");
-  const search = searchEl ? searchEl.value.toLowerCase() : "";
-  if (search) {
-    filtered = filtered.filter(d =>
-      JSON.stringify(d).toLowerCase().includes(search)
-    );
-  }
 
-  // Filtr roku (POPRAWIONY)
-  const yearEl = document.getElementById("yearFilter");
-  const selectedYear = yearEl ? yearEl.value : "";
-  if (selectedYear) {
-    filtered = filtered.filter(d => String(d.rok) === selectedYear);
-  }
+documents = data || [];
 
-  locations.forEach(location => {
-    const docs = filtered.filter(d => d.lokalizacja === location);
 
-    if (selectedLocation && location !== selectedLocation) {
-      return;
-    }
 
-    renderLocation(location, docs);
-  });
+createLocationButtons();
+
+
+fillYearFilter();
+
+
+renderDocuments();
+
+
+
 }
 
-function renderLocation(location, docs) {
-  const results = document.getElementById("results");
-  const open = expandedLocations.includes(location);
 
-  const div = document.createElement("div");
-  div.className = "archive-location";
 
-  div.innerHTML = `
-    <div class="archive-header">
-      <span class="arrow">${open ? "▼" : "▶"}</span>
-      <strong>${location}</strong>
-      <span class="counter">${documentText(docs.length)}</span>
-    </div>
-    <div class="location-content ${open ? "" : "hidden"}"></div>
-  `;
 
-  div.querySelector(".archive-header").onclick = () => {
-    if (open) {
-      expandedLocations = expandedLocations.filter(x => x !== location);
-    } else {
-      expandedLocations.push(location);
-    }
-    renderDocuments();
-  };
 
-  const content = div.querySelector(".location-content");
 
-  if (!docs.length) {
-    content.innerHTML = `<p>Brak dokumentów</p>`;
-  } else {
-    docs.forEach(doc => {
-      content.innerHTML += `
-        <div class="document">
-          <h4>${doc.nazwa}</h4>
-          <p>Lokal: ${doc.lokale?.nazwa || "-"}</p>
-          <p>MPK: ${doc.lokale?.mpk || "-"}</p>
-          <p>Kontrahent: ${doc.kontrahenci?.nazwa || "-"}</p>
-          <p>Typ: ${doc.typ || "-"}</p>
-          <p>Rok: ${doc.rok || "-"}</p>
-          <p>Status: ${doc.status || "-"}</p>
-          <p>${doc.uwagi || ""}</p>
-          <button class="edit" onclick='openEditModal(${JSON.stringify(doc)})'>Edytuj</button>
-          <button class="delete" onclick="deleteDocument('${doc.id}')">Usuń</button>
-        </div>
-      `;
-    });
-  }
 
-  results.appendChild(div);
+
+
+// ===============================
+// LOKALIZACJE
+// ===============================
+
+
+function createLocationButtons(){
+
+
+const box =
+document.getElementById(
+"locationTabs"
+);
+
+
+
+if(!box)
+return;
+
+
+
+const locations =
+
+[
+
+...new Set(
+
+documents.map(
+
+d=>d.lokalizacja
+
+)
+
+)
+
+];
+
+
+
+
+
+box.innerHTML="";
+
+
+
+
+
+locations.forEach(location=>{
+
+
+const count =
+
+documents.filter(
+
+d=>d.lokalizacja===location
+
+).length;
+
+
+
+
+
+const button =
+
+document.createElement(
+"button"
+);
+
+
+
+button.className =
+"location-card";
+
+
+
+button.innerHTML =
+
+`
+
+<strong>
+${location}
+</strong>
+
+<span>
+${count} dokumentów
+</span>
+
+`;
+
+
+
+
+
+button.onclick = ()=>{
+
+
+if(selectedLocation===location){
+
+
+selectedLocation="";
+
+
+button.classList.remove(
+"active"
+);
+
+
+
 }
 
-function createYearFilter() {
-  const select = document.getElementById("yearFilter");
-  if (!select) return;
+else{
 
-  const years = [
-    ...new Set(documents.map(d => d.rok).filter(Boolean))
-  ].sort((a, b) => b - a);
 
-  select.innerHTML = `<option value="">Wszystkie lata</option>`;
-  years.forEach(year => {
-    select.innerHTML += `<option value="${year}">${year}</option>`;
-  });
+selectedLocation=location;
+
+
+
+document
+
+.querySelectorAll(
+".location-card"
+)
+
+.forEach(
+
+b=>b.classList.remove(
+"active"
+)
+
+);
+
+
+
+button.classList.add(
+"active"
+);
+
+
+
 }
 
-window.deleteDocument = async function(id) {
-  if (!confirm("Usunąć dokument?")) return;
 
-  const { error } = await supabaseClient
-    .from("dokumenty")
-    .delete()
-    .eq("id", id);
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+renderDocuments();
 
-  loadDocuments();
+
+
 };
 
-function documentText(number) {
-  if (number === 1) return "1 dokument";
-  if (number >= 2 && number <= 4) return number + " dokumenty";
-  return number + " dokumentów";
-}
 
-document.addEventListener("input", e => {
-  if (e.target.id === "searchInput") {
-    renderDocuments();
-  }
+
+
+
+box.appendChild(button);
+
+
+
 });
 
-document.addEventListener("change", e => {
-  if (e.target.id === "yearFilter") {
-    renderDocuments();
-  }
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// RENDER
+// ===============================
+
+
+function renderDocuments(){
+
+
+
+const results =
+
+document.getElementById(
+"results"
+);
+
+
+
+if(!results)
+return;
+
+
+
+
+
+
+let filtered = [...documents];
+
+
+
+
+
+
+
+// lokalizacja
+
+
+if(selectedLocation){
+
+
+filtered =
+
+filtered.filter(
+
+d=>
+
+d.lokalizacja===selectedLocation
+
+);
+
+
+
+}
+
+
+
+
+
+
+// wyszukiwarka
+
+
+const search =
+
+document
+
+.getElementById(
+"searchInput"
+)
+
+?.value
+
+.toLowerCase();
+
+
+
+
+
+if(search){
+
+
+filtered =
+
+filtered.filter(
+
+d=>
+
+JSON.stringify(d)
+
+.toLowerCase()
+
+.includes(search)
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+// rok
+
+
+const year =
+
+document
+
+.getElementById(
+"yearFilter"
+)
+
+?.value;
+
+
+
+
+
+if(year){
+
+
+filtered =
+
+filtered.filter(
+
+d=>
+
+String(d.rok)===year
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+// status
+
+
+const status =
+
+document
+
+.getElementById(
+"statusFilter"
+)
+
+?.value;
+
+
+
+
+
+if(status){
+
+
+filtered =
+
+filtered.filter(
+
+d=>
+
+d.status===status
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+results.innerHTML="";
+
+
+
+
+
+
+const grouped = {};
+
+
+
+
+
+filtered.forEach(doc=>{
+
+
+if(!grouped[doc.lokalizacja]){
+
+
+grouped[doc.lokalizacja]=[];
+
+}
+
+
+grouped[doc.lokalizacja].push(doc);
+
+
+
+});
+
+
+
+
+
+
+
+
+
+Object.keys(grouped)
+
+.sort()
+
+.forEach(location=>{
+
+
+createLocationBlock(
+
+location,
+
+grouped[location]
+
+);
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// ROZWIJANE LOKALIZACJE
+// ===============================
+
+
+function createLocationBlock(
+location,
+docs
+){
+
+
+
+const results =
+
+document.getElementById(
+"results"
+);
+
+
+
+
+
+const wrapper =
+
+document.createElement(
+"div"
+);
+
+
+
+wrapper.className =
+"archive-location";
+
+
+
+
+
+
+
+const opened =
+
+openedLocations.includes(
+location
+);
+
+
+
+
+
+
+
+wrapper.innerHTML =
+
+
+
+`
+
+<div class="archive-header">
+
+
+<div class="arrow">
+
+${opened ? "▼" : "▶"}
+
+</div>
+
+
+
+<strong>
+
+${location}
+
+</strong>
+
+
+<div class="counter">
+
+${docs.length}
+
+</div>
+
+
+</div>
+
+
+
+<div class="location-content ${opened ? "" : "hidden"}">
+
+</div>
+
+
+`;
+
+
+
+
+
+
+const header =
+
+wrapper.querySelector(
+".archive-header"
+);
+
+
+
+
+
+header.onclick=()=>{
+
+
+if(
+openedLocations.includes(location)
+){
+
+
+openedLocations =
+
+openedLocations.filter(
+
+x=>x!==location
+
+);
+
+
+
+}
+
+else{
+
+
+openedLocations.push(
+location
+);
+
+
+
+}
+
+
+
+renderDocuments();
+
+
+
+};
+
+
+
+
+
+
+
+const content =
+
+wrapper.querySelector(
+".location-content"
+);
+
+
+
+
+
+
+
+docs
+
+.sort(
+
+(a,b)=>
+
+(b.rok||0)
+
+-
+
+(a.rok||0)
+
+)
+
+.forEach(doc=>{
+
+
+content.innerHTML +=
+
+
+`
+
+<div class="document">
+
+
+<h4>
+${doc.nazwa}
+</h4>
+
+
+
+<p>
+Typ: ${doc.typ}
+</p>
+
+
+
+<p>
+Lokal: ${doc.numer_lokalu}
+</p>
+
+
+
+<p>
+Kontrahent:
+${doc.nazwa_kontrahenta || "-"}
+</p>
+
+
+
+<p>
+Status:
+${doc.status}
+</p>
+
+
+
+<button 
+class="edit"
+onclick='openEditModal(${JSON.stringify(doc)})'>
+
+Edytuj
+
+</button>
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+
+
+
+
+results.appendChild(wrapper);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// LATA
+// ===============================
+
+
+function fillYearFilter(){
+
+
+
+const select =
+
+document
+
+.getElementById(
+"yearFilter"
+);
+
+
+
+if(!select)
+return;
+
+
+
+
+
+const years =
+
+[
+
+...new Set(
+
+documents
+
+.map(
+d=>d.rok
+)
+
+.filter(Boolean)
+
+)
+
+]
+
+.sort();
+
+
+
+
+
+
+select.innerHTML =
+
+
+`
+
+<option value="">
+Wszystkie lata
+</option>
+
+`;
+
+
+
+
+
+
+years.forEach(year=>{
+
+
+select.innerHTML +=
+
+
+`
+
+<option value="${year}">
+${year}
+</option>
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// FILTRY
+// ===============================
+
+
+document.addEventListener(
+"input",
+e=>{
+
+
+if(
+
+e.target.id==="searchInput"
+
+)
+
+renderDocuments();
+
+
+
+});
+
+
+
+
+document.addEventListener(
+"change",
+e=>{
+
+
+if(
+
+[
+"yearFilter",
+"statusFilter"
+
+]
+
+.includes(
+e.target.id
+
+)
+
+)
+
+renderDocuments();
+
+
+
 });

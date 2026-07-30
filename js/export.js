@@ -1,8 +1,3 @@
-// ===============================
-// EXPORT.JS
-// ===============================
-
-
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -10,21 +5,18 @@ document.addEventListener(
 
 document
 
-.getElementById("exportBtn")
+.getElementById(
+"exportBtn"
+)
 
 ?.addEventListener(
-
 "click",
-
 exportDocuments
-
 );
 
 
 
 });
-
-
 
 
 
@@ -60,11 +52,16 @@ await supabaseClient
 
 if(error){
 
+
 alert(
-"Błąd eksportu: " + error.message
+"Błąd eksportu: "
++
+error.message
 );
 
+
 return;
+
 
 }
 
@@ -78,7 +75,7 @@ if(!data || data.length===0){
 
 
 alert(
-"Brak dokumentów do eksportu"
+"Brak danych do eksportu"
 );
 
 
@@ -93,23 +90,24 @@ return;
 
 
 
-const headers =
-
-Object.keys(
-data[0]
-);
-
-
-
-
-
-
-
 let csv =
 
-headers.join(";")
-+
-"\n";
+[
+[
+"Lokalizacja",
+"Lokal",
+"Nazwa",
+"Typ",
+"Regał",
+"Półka",
+"Segregator",
+"Status",
+"Kontrahent",
+"Rok",
+"Uwagi"
+]
+
+];
 
 
 
@@ -117,37 +115,68 @@ headers.join(";")
 
 
 
-data.forEach(
-row=>{
+data.forEach(doc=>{
 
 
-csv +=
 
-headers.map(
+csv.push([
 
-h=>
 
-`"${
+doc.lokalizacja || "",
 
-(row[h] ?? "")
+doc.numer_lokalu || "",
 
-.toString()
+doc.nazwa || "",
 
-.replaceAll('"','""')
+doc.typ || "",
 
-}"`
+doc.regal || "",
+
+doc.polka || "",
+
+doc.segregator || "",
+
+doc.status || "",
+
+doc.nazwa_kontrahenta || "",
+
+doc.rok || "",
+
+doc.uwagi || ""
+
+
+]);
+
+
+
+});
+
+
+
+
+
+
+
+
+const content =
+
+csv
+
+.map(row=>
+
+row
+
+.map(value=>
+
+`"${String(value).replaceAll('"','""')}"`
 
 )
 
 .join(";")
 
-+
+)
 
-"\n";
-
-
-
-});
+.join("\n");
 
 
 
@@ -160,20 +189,14 @@ const blob =
 new Blob(
 
 [
-
-"\ufeff" + csv
-
+content
 ],
 
 {
-
-type:
-"text/csv;charset=utf-8;"
-
+type:"text/csv;charset=utf-8;"
 }
 
 );
-
 
 
 
@@ -185,7 +208,6 @@ const url =
 URL.createObjectURL(
 blob
 );
-
 
 
 
@@ -204,24 +226,16 @@ link.href=url;
 
 
 
-link.download =
+link.download=
+
 "archiwum_dokumentow.csv";
 
-
-
-document.body.appendChild(
-link
-);
 
 
 
 link.click();
 
 
-
-document.body.removeChild(
-link
-);
 
 
 

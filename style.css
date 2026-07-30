@@ -12,7 +12,10 @@ body{
     margin:0;
     padding:0;
 
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
     background:#f5f6fa;
 
@@ -23,7 +26,7 @@ body{
 
 
 /* =========================
-HEADER
+HEADER / MENU
 ========================= */
 
 
@@ -35,9 +38,9 @@ HEADER
 
     display:flex;
 
-    justify-content:space-between;
-
     align-items:center;
+
+    justify-content:space-between;
 
     box-shadow:
     0 2px 10px rgba(0,0,0,.08);
@@ -50,15 +53,10 @@ HEADER
 
     font-size:22px;
 
-    font-weight:700;
+    font-weight:600;
 
 }
 
-
-
-/* =========================
-MENU
-========================= */
 
 
 .menu-wrapper{
@@ -75,11 +73,13 @@ MENU
 
     background:none;
 
-    font-size:30px;
+    font-size:28px;
 
     cursor:pointer;
 
 }
+
+
 
 
 
@@ -95,9 +95,7 @@ MENU
 
     padding:10px;
 
-    width:200px;
-
-    border-radius:14px;
+    border-radius:12px;
 
     box-shadow:
     0 5px 20px rgba(0,0,0,.15);
@@ -106,9 +104,11 @@ MENU
 
     flex-direction:column;
 
-    gap:10px;
+    gap:8px;
 
-    z-index:2000;
+    min-width:180px;
+
+    z-index:500;
 
 }
 
@@ -116,18 +116,24 @@ MENU
 
 .menu-list button{
 
-    border:none;
-
     padding:12px;
 
-    border-radius:10px;
+    border:none;
 
-    background:#f2f3f7;
+    border-radius:8px;
+
+    background:#f1f3f8;
 
     cursor:pointer;
 
 }
 
+
+
+
+/* =========================
+UKRYWANIE ELEMENTÓW
+========================= */
 
 
 .hidden{
@@ -139,7 +145,6 @@ MENU
 
 
 
-
 /* =========================
 FILTRY
 ========================= */
@@ -147,15 +152,51 @@ FILTRY
 
 .filters{
 
-    background:white;
-
     padding:25px 30px;
+
+    background:white;
 
 }
 
 
 
+.filter-box{
+
+    display:flex;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.filters input,
+.filters select{
+
+    padding:12px 15px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    font-size:15px;
+
+}
+
+
+
+
+
+/* =========================
+LOKALIZACJE
+========================= */
+
+
 .location-tabs{
+
+    padding:25px 30px;
 
     display:flex;
 
@@ -163,34 +204,33 @@ FILTRY
 
     gap:15px;
 
-    margin-bottom:20px;
-
 }
 
 
 
 .location-card{
 
+    background:white;
+
     border:none;
 
-    background:white;
+    border-radius:16px;
 
     padding:18px 22px;
 
     min-width:150px;
 
-    border-radius:16px;
-
     cursor:pointer;
-
-    box-shadow:
-    0 4px 12px rgba(0,0,0,.08);
 
     display:flex;
 
     flex-direction:column;
 
     gap:8px;
+
+    box-shadow:
+
+    0 4px 12px rgba(0,0,0,.08);
 
 }
 
@@ -199,16 +239,6 @@ FILTRY
 .location-card:hover{
 
     transform:translateY(-2px);
-
-}
-
-
-
-.location-card.active{
-
-    background:#222;
-
-    color:white;
 
 }
 
@@ -224,42 +254,6 @@ FILTRY
 
 
 
-.location-card.active span{
-
-    color:white;
-
-}
-
-
-
-
-.filter-box{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:15px;
-
-}
-
-
-
-.filter-box input,
-.filter-box select{
-
-    padding:12px;
-
-    border-radius:10px;
-
-    border:1px solid #ddd;
-
-    min-width:200px;
-
-}
-
-
-
 
 
 /* =========================
@@ -269,7 +263,7 @@ ARCHIWUM
 
 #results{
 
-    padding:25px 30px;
+    padding:0 30px 50px;
 
 }
 
@@ -286,6 +280,7 @@ ARCHIWUM
     overflow:hidden;
 
     box-shadow:
+
     0 4px 15px rgba(0,0,0,.08);
 
 }
@@ -298,11 +293,13 @@ ARCHIWUM
 
     align-items:center;
 
-    gap:15px;
+    gap:12px;
 
-    padding:20px 25px;
+    padding:22px 25px;
 
     cursor:pointer;
+
+    font-size:20px;
 
 }
 
@@ -318,8 +315,6 @@ ARCHIWUM
 
 .arrow{
 
-    font-size:20px;
-
     width:25px;
 
 }
@@ -332,6 +327,8 @@ ARCHIWUM
 
     color:#777;
 
+    font-size:14px;
+
 }
 
 
@@ -341,6 +338,23 @@ ARCHIWUM
     padding:0 25px 25px;
 
 }
+
+
+
+.year-box{
+
+    margin-top:20px;
+
+}
+
+
+
+.year-box h3{
+
+    margin:10px 0 15px;
+
+}
+
 
 
 
@@ -397,7 +411,7 @@ DOKUMENTY
 
 .edit{
 
-    background:#e7efff;
+    background:#e8f0ff;
 
 }
 
@@ -405,7 +419,7 @@ DOKUMENTY
 
 .delete{
 
-    background:#ffe7e7;
+    background:#ffe8e8;
 
 }
 
@@ -472,9 +486,9 @@ MODALE
 
     background:none;
 
-    cursor:pointer;
-
     font-size:20px;
+
+    cursor:pointer;
 
 }
 
@@ -483,7 +497,7 @@ MODALE
 
 
 /* =========================
-FORMULARZ
+FORMULARZ DOKUMENTU
 ========================= */
 
 
@@ -535,19 +549,20 @@ FORMULARZ
 
 textarea{
 
-    min-height:120px;
+    min-height:100px;
 
 }
 
 
 
+
 .primary-button{
+
+    border:none;
 
     background:#222;
 
     color:white;
-
-    border:none;
 
     padding:14px;
 
@@ -588,19 +603,17 @@ USTAWIENIA
 
 .settings-buttons button{
 
-    border:none;
-
     padding:18px;
+
+    border:none;
 
     border-radius:14px;
 
-    cursor:pointer;
-
     background:#f1f3f8;
 
+    cursor:pointer;
+
 }
-
-
 
 
 
@@ -640,7 +653,6 @@ RESPONSIVE
 }
 
 
-
 .full-width{
 
     grid-column:1;
@@ -672,13 +684,11 @@ RESPONSIVE
 }
 
 
-
 .settings-buttons{
 
     grid-template-columns:1fr;
 
 }
-
 
 
 }
