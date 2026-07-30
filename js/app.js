@@ -1,25 +1,128 @@
 // ======================================
-// APP.JS
-// STRONA GŁÓWNA ARCHIWUM
+// ADMIN.JS
+// DODAWANIE DOKUMENTÓW
 // ======================================
-
-
-let documents = [];
-
-let activeLocation = "";
-
 
 
 
 // ======================================
-// START
+// OTWIERANIE FORMULARZA
 // ======================================
+
 
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
-    loadDocuments();
+
+const addBtn =
+document.getElementById("addBtn");
+
+
+const modal =
+document.getElementById("modalOverlay");
+
+
+const closeBtn =
+document.getElementById("closeModal");
+
+
+
+if(addBtn){
+
+
+addBtn.addEventListener(
+"click",
+()=>{
+
+
+modal.classList.remove(
+"hidden"
+);
+
+
+loadLocations();
+
+loadContractors();
+
+
+}
+
+);
+
+
+}
+
+
+
+if(closeBtn){
+
+
+closeBtn.addEventListener(
+"click",
+()=>{
+
+
+modal.classList.add(
+"hidden"
+);
+
+
+}
+
+);
+
+
+}
+
+
+
+
+const location =
+document.getElementById("location");
+
+
+
+if(location){
+
+
+location.addEventListener(
+"change",
+()=>{
+
+
+loadLocals(
+location.value
+);
+
+
+}
+
+);
+
+
+}
+
+
+
+
+const save =
+document.getElementById("saveBtn");
+
+
+
+if(save){
+
+
+save.addEventListener(
+"click",
+saveDocument
+);
+
+
+}
+
+
 
 });
 
@@ -27,97 +130,29 @@ document.addEventListener(
 
 
 
-// ======================================
-// POBIERANIE DOKUMENTÓW
-// ======================================
-
-
-async function loadDocuments(){
-
-
-const {
-data,
-error
-}= await supabaseClient
-
-.from("dokumenty")
-
-.select(`
-
-*,
-
-lokale (
-    id,
-    mpk,
-    nazwa,
-    lokalizacja
-),
-
-kontrahenci (
-    id,
-    nazwa
-)
-
-`)
-
-.order(
-"created_at",
-{
-ascending:false
-}
-);
-
-
-
-if(error){
-
-console.error(
-"Dokumenty:",
-error
-);
-
-return;
-
-}
-
-
-
-documents = data || [];
-
-
-
-renderLocationCards();
-
-renderDocuments();
-
-
-}
-
-
-
-
-
 
 // ======================================
-// KARTY LOKALIZACJI
+// LOKALIZACJE
 // ======================================
 
 
-function renderLocationCards(){
+function loadLocations(){
 
 
-const box =
+
+const select =
 document.getElementById(
-"locationTabs"
+"location"
 );
 
 
-if(!box)
+
+if(!select)
 return;
 
 
 
-const locations = [
+const locations=[
 
 "OKĘCIE",
 "MODLIN",
@@ -138,42 +173,215 @@ const locations = [
 
 
 
-box.innerHTML="";
+select.innerHTML=`
+
+<option value="">
+Wybierz lokalizację
+</option>
+
+`;
 
 
 
-locations.forEach(location=>{
+locations.forEach(item=>{
 
 
-const count = documents.filter(doc=>
+select.innerHTML +=`
 
-doc.lokale &&
-doc.lokale.lokalizacja === location
+<option value="${item}">
+${item}
+</option>
 
-).length;
+`;
 
-
-
-box.innerHTML += `
-
-
-<button 
-class="location-card"
-onclick="filterLocation('${location}')">
+});
 
 
-<strong>
-${location}
-</strong>
+}
 
 
-<span>
-${formatDocuments(count)}
-</span>
 
 
-</button>
 
+
+// ======================================
+// LOKALE PO LOKALIZACJI
+// ======================================
+
+
+async function loadLocals(location){
+
+
+
+const select =
+document.getElementById(
+"local"
+);
+
+
+
+if(!select)
+return;
+
+
+
+select.innerHTML=`
+
+<option>
+Ładowanie...
+</option>
+
+`;
+
+
+
+
+const {
+data,
+error
+}=await supabaseClient
+
+.from("lokale")
+
+.select("*")
+
+.eq(
+"lokalizacja",
+location
+)
+
+.order(
+"nazwa"
+);
+
+
+
+
+if(error){
+
+console.error(error);
+
+select.innerHTML=`
+
+<option>
+Błąd pobierania lokali
+</option>
+
+`;
+
+return;
+
+}
+
+
+
+
+select.innerHTML=`
+
+<option value="">
+Wybierz lokal
+</option>
+
+`;
+
+
+
+data.forEach(local=>{
+
+
+select.innerHTML +=`
+
+<option value="${local.id}">
+
+${local.nazwa}
+${local.mpk ? " ("+local.mpk+")" : ""}
+
+</option>
+
+`;
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+// ======================================
+// KONTRAHENCI
+// ======================================
+
+
+async function loadContractors(){
+
+
+
+const select =
+document.getElementById(
+"contractor"
+);
+
+
+
+if(!select)
+return;
+
+
+
+const {
+data,
+error
+}=await supabaseClient
+
+.from("kontrahenci")
+
+.select("*")
+
+.order(
+"nazwa"
+);
+
+
+
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+
+
+
+select.innerHTML=`
+
+<option value="">
+Wybierz kontrahenta
+</option>
+
+`;
+
+
+
+
+data.forEach(item=>{
+
+
+select.innerHTML +=`
+
+<option value="${item.id}">
+
+${item.nazwa}
+
+</option>
 
 `;
 
@@ -189,28 +397,91 @@ ${formatDocuments(count)}
 
 
 
+
 // ======================================
-// FILTR LOKALIZACJI
+// ZAPIS DOKUMENTU
 // ======================================
 
 
-window.filterLocation=function(location){
-
-
-if(activeLocation===location){
-
-activeLocation="";
-
-}
-else{
-
-activeLocation=location;
-
-}
+async function saveDocument(){
 
 
 
-renderDocuments();
+const documentData={
+
+
+
+lokal_id:
+document.getElementById(
+"local"
+).value || null,
+
+
+
+kontrahent_id:
+document.getElementById(
+"contractor"
+).value || null,
+
+
+
+nazwa:
+document.getElementById(
+"name"
+).value.trim(),
+
+
+
+typ:
+document.getElementById(
+"type"
+).value,
+
+
+
+rok:
+Number(
+document.getElementById(
+"year"
+).value
+)
+|| null,
+
+
+
+regal:
+document.getElementById(
+"shelf"
+).value,
+
+
+
+polka:
+document.getElementById(
+"level"
+).value,
+
+
+
+segregator:
+document.getElementById(
+"folder"
+).value,
+
+
+
+status:
+document.getElementById(
+"status"
+).value,
+
+
+
+uwagi:
+document.getElementById(
+"notes"
+).value
+
 
 
 };
@@ -220,266 +491,72 @@ renderDocuments();
 
 
 
-// ======================================
-// WYŚWIETLANIE ARCHIWUM
-// ======================================
+if(!documentData.nazwa){
 
 
-function renderDocuments(){
-
-
-
-const box =
-document.getElementById(
-"results"
+alert(
+"Podaj nazwę dokumentu"
 );
 
 
-
-if(!box)
 return;
 
 
-
-let data=[...documents];
-
+}
 
 
-if(activeLocation){
 
 
-data=data.filter(doc=>
+const {
+error
+}=await supabaseClient
 
-doc.lokale &&
-doc.lokale.lokalizacja===activeLocation
+.from("dokumenty")
 
-);
+.insert([
+documentData
+]);
 
+
+
+
+
+if(error){
+
+console.error(error);
+
+alert(error.message);
+
+return;
 
 }
 
 
 
 
-
-const grouped={};
-
-
-
-data.forEach(doc=>{
-
-
-const location =
-doc.lokale?.lokalizacja || "BRAK LOKALIZACJI";
-
-
-
-if(!grouped[location]){
-
-grouped[location]=[];
-
-}
-
-
-
-grouped[location].push(doc);
-
-
-
-});
-
-
-
-
-
-box.innerHTML="";
-
-
-
-Object.keys(grouped)
-.forEach(location=>{
-
-
-
-const docs =
-grouped[location];
-
-
-
-box.innerHTML += `
-
-
-<div class="archive-location">
-
-
-
-<div 
-class="archive-header"
-onclick="toggleLocation('${location}')">
-
-
-<span class="arrow">
-▶
-</span>
-
-
-<strong>
-${location}
-</strong>
-
-
-<span class="counter">
-${formatDocuments(docs.length)}
-</span>
-
-
-
-</div>
-
-
-
-
-<div 
-id="location-${location}"
-class="location-content hidden">
-
-
-${renderDocumentList(docs)}
-
-
-</div>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-// ======================================
-// LISTA DOKUMENTÓW
-// ======================================
-
-
-function renderDocumentList(list){
-
-
-
-if(!list.length)
-
-return "<p>Brak dokumentów</p>";
-
-
-
-
-return list.map(doc=>{
-
-
-return `
-
-
-<div class="document">
-
-
-<h4>
-${doc.nazwa || "Bez nazwy"}
-</h4>
-
-
-
-<p>
-Lokal:
-${doc.lokale?.nazwa || "-"}
-</p>
-
-
-
-<p>
-MPK:
-${doc.lokale?.mpk || "-"}
-</p>
-
-
-
-<p>
-Kontrahent:
-${doc.kontrahenci?.nazwa || "-"}
-</p>
-
-
-
-<p>
-Rok:
-${doc.rok || "-"}
-</p>
-
-
-
-<p>
-Status:
-${doc.status || "-"}
-</p>
-
-
-
-<button
-class="delete"
-onclick="deleteDocument('${doc.id}')">
-
-Usuń
-
-</button>
-
-
-
-</div>
-
-
-`;
-
-
-
-}).join("");
-
-
-
-}
-
-
-
-
-
-
-
-// ======================================
-// ROZWIJANIE LOKALIZACJI
-// ======================================
-
-
-window.toggleLocation=function(location){
-
-
-
-const box =
-document.getElementById(
-"location-"+location
+alert(
+"Dokument dodany"
 );
 
 
 
-if(!box)
+
+document
+.getElementById(
+"modalOverlay"
+)
+.classList.add(
+"hidden"
+);
+
+
+
+if(typeof loadDocuments==="function"){
+
+loadDocuments();
+
+}
+
+
+
+}
