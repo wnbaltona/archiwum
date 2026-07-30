@@ -1,132 +1,71 @@
 // ======================================
-// ADMIN.JS
-// DODAWANIE DOKUMENTÓW
+// APP.JS
+// STRONA GŁÓWNA ARCHIWUM DOKUMENTÓW
 // ======================================
 
 
+let documents = [];
+let activeLocation = "";
+
+
 
 // ======================================
-// OTWIERANIE FORMULARZA
+// START
 // ======================================
 
+document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-const addBtn =
-document.getElementById("addBtn");
-
-
-const modal =
-document.getElementById("modalOverlay");
-
-
-const closeBtn =
-document.getElementById("closeModal");
-
-
-
-if(addBtn){
-
-
-addBtn.addEventListener(
-"click",
-()=>{
-
-
-modal.classList.remove(
-"hidden"
-);
-
-
-loadLocations();
-
-loadContractors();
-
-
-}
-
-);
-
-
-}
-
-
-
-if(closeBtn){
-
-
-closeBtn.addEventListener(
-"click",
-()=>{
-
-
-modal.classList.add(
-"hidden"
-);
-
-
-}
-
-);
-
-
-}
-
-
-
-
-const location =
-document.getElementById("location");
-
-
-
-if(location){
-
-
-location.addEventListener(
-"change",
-()=>{
-
-
-loadLocals(
-location.value
-);
-
-
-}
-
-);
-
-
-}
-
-
-
-
-const save =
-document.getElementById("saveBtn");
-
-
-
-if(save){
-
-
-save.addEventListener(
-"click",
-saveDocument
-);
-
-
-}
-
-
+    loadDocuments();
 
 });
 
 
+
+// ======================================
+// POBIERANIE DOKUMENTÓW
+// ======================================
+
+async function loadDocuments() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("dokumenty")
+        .select(`
+            *,
+            lokale (
+                id,
+                mpk,
+                nazwa,
+                lokalizacja
+            ),
+            kontrahenci (
+                id,
+                nazwa
+            )
+        `)
+        .order("created_at", {
+            ascending: false
+        });
+
+
+    if (error) {
+
+        console.error("Błąd pobierania dokumentów:", error);
+        return;
+
+    }
+
+
+    documents = data || [];
+
+
+    renderLocationCards();
+
+    renderDocuments();
+
+}
 
 
 
@@ -135,66 +74,73 @@ saveDocument
 // LOKALIZACJE
 // ======================================
 
+function getLocations() {
 
-function loadLocations(){
+    return [
+        "OKĘCIE",
+        "MODLIN",
+        "RADOM",
+        "RZESZÓW",
+        "ŚWINOUJŚCIE",
+        "POZNAŃ",
+        "WROCŁAW",
+        "KATOWICE",
+        "ZIELONA GÓRA",
+        "KRAKÓW",
+        "GDAŃSK",
+        "GDYNIA",
+        "FRANCJA",
+        "SONATA"
+    ];
 
-
-
-const select =
-document.getElementById(
-"location"
-);
-
-
-
-if(!select)
-return;
-
-
-
-const locations=[
-
-"OKĘCIE",
-"MODLIN",
-"RADOM",
-"RZESZÓW",
-"ŚWINOUJŚCIE",
-"POZNAŃ",
-"WROCŁAW",
-"KATOWICE",
-"ZIELONA GÓRA",
-"KRAKÓW",
-"GDAŃSK",
-"GDYNIA",
-"FRANCJA",
-"SONATA"
-
-];
+}
 
 
 
-select.innerHTML=`
 
-<option value="">
-Wybierz lokalizację
-</option>
+// ======================================
+// KARTY LOKALIZACJI
+// ======================================
 
-`;
-
+function renderLocationCards() {
 
 
-locations.forEach(item=>{
+    const box = document.getElementById("locationTabs");
 
 
-select.innerHTML +=`
+    if (!box) return;
 
-<option value="${item}">
-${item}
-</option>
 
-`;
+    box.innerHTML = "";
 
-});
+
+    getLocations().forEach(location => {
+
+
+        const count = documents.filter(doc =>
+            doc.lokale &&
+            doc.lokale.lokalizacja === location
+        ).length;
+
+
+
+        box.innerHTML += `
+
+            <button class="location-card"
+            onclick="filterLocation('${location}')">
+
+                <strong>${location}</strong>
+
+                <span>
+                    ${documentCount(count)}
+                </span>
+
+            </button>
+
+        `;
+
+
+    });
 
 
 }
@@ -202,286 +148,25 @@ ${item}
 
 
 
-
-
 // ======================================
-// LOKALE PO LOKALIZACJI
+// FILTROWANIE
 // ======================================
 
+window.filterLocation = function(location) {
 
-async function loadLocals(location){
 
+    if (activeLocation === location) {
 
+        activeLocation = "";
 
-const select =
-document.getElementById(
-"local"
-);
+    } else {
 
+        activeLocation = location;
 
+    }
 
-if(!select)
-return;
 
-
-
-select.innerHTML=`
-
-<option>
-Ładowanie...
-</option>
-
-`;
-
-
-
-
-const {
-data,
-error
-}=await supabaseClient
-
-.from("lokale")
-
-.select("*")
-
-.eq(
-"lokalizacja",
-location
-)
-
-.order(
-"nazwa"
-);
-
-
-
-
-if(error){
-
-console.error(error);
-
-select.innerHTML=`
-
-<option>
-Błąd pobierania lokali
-</option>
-
-`;
-
-return;
-
-}
-
-
-
-
-select.innerHTML=`
-
-<option value="">
-Wybierz lokal
-</option>
-
-`;
-
-
-
-data.forEach(local=>{
-
-
-select.innerHTML +=`
-
-<option value="${local.id}">
-
-${local.nazwa}
-${local.mpk ? " ("+local.mpk+")" : ""}
-
-</option>
-
-`;
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-// ======================================
-// KONTRAHENCI
-// ======================================
-
-
-async function loadContractors(){
-
-
-
-const select =
-document.getElementById(
-"contractor"
-);
-
-
-
-if(!select)
-return;
-
-
-
-const {
-data,
-error
-}=await supabaseClient
-
-.from("kontrahenci")
-
-.select("*")
-
-.order(
-"nazwa"
-);
-
-
-
-
-if(error){
-
-console.error(error);
-
-return;
-
-}
-
-
-
-
-select.innerHTML=`
-
-<option value="">
-Wybierz kontrahenta
-</option>
-
-`;
-
-
-
-
-data.forEach(item=>{
-
-
-select.innerHTML +=`
-
-<option value="${item.id}">
-
-${item.nazwa}
-
-</option>
-
-`;
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-// ======================================
-// ZAPIS DOKUMENTU
-// ======================================
-
-
-async function saveDocument(){
-
-
-
-const documentData={
-
-
-
-lokal_id:
-document.getElementById(
-"local"
-).value || null,
-
-
-
-kontrahent_id:
-document.getElementById(
-"contractor"
-).value || null,
-
-
-
-nazwa:
-document.getElementById(
-"name"
-).value.trim(),
-
-
-
-typ:
-document.getElementById(
-"type"
-).value,
-
-
-
-rok:
-Number(
-document.getElementById(
-"year"
-).value
-)
-|| null,
-
-
-
-regal:
-document.getElementById(
-"shelf"
-).value,
-
-
-
-polka:
-document.getElementById(
-"level"
-).value,
-
-
-
-segregator:
-document.getElementById(
-"folder"
-).value,
-
-
-
-status:
-document.getElementById(
-"status"
-).value,
-
-
-
-uwagi:
-document.getElementById(
-"notes"
-).value
-
+    renderDocuments();
 
 
 };
@@ -490,16 +175,135 @@ document.getElementById(
 
 
 
+// ======================================
+// WYŚWIETLANIE DOKUMENTÓW
+// ======================================
 
-if(!documentData.nazwa){
-
-
-alert(
-"Podaj nazwę dokumentu"
-);
+function renderDocuments() {
 
 
-return;
+    const box = document.getElementById("results");
+
+
+    if (!box) return;
+
+
+    let data = [...documents];
+
+
+
+    if (activeLocation) {
+
+
+        data = data.filter(doc =>
+
+            doc.lokale &&
+            doc.lokale.lokalizacja === activeLocation
+
+        );
+
+
+    }
+
+
+
+    if (!data.length) {
+
+
+        box.innerHTML = `
+
+            <div class="empty">
+
+                Brak dokumentów
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+
+    const grouped = {};
+
+
+
+    data.forEach(doc => {
+
+
+        const location =
+            doc.lokale?.lokalizacja || "BRAK LOKALIZACJI";
+
+
+
+        if (!grouped[location]) {
+
+            grouped[location] = [];
+
+        }
+
+
+        grouped[location].push(doc);
+
+
+    });
+
+
+
+
+
+    box.innerHTML = "";
+
+
+
+    Object.keys(grouped).forEach(location => {
+
+
+        box.innerHTML += `
+
+        <div class="archive-location">
+
+
+            <div class="archive-header"
+            onclick="toggleLocation('${location}')">
+
+
+                <span>▶</span>
+
+                <strong>
+                    ${location}
+                </strong>
+
+
+                <span>
+                    ${documentCount(grouped[location].length)}
+                </span>
+
+
+            </div>
+
+
+
+            <div id="location-${location}"
+            class="location-content hidden">
+
+
+                ${renderDocumentList(grouped[location])}
+
+
+            </div>
+
+
+        </div>
+
+        `;
+
+
+    });
 
 
 }
@@ -507,56 +311,176 @@ return;
 
 
 
-const {
-error
-}=await supabaseClient
 
-.from("dokumenty")
+// ======================================
+// LISTA DOKUMENTÓW
+// ======================================
 
-.insert([
-documentData
-]);
+function renderDocumentList(list) {
 
 
+    return list.map(doc => {
 
 
+        return `
 
-if(error){
+        <div class="document">
 
-console.error(error);
 
-alert(error.message);
+            <h4>
+                ${doc.nazwa || "Bez nazwy"}
+            </h4>
 
-return;
+
+            <p>
+                Lokal:
+                ${doc.lokale?.nazwa || "-"}
+            </p>
+
+
+            <p>
+                MPK:
+                ${doc.lokale?.mpk || "-"}
+            </p>
+
+
+            <p>
+                Kontrahent:
+                ${doc.kontrahenci?.nazwa || "-"}
+            </p>
+
+
+            <p>
+                Rok:
+                ${doc.rok || "-"}
+            </p>
+
+
+            <p>
+                Status:
+                ${doc.status || "-"}
+            </p>
+
+
+            <button
+            onclick="deleteDocument('${doc.id}')">
+
+                Usuń
+
+            </button>
+
+
+        </div>
+
+        `;
+
+
+    }).join("");
 
 }
 
 
 
 
-alert(
-"Dokument dodany"
-);
+// ======================================
+// ROZWIJANIE LOKALIZACJI
+// ======================================
+
+window.toggleLocation = function(location) {
+
+
+    const box =
+        document.getElementById(
+            "location-" + location
+        );
+
+
+    if (!box) return;
+
+
+    box.classList.toggle("hidden");
+
+
+};
 
 
 
 
-document
-.getElementById(
-"modalOverlay"
-)
-.classList.add(
-"hidden"
-);
+
+// ======================================
+// USUWANIE DOKUMENTU
+// ======================================
+
+window.deleteDocument = async function(id) {
+
+
+    if (!confirm("Usunąć dokument?")) {
+
+        return;
+
+    }
 
 
 
-if(typeof loadDocuments==="function"){
+    const {
+        error
+    } = await supabaseClient
+        .from("dokumenty")
+        .delete()
+        .eq("id", id);
 
-loadDocuments();
 
-}
 
+    if (error) {
+
+
+        alert(error.message);
+
+        return;
+
+
+    }
+
+
+
+    loadDocuments();
+
+
+};
+
+
+
+
+
+// ======================================
+// LICZNIK
+// ======================================
+
+function documentCount(number) {
+
+
+    if (number === 0) {
+
+        return "0 dokumentów";
+
+    }
+
+
+    if (number === 1) {
+
+        return "1 dokument";
+
+    }
+
+
+    if (number >= 2 && number <= 4) {
+
+        return number + " dokumenty";
+
+    }
+
+
+    return number + " dokumentów";
 
 
 }
