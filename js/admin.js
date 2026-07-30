@@ -7,70 +7,54 @@ let editingDocumentId = null;
 
 
 
+// ===============================
+// START
+// ===============================
+
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
 
 document
-
 .getElementById("addBtn")
-
 ?.addEventListener(
-
 "click",
-
 openAddDocument
-
 );
 
 
 
 document
-
 .getElementById("closeModal")
-
 ?.addEventListener(
-
 "click",
-
 closeModal
-
 );
 
 
 
 document
-
 .getElementById("saveBtn")
-
 ?.addEventListener(
-
 "click",
-
 saveDocument
-
 );
 
 
 
 document
-
 .getElementById("location")
-
 ?.addEventListener(
-
 "change",
-
-(e)=>{
+function(){
 
 loadLocals(
-e.target.value
+this.value
 );
 
-}
-
-);
+});
 
 
 
@@ -81,11 +65,8 @@ e.target.value
 
 
 
-
-
-
 // ===============================
-// DODAJ DOKUMENT
+// OTWÓRZ DODAWANIE
 // ===============================
 
 
@@ -95,42 +76,28 @@ async function openAddDocument(){
 editingDocumentId=null;
 
 
-
 clearForm();
 
 
 
-document
-
-.getElementById(
+document.getElementById(
 "modalTitle"
-)
-
-.innerText =
-
+).innerText=
 "Dodaj dokument";
-
 
 
 
 await loadLocations();
 
-
-
 await loadContractors();
 
 
 
-
-
 document
-
 .getElementById(
 "modalOverlay"
 )
-
 .classList
-
 .remove(
 "hidden"
 );
@@ -138,167 +105,6 @@ document
 
 
 }
-
-
-
-
-
-
-
-
-
-// ===============================
-// EDYCJA
-// ===============================
-
-
-window.openEditModal =
-
-async function(doc){
-
-
-
-editingDocumentId =
-doc.id;
-
-
-
-document
-
-.getElementById(
-"modalTitle"
-)
-
-.innerText =
-
-"Edytuj dokument";
-
-
-
-
-await loadLocations();
-
-
-
-await loadContractors();
-
-
-
-
-
-document.getElementById(
-"location"
-).value =
-
-doc.lokalizacja || "";
-
-
-
-
-await loadLocals(
-doc.lokalizacja
-);
-
-
-
-
-document.getElementById(
-"local"
-).value =
-
-doc.numer_lokalu || "";
-
-
-
-document.getElementById(
-"name"
-).value =
-
-doc.nazwa || "";
-
-
-
-document.getElementById(
-"type"
-).value =
-
-doc.typ || "";
-
-
-
-document.getElementById(
-"year"
-).value =
-
-doc.rok || "";
-
-
-
-document.getElementById(
-"contractor"
-).value =
-
-doc.nazwa_kontrahenta || "";
-
-
-
-document.getElementById(
-"shelf"
-).value =
-
-doc.regal || "";
-
-
-
-document.getElementById(
-"level"
-).value =
-
-doc.polka || "";
-
-
-
-document.getElementById(
-"folder"
-).value =
-
-doc.segregator || "";
-
-
-
-document.getElementById(
-"status"
-).value =
-
-doc.status || "OK";
-
-
-
-document.getElementById(
-"notes"
-).value =
-
-doc.uwagi || "";
-
-
-
-
-
-document
-
-.getElementById(
-"modalOverlay"
-)
-
-.classList
-
-.remove(
-"hidden"
-);
-
-
-
-};
 
 
 
@@ -317,39 +123,29 @@ async function loadLocations(){
 
 
 const select =
-
-document
-
-.getElementById(
+document.getElementById(
 "location"
 );
 
 
 
-if(!select)
-return;
-
-
-
-
-
-
 const {
-
 data,
-
 error
-
 }
 
 =
-
 await supabaseClient
 
 .from("lokale")
 
-.select("lokalizacja");
+.select(
+"lokalizacja"
+)
 
+.order(
+"lokalizacja"
+);
 
 
 
@@ -367,21 +163,13 @@ return;
 
 
 
-
 const locations =
-
 [
-
 ...new Set(
-
 data.map(
-
 x=>x.lokalizacja
-
 )
-
 )
-
 ];
 
 
@@ -389,18 +177,13 @@ x=>x.lokalizacja
 
 
 
-
-select.innerHTML =
-
+select.innerHTML=
 
 `
-
 <option value="">
 Wybierz lokalizację
 </option>
-
 `;
-
 
 
 
@@ -411,11 +194,9 @@ locations.forEach(
 loc=>{
 
 
-select.innerHTML +=
-
+select.innerHTML+=
 
 `
-
 <option value="${loc}">
 ${loc}
 </option>
@@ -423,9 +204,7 @@ ${loc}
 `;
 
 
-
 });
-
 
 
 }
@@ -439,7 +218,7 @@ ${loc}
 
 
 // ===============================
-// LOKALE
+// LOKALE PO LOKALIZACJI
 // ===============================
 
 
@@ -448,18 +227,39 @@ async function loadLocals(location){
 
 
 const select =
-
-document
-
-.getElementById(
+document.getElementById(
 "local"
 );
 
 
 
-if(!select)
+
+
+select.innerHTML=
+
+`
+<option>
+Ładowanie...
+</option>
+`;
+
+
+
+
+
+if(!location){
+
+select.innerHTML=
+
+`
+<option>
+Najpierw wybierz lokalizację
+</option>
+`;
+
 return;
 
+}
 
 
 
@@ -475,7 +275,6 @@ error
 }
 
 =
-
 await supabaseClient
 
 .from("lokale")
@@ -497,6 +296,7 @@ location
 
 
 
+
 if(error){
 
 console.error(error);
@@ -510,34 +310,30 @@ return;
 
 
 
-
-select.innerHTML =
-
+select.innerHTML=
 
 `
-
 <option value="">
 Wybierz lokal
 </option>
-
 `;
 
 
 
 
 
-
 data.forEach(
-item=>{
+lokal=>{
 
 
-select.innerHTML +=
-
+select.innerHTML+=
 
 `
+<option value="${lokal.id}">
 
-<option value="${item.nazwa}">
-${item.nazwa} (${item.mpk})
+${lokal.nazwa}
+${lokal.mpk ? " ("+lokal.mpk+")":""}
+
 </option>
 
 `;
@@ -567,19 +363,9 @@ async function loadContractors(){
 
 
 const select =
-
-document
-
-.getElementById(
+document.getElementById(
 "contractor"
 );
-
-
-
-if(!select)
-return;
-
-
 
 
 
@@ -594,7 +380,6 @@ error
 }
 
 =
-
 await supabaseClient
 
 .from("kontrahenci")
@@ -604,8 +389,6 @@ await supabaseClient
 .order(
 "nazwa"
 );
-
-
 
 
 
@@ -624,21 +407,13 @@ return;
 
 
 
-
-
-select.innerHTML =
-
+select.innerHTML=
 
 `
-
 <option value="">
 Wybierz kontrahenta
 </option>
-
 `;
-
-
-
 
 
 
@@ -648,15 +423,12 @@ data.forEach(
 item=>{
 
 
-select.innerHTML +=
-
+select.innerHTML+=
 
 `
-
-<option value="${item.nazwa}">
+<option value="${item.id}">
 ${item.nazwa}
 </option>
-
 `;
 
 
@@ -676,7 +448,7 @@ ${item.nazwa}
 
 
 // ===============================
-// ZAPIS
+// ZAPIS DOKUMENTU
 // ===============================
 
 
@@ -684,22 +456,34 @@ async function saveDocument(){
 
 
 
-const documentData = {
+const documentData={
+
 
 
 lokalizacja:
 
 document.getElementById(
 "location"
-).value,
+)
+.value,
 
 
 
-numer_lokalu:
+lokal_id:
 
 document.getElementById(
 "local"
-).value,
+)
+.value || null,
+
+
+
+kontrahent_id:
+
+document.getElementById(
+"contractor"
+)
+.value || null,
 
 
 
@@ -707,7 +491,8 @@ nazwa:
 
 document.getElementById(
 "name"
-).value,
+)
+.value,
 
 
 
@@ -715,26 +500,17 @@ typ:
 
 document.getElementById(
 "type"
-).value,
+)
+.value,
 
 
 
 rok:
 
-Number(
 document.getElementById(
 "year"
-).value
 )
-|| null,
-
-
-
-nazwa_kontrahenta:
-
-document.getElementById(
-"contractor"
-).value,
+.value || null,
 
 
 
@@ -742,44 +518,43 @@ regal:
 
 document.getElementById(
 "shelf"
-).value,
-
+)
+.value,
 
 
 polka:
 
 document.getElementById(
 "level"
-).value,
-
+)
+.value,
 
 
 segregator:
 
 document.getElementById(
 "folder"
-).value,
-
+)
+.value,
 
 
 status:
 
 document.getElementById(
 "status"
-).value,
-
+)
+.value,
 
 
 uwagi:
 
 document.getElementById(
 "notes"
-).value
-
+)
+.value
 
 
 };
-
 
 
 
@@ -792,16 +567,18 @@ let result;
 
 
 
+
 if(editingDocumentId){
 
 
 result =
-
 await supabaseClient
 
 .from("dokumenty")
 
-.update(documentData)
+.update(
+documentData
+)
 
 .eq(
 "id",
@@ -811,11 +588,11 @@ editingDocumentId
 
 
 }
+
 else{
 
 
 result =
-
 await supabaseClient
 
 .from("dokumenty")
@@ -832,11 +609,11 @@ documentData
 
 
 
-
-
 if(result.error){
 
-alert(result.error.message);
+alert(
+result.error.message
+);
 
 return;
 
@@ -845,11 +622,14 @@ return;
 
 
 
+
 closeModal();
 
 
 
-if(typeof loadDocuments==="function"){
+if(
+typeof loadDocuments==="function"
+){
 
 loadDocuments();
 
@@ -858,6 +638,146 @@ loadDocuments();
 
 
 }
+
+
+
+
+
+
+
+
+
+// ===============================
+// EDYCJA
+// ===============================
+
+
+window.openEditModal =
+async function(doc){
+
+
+
+editingDocumentId =
+doc.id;
+
+
+
+await loadLocations();
+
+await loadContractors();
+
+
+
+
+
+document.getElementById(
+"location"
+)
+.value =
+doc.lokalizacja;
+
+
+
+await loadLocals(
+doc.lokalizacja
+);
+
+
+
+document.getElementById(
+"local"
+)
+.value =
+doc.lokal_id || "";
+
+
+
+document.getElementById(
+"contractor"
+)
+.value =
+doc.kontrahent_id || "";
+
+
+
+document.getElementById(
+"name"
+)
+.value =
+doc.nazwa || "";
+
+
+
+document.getElementById(
+"type"
+)
+.value =
+doc.typ || "";
+
+
+
+document.getElementById(
+"year"
+)
+.value =
+doc.rok || "";
+
+
+
+document.getElementById(
+"shelf"
+)
+.value =
+doc.regal || "";
+
+
+
+document.getElementById(
+"level"
+)
+.value =
+doc.polka || "";
+
+
+
+document.getElementById(
+"folder"
+)
+.value =
+doc.segregator || "";
+
+
+
+document.getElementById(
+"status"
+)
+.value =
+doc.status || "OK";
+
+
+
+document.getElementById(
+"notes"
+)
+.value =
+doc.uwagi || "";
+
+
+
+
+
+document
+.getElementById(
+"modalOverlay"
+)
+.classList
+.remove(
+"hidden"
+);
+
+
+
+};
 
 
 
@@ -882,56 +802,28 @@ document
 )
 
 .forEach(
-el=>{
-
-el.value="";
-
-}
-
+x=>x.value=""
 );
 
 
 
 
-document.getElementById(
-"status"
-).value="OK";
-
-
 
 document.getElementById(
 "local"
-).innerHTML =
+)
+
+.innerHTML=
 
 `
-
 <option>
 Najpierw wybierz lokalizację
 </option>
-
-`;
-
-
-
-document.getElementById(
-"contractor"
-).innerHTML =
-
-`
-
-<option value="">
-Wybierz kontrahenta
-</option>
-
 `;
 
 
 
 }
-
-
-
-
 
 
 
@@ -954,7 +846,6 @@ document
 
 
 editingDocumentId=null;
-
 
 
 }
