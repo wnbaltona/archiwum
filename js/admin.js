@@ -3,7 +3,7 @@
 // ===============================
 
 
-const DOCUMENT_LOCATIONS = [
+const LOCATIONS = [
 
 "OKĘCIE",
 "MODLIN",
@@ -65,7 +65,7 @@ document
 .getElementById("location")
 ?.addEventListener(
 "change",
-(e)=>{
+e=>{
 
 loadLocals(
 e.target.value
@@ -82,10 +82,8 @@ e.target.value
 
 
 
-
-
 // ===============================
-// OTWÓRZ DODAWANIE
+// DODAJ
 // ===============================
 
 
@@ -96,7 +94,6 @@ editingDocumentId=null;
 
 
 clearForm();
-
 
 
 document.getElementById(
@@ -112,12 +109,10 @@ await loadContractors();
 
 
 
-
 document
 .getElementById("modalOverlay")
 .classList
 .remove("hidden");
-
 
 
 }
@@ -129,154 +124,12 @@ document
 
 
 
-
 // ===============================
-// EDYCJA
-// ===============================
-
-
-window.openEditModal = async function(doc){
-
-
-
-editingDocumentId =
-doc.id;
-
-
-
-
-await loadLocations();
-
-await loadContractors();
-
-
-
-
-
-document.getElementById(
-"modalTitle"
-).innerText =
-"Edytuj dokument";
-
-
-
-
-
-document.getElementById(
-"location"
-).value =
-doc.lokalizacja || "";
-
-
-
-
-
-await loadLocals(
-doc.lokalizacja
-);
-
-
-
-
-
-document.getElementById(
-"local"
-).value =
-doc.numer_lokalu || "";
-
-
-
-
-document.getElementById(
-"name"
-).value =
-doc.nazwa || "";
-
-
-
-document.getElementById(
-"type"
-).value =
-doc.typ || "";
-
-
-
-document.getElementById(
-"year"
-).value =
-doc.rok || "";
-
-
-
-document.getElementById(
-"contractor"
-).value =
-doc.nazwa_kontrahenta || "";
-
-
-
-document.getElementById(
-"shelf"
-).value =
-doc.regal || "";
-
-
-
-document.getElementById(
-"level"
-).value =
-doc.polka || "";
-
-
-
-document.getElementById(
-"folder"
-).value =
-doc.segregator || "";
-
-
-
-document.getElementById(
-"status"
-).value =
-doc.status || "OK";
-
-
-
-document.getElementById(
-"notes"
-).value =
-doc.uwagi || "";
-
-
-
-
-
-
-document
-.getElementById("modalOverlay")
-.classList
-.remove("hidden");
-
-
-
-};
-
-
-
-
-
-
-
-
-
-// ===============================
-// LISTA LOKALIZACJI
+// LOKALIZACJE
 // ===============================
 
 
 async function loadLocations(){
-
 
 
 const select =
@@ -285,43 +138,31 @@ document.getElementById(
 );
 
 
-
-
-
 select.innerHTML =
 
 `
-
 <option value="">
 Wybierz lokalizację
 </option>
-
 `;
 
 
 
-
-
-
-DOCUMENT_LOCATIONS.forEach(
-location=>{
+LOCATIONS.forEach(
+loc=>{
 
 
 select.innerHTML +=
 
-
 `
-
-<option value="${location}">
-${location}
+<option value="${loc}">
+${loc}
 </option>
-
 `;
 
 
 
 });
-
 
 
 }
@@ -335,7 +176,7 @@ ${location}
 
 
 // ===============================
-// LISTA LOKALI
+// LOKALE
 // ===============================
 
 
@@ -351,26 +192,12 @@ document.getElementById(
 
 
 
-
-
-
-if(!location){
-
-
 select.innerHTML =
-
 `
-
 <option>
-Najpierw wybierz lokalizację
+Ładowanie...
 </option>
-
 `;
-
-return;
-
-}
-
 
 
 
@@ -385,7 +212,6 @@ error
 }
 
 =
-
 await supabaseClient
 
 .from("lokale")
@@ -421,39 +247,11 @@ return;
 
 select.innerHTML =
 
-
 `
-
 <option value="">
 Wybierz lokal
 </option>
-
 `;
-
-
-
-
-
-
-
-if(!data.length){
-
-
-select.innerHTML +=
-
-
-`
-
-<option>
-Brak lokali
-</option>
-
-`;
-
-return;
-
-
-}
 
 
 
@@ -469,12 +267,11 @@ select.innerHTML +=
 
 
 `
-
-<option value="${lokal.nazwa}">
+<option value="${lokal.id}">
 
 ${lokal.nazwa}
 
-${lokal.mpk ? " ("+lokal.mpk+")" : ""}
+${lokal.mpk ? " - MPK "+lokal.mpk : ""}
 
 </option>
 
@@ -514,7 +311,6 @@ document.getElementById(
 
 
 
-
 const {
 
 data,
@@ -524,7 +320,6 @@ error
 }
 
 =
-
 await supabaseClient
 
 .from("kontrahenci")
@@ -534,6 +329,7 @@ await supabaseClient
 .order(
 "nazwa"
 );
+
 
 
 
@@ -553,15 +349,13 @@ return;
 
 
 
+
 select.innerHTML =
 
-
 `
-
 <option value="">
 Wybierz kontrahenta
 </option>
-
 `;
 
 
@@ -577,13 +371,11 @@ select.innerHTML +=
 
 
 `
-
-<option value="${item.nazwa}">
+<option value="${item.id}">
 
 ${item.nazwa}
 
 </option>
-
 `;
 
 
@@ -603,7 +395,7 @@ ${item.nazwa}
 
 
 // ===============================
-// ZAPIS DOKUMENTU
+// ZAPIS
 // ===============================
 
 
@@ -614,6 +406,7 @@ async function saveDocument(){
 const data = {
 
 
+
 lokalizacja:
 
 document.getElementById(
@@ -622,11 +415,19 @@ document.getElementById(
 
 
 
-numer_lokalu:
+lokal_id:
 
 document.getElementById(
 "local"
-).value,
+).value || null,
+
+
+
+kontrahent_id:
+
+document.getElementById(
+"contractor"
+).value || null,
 
 
 
@@ -634,7 +435,7 @@ nazwa:
 
 document.getElementById(
 "name"
-).value.trim(),
+).value,
 
 
 
@@ -642,23 +443,18 @@ typ:
 
 document.getElementById(
 "type"
-).value.trim(),
+).value,
 
 
 
 rok:
 
+Number(
 document.getElementById(
 "year"
-).value || null,
-
-
-
-nazwa_kontrahenta:
-
-document.getElementById(
-"contractor"
-).value || null,
+).value
+)
+|| null,
 
 
 
@@ -710,7 +506,6 @@ document.getElementById(
 
 
 
-
 let result;
 
 
@@ -718,7 +513,6 @@ let result;
 
 
 if(editingDocumentId){
-
 
 
 result = await supabaseClient
@@ -754,7 +548,6 @@ result = await supabaseClient
 
 
 
-
 if(result.error){
 
 alert(result.error.message);
@@ -771,9 +564,7 @@ closeModal();
 
 
 
-if(
-typeof loadDocuments==="function"
-){
+if(typeof loadDocuments==="function"){
 
 loadDocuments();
 
@@ -792,28 +583,22 @@ loadDocuments();
 
 
 // ===============================
-// CZYSZCZENIE
+// EDYCJA
 // ===============================
 
 
-function clearForm(){
+window.openEditModal = async function(doc){
 
 
 
-document
+editingDocumentId =
+doc.id;
 
-.querySelectorAll(
-"#modalOverlay input, #modalOverlay textarea"
-)
 
-.forEach(
-el=>{
 
-el.value="";
+await loadLocations();
 
-}
-
-);
+await loadContractors();
 
 
 
@@ -821,18 +606,94 @@ el.value="";
 
 document.getElementById(
 "location"
-).innerHTML=
-
-`
-
-<option>
-Wybierz lokalizację
-</option>
-
-`;
+).value =
+doc.lokalizacja;
 
 
 
+await loadLocals(
+doc.lokalizacja
+);
+
+
+
+document.getElementById(
+"local"
+).value =
+doc.lokal_id || "";
+
+
+
+document.getElementById(
+"contractor"
+).value =
+doc.kontrahent_id || "";
+
+
+
+document.getElementById(
+"name"
+).value =
+doc.nazwa || "";
+
+
+
+document.getElementById(
+"type"
+).value =
+doc.typ || "";
+
+
+
+document.getElementById(
+"year"
+).value =
+doc.rok || "";
+
+
+
+document.getElementById(
+"status"
+).value =
+doc.status || "OK";
+
+
+
+document.getElementById(
+"notes"
+).value =
+doc.uwagi || "";
+
+
+
+
+
+document
+.getElementById("modalOverlay")
+.classList
+.remove("hidden");
+
+
+};
+
+
+
+
+
+
+
+
+
+function clearForm(){
+
+
+document
+.querySelectorAll(
+"#modalOverlay input, textarea"
+)
+.forEach(
+el=>el.value=""
+);
 
 
 document.getElementById(
@@ -840,26 +701,14 @@ document.getElementById(
 ).innerHTML=
 
 `
-
 <option>
 Najpierw wybierz lokalizację
 </option>
-
 `;
 
 
 
-
-
-document.getElementById(
-"status"
-).value="OK";
-
-
-
 }
-
-
 
 
 
@@ -870,15 +719,11 @@ document.getElementById(
 function closeModal(){
 
 
-
 document
-
 .getElementById(
 "modalOverlay"
 )
-
 .classList
-
 .add(
 "hidden"
 );
@@ -886,7 +731,6 @@ document
 
 
 editingDocumentId=null;
-
 
 
 }
