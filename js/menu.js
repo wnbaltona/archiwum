@@ -2,48 +2,149 @@
 // MENU.JS
 // ===============================
 
-document.addEventListener("DOMContentLoaded", () => {
 
-    const menuBtn = document.getElementById("menuBtn");
-    const menuList = document.getElementById("menuList");
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
-    if (!menuBtn || !menuList) return;
 
-    // menu startowo zamknięte
-    menuList.classList.add("hidden");
+const menuBtn =
+document.getElementById(
+"menuBtn"
+);
 
-    // otwieranie / zamykanie
-    menuBtn.addEventListener("click", (e) => {
 
-        e.stopPropagation();
 
-        menuList.classList.toggle("hidden");
+const menuList =
+document.getElementById(
+"menuList"
+);
 
-    });
 
-    // kliknięcie poza menu zamyka menu
-    document.addEventListener("click", (e) => {
 
-        if (
-            !menuList.contains(e.target) &&
-            !menuBtn.contains(e.target)
-        ) {
 
-            menuList.classList.add("hidden");
+if(!menuBtn || !menuList)
+return;
 
-        }
 
-    });
 
-    // kliknięcie w pozycję menu również je zamyka
-    menuList.querySelectorAll("button").forEach(button => {
 
-        button.addEventListener("click", () => {
 
-            menuList.classList.add("hidden");
+// startowo zamknięte
 
-        });
+menuList.classList.add(
+"hidden"
+);
 
-    });
+
+
+
+
+
+
+// kliknięcie ikony menu
+
+
+menuBtn.addEventListener(
+"click",
+(e)=>{
+
+
+e.stopPropagation();
+
+
+
+menuList.classList.toggle(
+"hidden"
+);
+
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+// klik poza menu
+
+
+document.addEventListener(
+"click",
+(e)=>{
+
+
+if(
+
+!menuList.contains(e.target)
+
+&&
+
+!menuBtn.contains(e.target)
+
+){
+
+
+menuList.classList.add(
+"hidden"
+);
+
+
+
+}
+
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+// kliknięcie opcji menu
+
+
+menuList
+
+.querySelectorAll(
+"button"
+)
+
+.forEach(
+button=>{
+
+
+button.addEventListener(
+"click",
+()=>{
+
+
+menuList.classList.add(
+"hidden"
+);
+
+
+
+}
+
+);
+
+
+
+}
+
+);
+
+
 
 });

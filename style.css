@@ -12,10 +12,7 @@ body{
     margin:0;
     padding:0;
 
-    font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
 
     background:#f5f6fa;
 
@@ -26,7 +23,7 @@ body{
 
 
 /* =========================
-HEADER / MENU
+HEADER
 ========================= */
 
 
@@ -38,9 +35,9 @@ HEADER / MENU
 
     display:flex;
 
-    align-items:center;
-
     justify-content:space-between;
+
+    align-items:center;
 
     box-shadow:
     0 2px 10px rgba(0,0,0,.08);
@@ -53,10 +50,15 @@ HEADER / MENU
 
     font-size:22px;
 
-    font-weight:600;
+    font-weight:700;
 
 }
 
+
+
+/* =========================
+MENU
+========================= */
 
 
 .menu-wrapper{
@@ -73,13 +75,11 @@ HEADER / MENU
 
     background:none;
 
-    font-size:28px;
+    font-size:30px;
 
     cursor:pointer;
 
 }
-
-
 
 
 
@@ -95,7 +95,9 @@ HEADER / MENU
 
     padding:10px;
 
-    border-radius:12px;
+    width:200px;
+
+    border-radius:14px;
 
     box-shadow:
     0 5px 20px rgba(0,0,0,.15);
@@ -104,11 +106,9 @@ HEADER / MENU
 
     flex-direction:column;
 
-    gap:8px;
+    gap:10px;
 
-    min-width:180px;
-
-    z-index:500;
+    z-index:2000;
 
 }
 
@@ -116,24 +116,18 @@ HEADER / MENU
 
 .menu-list button{
 
-    padding:12px;
-
     border:none;
 
-    border-radius:8px;
+    padding:12px;
 
-    background:#f1f3f8;
+    border-radius:10px;
+
+    background:#f2f3f7;
 
     cursor:pointer;
 
 }
 
-
-
-
-/* =========================
-UKRYWANIE ELEMENTÓW
-========================= */
 
 
 .hidden{
@@ -145,6 +139,7 @@ UKRYWANIE ELEMENTÓW
 
 
 
+
 /* =========================
 FILTRY
 ========================= */
@@ -152,57 +147,23 @@ FILTRY
 
 .filters{
 
-    padding:25px 30px;
-
     background:white;
 
-}
-
-
-
-.filter-box{
-
-    display:flex;
-
-    gap:15px;
-
-    flex-wrap:wrap;
+    padding:25px 30px;
 
 }
 
-
-
-.filters input,
-.filters select{
-
-    padding:12px 15px;
-
-    border-radius:10px;
-
-    border:1px solid #ddd;
-
-    font-size:15px;
-
-}
-
-
-
-
-
-/* =========================
-LOKALIZACJE
-========================= */
 
 
 .location-tabs{
 
-    padding:25px 30px;
-
     display:flex;
 
     flex-wrap:wrap;
 
     gap:15px;
+
+    margin-bottom:20px;
 
 }
 
@@ -210,27 +171,26 @@ LOKALIZACJE
 
 .location-card{
 
-    background:white;
-
     border:none;
 
-    border-radius:16px;
+    background:white;
 
     padding:18px 22px;
 
     min-width:150px;
 
+    border-radius:16px;
+
     cursor:pointer;
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,.08);
 
     display:flex;
 
     flex-direction:column;
 
     gap:8px;
-
-    box-shadow:
-
-    0 4px 12px rgba(0,0,0,.08);
 
 }
 
@@ -239,6 +199,16 @@ LOKALIZACJE
 .location-card:hover{
 
     transform:translateY(-2px);
+
+}
+
+
+
+.location-card.active{
+
+    background:#222;
+
+    color:white;
 
 }
 
@@ -254,6 +224,42 @@ LOKALIZACJE
 
 
 
+.location-card.active span{
+
+    color:white;
+
+}
+
+
+
+
+.filter-box{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+
+}
+
+
+
+.filter-box input,
+.filter-box select{
+
+    padding:12px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    min-width:200px;
+
+}
+
+
+
 
 
 /* =========================
@@ -263,7 +269,7 @@ ARCHIWUM
 
 #results{
 
-    padding:0 30px 50px;
+    padding:25px 30px;
 
 }
 
@@ -280,7 +286,6 @@ ARCHIWUM
     overflow:hidden;
 
     box-shadow:
-
     0 4px 15px rgba(0,0,0,.08);
 
 }
@@ -293,13 +298,11 @@ ARCHIWUM
 
     align-items:center;
 
-    gap:12px;
+    gap:15px;
 
-    padding:22px 25px;
+    padding:20px 25px;
 
     cursor:pointer;
-
-    font-size:20px;
 
 }
 
@@ -315,6 +318,8 @@ ARCHIWUM
 
 .arrow{
 
+    font-size:20px;
+
     width:25px;
 
 }
@@ -327,8 +332,6 @@ ARCHIWUM
 
     color:#777;
 
-    font-size:14px;
-
 }
 
 
@@ -338,23 +341,6 @@ ARCHIWUM
     padding:0 25px 25px;
 
 }
-
-
-
-.year-box{
-
-    margin-top:20px;
-
-}
-
-
-
-.year-box h3{
-
-    margin:10px 0 15px;
-
-}
-
 
 
 
@@ -411,7 +397,7 @@ DOKUMENTY
 
 .edit{
 
-    background:#e8f0ff;
+    background:#e7efff;
 
 }
 
@@ -419,7 +405,7 @@ DOKUMENTY
 
 .delete{
 
-    background:#ffe8e8;
+    background:#ffe7e7;
 
 }
 
@@ -486,9 +472,9 @@ MODALE
 
     background:none;
 
-    font-size:20px;
-
     cursor:pointer;
+
+    font-size:20px;
 
 }
 
@@ -497,7 +483,7 @@ MODALE
 
 
 /* =========================
-FORMULARZ DOKUMENTU
+FORMULARZ
 ========================= */
 
 
@@ -549,20 +535,19 @@ FORMULARZ DOKUMENTU
 
 textarea{
 
-    min-height:100px;
+    min-height:120px;
 
 }
 
 
 
-
 .primary-button{
-
-    border:none;
 
     background:#222;
 
     color:white;
+
+    border:none;
 
     padding:14px;
 
@@ -603,17 +588,19 @@ USTAWIENIA
 
 .settings-buttons button{
 
-    padding:18px;
-
     border:none;
+
+    padding:18px;
 
     border-radius:14px;
 
-    background:#f1f3f8;
-
     cursor:pointer;
 
+    background:#f1f3f8;
+
 }
+
+
 
 
 
@@ -653,6 +640,7 @@ RESPONSIVE
 }
 
 
+
 .full-width{
 
     grid-column:1;
@@ -684,11 +672,13 @@ RESPONSIVE
 }
 
 
+
 .settings-buttons{
 
     grid-template-columns:1fr;
 
 }
+
 
 
 }
