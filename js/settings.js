@@ -3,6 +3,33 @@
 // ===============================
 
 
+const AVAILABLE_LOCATIONS = [
+
+"OKĘCIE",
+"MODLIN",
+"RADOM",
+"RZESZÓW",
+"ŚWINOUJŚCIE",
+"POZNAŃ",
+"WROCŁAW",
+"KATOWICE",
+"ZIELONA GÓRA",
+"KRAKÓW",
+"GDAŃSK",
+"GDYNIA",
+"FRANCJA",
+"SONATA"
+
+];
+
+
+
+
+// ===============================
+// START
+// ===============================
+
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -70,8 +97,6 @@ loadLocals
 
 
 
-
-
 // ===============================
 // OTWARCIE USTAWIEŃ
 // ===============================
@@ -94,7 +119,6 @@ document
 
 
 
-
 document
 
 .getElementById(
@@ -106,7 +130,6 @@ document
 
 
 }
-
 
 
 
@@ -128,6 +151,31 @@ document
 .add(
 "hidden"
 );
+
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// MENU USTAWIEŃ
+// ===============================
+
+
+function showSettingsMenu(){
+
+
+document.getElementById(
+"settingsContent"
+)
+
+.innerHTML="";
 
 
 
@@ -166,6 +214,7 @@ Dodaj kontrahenta
 </h3>
 
 
+
 <div class="settings-form">
 
 
@@ -176,7 +225,7 @@ Nazwa kontrahenta
 
 <input 
 id="contractorName"
-placeholder="np. Firma ABC">
+placeholder="Nazwa kontrahenta">
 
 
 
@@ -219,7 +268,6 @@ addContractor;
 async function addContractor(){
 
 
-
 const name =
 
 document
@@ -239,7 +287,7 @@ document
 if(!name){
 
 alert(
-"Podaj nazwę kontrahenta"
+"Wpisz nazwę kontrahenta"
 );
 
 return;
@@ -267,6 +315,7 @@ await supabaseClient
 nazwa:name
 
 });
+
 
 
 
@@ -329,6 +378,7 @@ box.innerHTML =
 
 
 
+
 const {
 
 data,
@@ -354,6 +404,7 @@ await supabaseClient
 
 
 
+
 if(error){
 
 box.innerHTML=error.message;
@@ -361,6 +412,8 @@ box.innerHTML=error.message;
 return;
 
 }
+
+
 
 
 
@@ -399,6 +452,8 @@ Brak kontrahentów
 return;
 
 }
+
+
 
 
 
@@ -451,8 +506,6 @@ Usuń
 
 
 
-
-
 window.deleteContractor = async function(id){
 
 
@@ -465,28 +518,6 @@ if(
 )
 
 return;
-
-
-
-
-
-
-// najpierw odpinamy od dokumentów
-
-await supabaseClient
-
-.from("dokumenty")
-
-.update({
-
-nazwa_kontrahenta:null
-
-})
-
-.eq(
-"kontrahent_id",
-id
-);
 
 
 
@@ -563,6 +594,32 @@ document.getElementById(
 
 
 
+let options =
+
+AVAILABLE_LOCATIONS
+
+.map(
+
+loc=>
+
+`
+
+<option value="${loc}">
+${loc}
+</option>
+
+`
+
+)
+
+.join("");
+
+
+
+
+
+
+
 box.innerHTML =
 
 
@@ -584,7 +641,9 @@ MPK
 
 <input
 id="localMPK"
-placeholder="np. 12345">
+placeholder="MPK">
+
+
 
 
 
@@ -595,7 +654,9 @@ Nazwa lokalu
 
 <input
 id="localName"
-placeholder="np. Restauracja Centrum">
+placeholder="Nazwa lokalu">
+
+
 
 
 
@@ -604,9 +665,20 @@ Lokalizacja
 </label>
 
 
-<input
-id="localLocation"
-placeholder="np. OKĘCIE">
+<select id="localLocation">
+
+
+<option value="">
+Wybierz lokalizację
+</option>
+
+
+${options}
+
+
+</select>
+
+
 
 
 
@@ -617,8 +689,8 @@ Zapisz lokal
 </button>
 
 
-</div>
 
+</div>
 
 `;
 
@@ -652,15 +724,18 @@ async function addLocal(){
 
 
 
-const data={
-
+const data = {
 
 
 mpk:
 
 document.getElementById(
 "localMPK"
-).value,
+)
+
+.value
+
+.trim(),
 
 
 
@@ -668,7 +743,11 @@ nazwa:
 
 document.getElementById(
 "localName"
-).value,
+)
+
+.value
+
+.trim(),
 
 
 
@@ -676,11 +755,43 @@ lokalizacja:
 
 document.getElementById(
 "localLocation"
-).value.toUpperCase()
+)
+
+.value
 
 
 
 };
+
+
+
+
+
+
+
+
+if(!data.nazwa){
+
+alert(
+"Wpisz nazwę lokalu"
+);
+
+return;
+
+}
+
+
+
+
+if(!data.lokalizacja){
+
+alert(
+"Wybierz lokalizację"
+);
+
+return;
+
+}
 
 
 
@@ -701,7 +812,6 @@ await supabaseClient
 .from("lokale")
 
 .insert(data);
-
 
 
 
@@ -810,6 +920,7 @@ return;
 
 box.innerHTML =
 
+
 `
 
 <h3>
@@ -817,6 +928,28 @@ Lista lokali
 </h3>
 
 `;
+
+
+
+
+
+
+
+if(!data.length){
+
+box.innerHTML +=
+
+`
+
+<p>
+Brak lokali
+</p>
+
+`;
+
+return;
+
+}
 
 
 
@@ -838,11 +971,11 @@ box.innerHTML +=
 
 <span>
 
-${item.nazwa}
+<strong>${item.nazwa}</strong>
 
 <br>
 
-${item.mpk}
+MPK: ${item.mpk || "-"}
 
 <br>
 
@@ -853,7 +986,7 @@ ${item.lokalizacja}
 
 
 
-<button 
+<button
 class="delete"
 onclick="deleteLocal('${item.id}')">
 
@@ -925,6 +1058,7 @@ id
 
 
 
+
 if(error){
 
 alert(error.message);
@@ -935,34 +1069,10 @@ return;
 
 
 
+
+
 loadLocals();
 
 
 
 };
-
-
-
-
-
-
-
-
-
-// ===============================
-// POWRÓT DO MENU USTAWIEŃ
-// ===============================
-
-
-function showSettingsMenu(){
-
-
-document.getElementById(
-"settingsContent"
-)
-
-.innerHTML="";
-
-
-
-}
