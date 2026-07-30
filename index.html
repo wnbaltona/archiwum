@@ -1,15 +1,22 @@
 <!DOCTYPE html>
+
 <html lang="pl">
 
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Przeglądy</title>
 
-<title>Archiwum dokumentów</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+
+<script src="supabase-config.js"></script>
+
 
 <link rel="stylesheet" href="style.css">
+
 
 </head>
 
@@ -17,505 +24,302 @@
 <body>
 
 
-<header class="topbar">
+<div class="container">
 
-    <div class="logo">
-        Archiwum dokumentów
-    </div>
 
+<h1>
+System kontroli przeglądów
+</h1>
 
-    <div class="menu-wrapper">
 
-        <button 
-        id="menuBtn"
-        class="menu-button">
-            ☰
-        </button>
 
-
-        <div 
-        id="menuList"
-        class="menu-list hidden">
-
-
-            <button id="addBtn">
-                Dodaj dokument
-            </button>
-
-
-            <button id="settingsBtn">
-                Ustawienia
-            </button>
-
-
-            <button id="exportBtn">
-                Eksport
-            </button>
-
-
-        </div>
-
-    </div>
-
-</header>
-
-
-
-
-
-<section class="filters">
-
-
-    <div 
-    id="locationTabs"
-    class="location-tabs">
-    </div>
-
-
-
-    <div class="filter-box">
-
-
-        <input 
-        id="searchInput"
-        placeholder="Szukaj dokumentu...">
-
-
-
-        <select id="yearFilter">
-
-            <option value="">
-                Wszystkie lata
-            </option>
-
-        </select>
-
-
-
-
-        <select id="statusFilter">
-
-            <option value="">
-                Wszystkie statusy
-            </option>
-
-            <option value="OK">
-                OK
-            </option>
-
-            <option value="DO UZUPEŁNIENIA">
-                DO UZUPEŁNIENIA
-            </option>
-
-            <option value="BRAK">
-                BRAK
-            </option>
-
-        </select>
-
-
-    </div>
-
-
-</section>
-
-
-
-
-
-
-<main id="results">
-
-</main>
-
-
-
-
-
-
-
-
-
-<!-- =========================
-DODAJ / EDYTUJ DOKUMENT
-========================= -->
-
-
-<div 
-id="modalOverlay"
-class="overlay hidden">
-
-
-<div class="modal document-modal">
-
-
-<button 
-id="closeModal"
-class="close-button">
-
-X
-
-</button>
-
-
-
-<h2 id="modalTitle">
-Dodaj dokument
-</h2>
-
-
-
-
-
-<div class="form-grid">
-
-
-
-<div class="form-group">
-
-<label>
-Lokalizacja
-</label>
-
-
-<select id="location">
+<select id="miasto">
 
 <option value="">
-Wybierz lokalizację
+Wszystkie miasta
 </option>
-
 
 </select>
 
-
-</div>
-
-
-
-
-
-<div class="form-group">
-
-<label>
-Lokal
-</label>
-
-
-<select id="local">
-
-<option value="">
-Najpierw wybierz lokalizację
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-<div class="form-group">
-
-<label>
-Nazwa dokumentu
-</label>
-
-
-<input id="name">
-
-
-</div>
-
-
-
-
-
-
-<div class="form-group">
-
-<label>
-Typ dokumentu
-</label>
-
-
-<input id="type">
-
-
-</div>
-
-
-
-
-
-
-<div class="form-group">
-
-<label>
-Rok
-</label>
 
 
 <input 
-id="year"
-type="number">
+id="szukaj"
+placeholder="Szukaj lokalu..."
+>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>Miasto</th>
+
+<th>Lokal</th>
+
+<th>Typ</th>
+
+<th>Data</th>
+
+<th>Następny</th>
+
+<th>Status</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="lista">
+
+
+</tbody>
+
+
+</table>
 
 
 </div>
 
 
 
+<script>
 
 
-<div class="form-group">
+let dokumenty=[];
 
-<label>
-Kontrahent
-</label>
 
 
-<select id="contractor">
+async function start(){
 
-<option value="">
-Wybierz kontrahenta
-</option>
 
+const {data,error}=await supabaseClient
 
-</select>
+.from("dokumenty")
 
+.select("*")
 
-</div>
+.order("miasto");
 
 
 
+if(error){
 
+console.error(error);
 
-<div class="form-group">
+alert(error.message);
 
-<label>
-Regał
-</label>
+return;
 
+}
 
-<input id="shelf">
 
+dokumenty=data;
 
-</div>
 
+zaladujMiasta();
 
 
+pokaz(dokumenty);
 
 
-<div class="form-group">
+}
 
-<label>
-Półka
-</label>
 
 
-<input id="level">
 
+function zaladujMiasta(){
 
-</div>
 
+let select=
+document.getElementById("miasto");
 
 
 
+let miasta=[
 
-<div class="form-group">
+...new Set(
 
-<label>
-Segregator
-</label>
+dokumenty.map(x=>x.miasto)
 
+)
 
-<input id="folder">
+];
 
 
-</div>
 
+miasta.forEach(m=>{
 
 
+let option=document.createElement("option");
 
+option.value=m;
 
-<div class="form-group">
+option.textContent=m;
 
-<label>
-Status
-</label>
 
+select.appendChild(option);
 
-<select id="status">
 
 
-<option value="OK">
-OK
-</option>
+});
 
 
-<option value="DO UZUPEŁNIENIA">
-DO UZUPEŁNIENIA
-</option>
+}
 
 
-<option value="BRAK">
-BRAK
-</option>
 
 
-</select>
 
+function pokaz(dane){
 
-</div>
 
+let tabela=
+document.getElementById("lista");
 
 
 
+tabela.innerHTML="";
 
-<div class="form-group full-width">
 
 
-<label>
-Uwagi
-</label>
+dane.forEach(x=>{
 
 
-<textarea id="notes"></textarea>
+let klasa="";
 
 
-</div>
+if(x.status=="PO TERMINIE")
 
+klasa="status-alert";
 
 
 
+if(x.status=="OK")
 
-<button 
-id="saveBtn"
-class="primary-button full-width">
+klasa="status-ok";
 
-Zapisz dokument
 
-</button>
 
+tabela.innerHTML += `
 
 
+<tr>
 
-</div>
+<td>${x.miasto ?? ""}</td>
 
+<td>${x.nr_lokalu ?? ""}</td>
 
-</div>
+<td>${x.typ_przegladu ?? ""}</td>
 
+<td>${x.data_przegladu ?? ""}</td>
 
-</div>
+<td>${x.kolejny_przeglad ?? ""}</td>
 
+<td class="${klasa}">
+${x.status ?? ""}
+</td>
 
 
+</tr>
 
 
+`;
 
 
 
+});
 
-<!-- =========================
-USTAWIENIA
-========================= -->
 
+}
 
-<div 
-id="settingsOverlay"
-class="overlay hidden">
 
 
-<div class="modal settings-modal">
 
 
+document
+.getElementById("miasto")
+.addEventListener(
+"change",
+function(){
 
-<button 
-id="closeSettings"
-class="close-button">
 
-X
+let m=this.value;
 
-</button>
 
+if(m==""){
 
+pokaz(dokumenty);
 
-<h2>
-Ustawienia
-</h2>
+}
 
+else{
 
 
+pokaz(
 
-<div class="settings-buttons">
+dokumenty.filter(
+x=>x.miasto==m
+)
 
+);
 
-<button id="showAddContractor">
-Dodaj kontrahenta
-</button>
 
+}
 
 
-<button id="showContractors">
-Lista kontrahentów
-</button>
 
+});
 
 
-<button id="showAddLocal">
-Dodaj lokal
-</button>
 
 
 
-<button id="showLocals">
-Lista lokali
-</button>
 
 
+document
+.getElementById("szukaj")
+.addEventListener(
+"keyup",
+function(){
 
-</div>
 
+let tekst=this.value.toLowerCase();
 
 
 
+pokaz(
 
-<div id="settingsContent">
+dokumenty.filter(
+x=>
 
-</div>
+JSON.stringify(x)
+.toLowerCase()
+.includes(tekst)
 
+)
 
+);
 
-</div>
 
-</div>
 
+});
 
 
 
 
 
+start();
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-<script src="js/config.js"></script>
-
-<script src="js/supabase.js"></script>
-
-<script src="js/app.js"></script>
-
-<script src="js/admin.js"></script>
-
-<script src="js/settings.js"></script>
-
-<script src="js/menu.js"></script>
-
-<script src="js/export.js"></script>
+</script>
 
 
 </body>
