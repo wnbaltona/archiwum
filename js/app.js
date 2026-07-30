@@ -1,65 +1,52 @@
-// ===============================
+// =====================================
 // APP.JS
-// ===============================
+// ARCHIWUM DOKUMENTÓW
+// =====================================
 
+
+// ===============================
+// ZMIENNE
+// ===============================
 
 let documents = [];
-
-let selectedLocation = "";
-
-let openedLocations = [];
-
-
+let currentLocation = "";
 
 const locations = [
-"OKĘCIE",
-"MODLIN",
-"RADOM",
-"RZESZÓW",
-"ŚWINOUJŚCIE",
-"POZNAŃ",
-"WROCŁAW",
-"KATOWICE",
-"ZIELONA GÓRA",
-"KRAKÓW",
-"GDAŃSK",
-"GDYNIA",
-"FRANCJA",
-"SONATA"
+    "OKĘCIE",
+    "MODLIN",
+    "RADOM",
+    "RZESZÓW",
+    "ŚWINOUJŚCIE",
+    "POZNAŃ",
+    "WROCŁAW",
+    "KATOWICE",
+    "ZIELONA GÓRA",
+    "KRAKÓW",
+    "GDAŃSK",
+    "GDYNIA",
+    "FRANCJA",
+    "SONATA"
 ];
 
 
 
-
+// ===============================
+// START
+// ===============================
 
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
+    loadDocuments();
 
-loadDocuments();
+    createLocationButtons();
 
+    loadContractorsToForm();
 
-document
-.getElementById("searchInput")
-?.addEventListener(
-"input",
-renderDocuments
-);
-
-
-
-document
-.getElementById("yearFilter")
-?.addEventListener(
-"change",
-renderDocuments
-);
-
-
+    setupFilters();
 
 });
-
 
 
 
@@ -74,15 +61,9 @@ async function loadDocuments(){
 
 
 const {
-
 data,
-
 error
-
-}
-
-=
-await supabaseClient
+}=await supabaseClient
 
 .from("dokumenty")
 
@@ -90,30 +71,25 @@ await supabaseClient
 
 *,
 
-lokale!lokal_id(
-
-id,
-
-nazwa,
-
-mpk,
-
-lokalizacja
-
+lokale(
+    id,
+    nazwa,
+    mpk,
+    lokalizacja
 ),
 
-kontrahenci!kontrahent_id(
-
-id,
-
-nazwa
-
+kontrahenci(
+    id,
+    nazwa
 )
 
 `)
 
 .order(
-"lokalizacja"
+"created_at",
+{
+ascending:false
+}
 );
 
 
@@ -124,14 +100,9 @@ if(error){
 
 console.error(error);
 
-alert(
-"Błąd pobierania dokumentów"
-);
-
 return;
 
 }
-
 
 
 
@@ -140,12 +111,96 @@ documents=data || [];
 
 
 
-createLocationButtons();
-
-createYears();
-
 renderDocuments();
 
+
+}
+
+
+
+
+// ===============================
+// LOKALIZACJE NA GÓRZE
+// ===============================
+
+
+function createLocationButtons(){
+
+
+const box=document.getElementById(
+"locationTabs"
+);
+
+
+if(!box)return;
+
+
+
+box.innerHTML="";
+
+
+
+locations.forEach(location=>{
+
+
+const count =
+documents.filter(d=>
+
+d.lokale?.lokalizacja===location
+
+).length;
+
+
+
+
+box.innerHTML += `
+
+<button 
+class="location-card"
+onclick="filterLocation('${location}')">
+
+
+<strong>
+${location}
+</strong>
+
+
+<span>
+${documentText(count)}
+</span>
+
+
+</button>
+
+`;
+
+
+
+});
+
+
+}
+
+
+
+
+// ===============================
+// LICZNIK
+// ===============================
+
+
+function documentText(number){
+
+
+if(number===1)
+return "1 dokument";
+
+
+if(number>1 && number<5)
+return number+" dokumenty";
+
+
+return number+" dokumentów";
 
 
 }
@@ -154,85 +209,16 @@ renderDocuments();
 
 
 
-
-
-
-
 // ===============================
-// PRZYCISKI LOKALIZACJI
+// FILTR LOKALIZACJI
 // ===============================
 
 
-function createLocationButtons(){
+window.filterLocation=function(location){
 
 
-const box =
-document.getElementById(
-"locationTabs"
-);
+currentLocation=location;
 
-
-
-box.innerHTML="";
-
-
-
-
-
-locations.forEach(
-location=>{
-
-
-const count =
-documents.filter(
-d=>d.lokalizacja===location
-)
-.length;
-
-
-
-
-
-const button =
-document.createElement(
-"button"
-);
-
-
-
-button.className="location-card";
-
-
-
-button.innerHTML=
-
-`
-<strong>
-${location}
-</strong>
-
-<span>
-${count} ${documentLabel(count)}
-</span>
-`;
-
-
-
-
-
-button.onclick=()=>{
-
-
-selectedLocation =
-selectedLocation===location
-?
-""
-:
-location;
-
-
-
-createLocationButtons();
 
 renderDocuments();
 
@@ -243,82 +229,33 @@ renderDocuments();
 
 
 
-box.appendChild(button);
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
 // ===============================
-// WYŚWIETLANIE
+// RENDER
 // ===============================
 
 
 function renderDocuments(){
 
 
-
-const results =
-document.getElementById(
+const box=document.getElementById(
 "results"
 );
 
 
-
-results.innerHTML="";
-
-
-
-let list=[...documents];
+if(!box)return;
 
 
 
-
-if(selectedLocation){
-
-
-list=list.filter(
-d=>d.lokalizacja===selectedLocation
-);
-
-
-}
+let data=[...documents];
 
 
 
-
-const search =
-document.getElementById(
-"searchInput"
-)
-.value
-.toLowerCase();
+if(currentLocation){
 
 
+data=data.filter(d=>
 
-
-
-if(search){
-
-
-list=list.filter(
-d=>
-
-JSON.stringify(d)
-.toLowerCase()
-.includes(search)
+d.lokale?.lokalizacja===currentLocation
 
 );
 
@@ -328,59 +265,30 @@ JSON.stringify(d)
 
 
 
-const year =
-document.getElementById(
-"yearFilter"
-)
-.value;
+const grouped={};
 
 
 
+locations.forEach(l=>{
+
+grouped[l]=[];
+
+});
 
 
-if(year){
+
+data.forEach(doc=>{
 
 
-list=list.filter(
-d=>
+const loc=
+doc.lokale?.lokalizacja;
 
-String(d.rok)===year
 
-);
+if(loc){
 
+grouped[loc].push(doc);
 
 }
-
-
-
-
-
-
-
-locations.forEach(
-location=>{
-
-
-if(
-selectedLocation &&
-location!==selectedLocation
-)
-return;
-
-
-
-
-const docs =
-list.filter(
-d=>d.lokalizacja===location
-);
-
-
-
-renderLocation(
-location,
-docs
-);
 
 
 
@@ -388,62 +296,32 @@ docs
 
 
 
-}
+
+
+box.innerHTML="";
 
 
 
+locations.forEach(location=>{
+
+
+const docs=
+grouped[location];
 
 
 
+box.innerHTML += `
+
+<div class="archive-location">
 
 
-
-function renderLocation(
-location,
-docs
-){
-
-
-
-const results =
-document.getElementById(
-"results"
-);
-
-
-
-const open =
-openedLocations.includes(
-location
-);
-
-
-
-
-const div =
-document.createElement(
-"div"
-);
-
-
-
-div.className=
-"archive-location";
-
-
-
-
-div.innerHTML=
-
-`
-
-<div class="archive-header">
+<div 
+class="archive-header"
+onclick="toggleLocation('${location}')">
 
 
 <span class="arrow">
-
-${open ? "▼":"▶"}
-
+▶
 </span>
 
 
@@ -453,103 +331,67 @@ ${location}
 
 
 <span class="counter">
-
-${docs.length}
-${documentLabel(docs.length)}
-
+${documentText(docs.length)}
 </span>
 
 
 </div>
 
 
-<div class="location-content ${
-open ? "" : "hidden"
-}"></div>
+
+<div 
+id="content-${location}"
+class="location-content hidden">
+
+
+${renderDocs(docs)}
+
+
+</div>
+
+
+</div>
 
 `;
 
 
 
+});
 
 
-div
-.querySelector(".archive-header")
-.onclick=()=>{
 
-
-if(open){
-
-openedLocations =
-openedLocations.filter(
-x=>x!==location
-);
-
-
-}
-else{
-
-
-openedLocations.push(
-location
-);
+createLocationButtons();
 
 
 }
 
 
 
-renderDocuments();
 
 
-
-};
-
-
-
+// ===============================
+// DOKUMENTY
+// ===============================
 
 
+function renderDocs(list){
 
 
-const content =
-div.querySelector(
-".location-content"
-);
+if(!list.length)
 
+return "<p>Brak dokumentów</p>";
 
 
 
 
+return list.map(doc=>`
 
-if(docs.length===0){
-
-
-content.innerHTML=
-`
-<p>
-Brak dokumentów
-</p>
-`;
-
-
-}
-
-else{
-
-
-docs.forEach(
-doc=>{
-
-
-content.innerHTML +=
-
-`
 
 <div class="document">
 
 
 <h4>
-${doc.nazwa}
+${doc.nazwa || ""}
 </h4>
 
 
@@ -566,12 +408,6 @@ ${doc.kontrahenci?.nazwa || "-"}
 
 
 <p>
-Typ:
-${doc.typ || "-"}
-</p>
-
-
-<p>
 Rok:
 ${doc.rok || "-"}
 </p>
@@ -583,15 +419,9 @@ ${doc.status || "-"}
 </p>
 
 
-<button class="edit"
-onclick='openEditModal(${JSON.stringify(doc)})'>
 
-Edytuj
-
-</button>
-
-
-<button class="delete"
+<button 
+class="delete"
 onclick="deleteDocument('${doc.id}')">
 
 Usuń
@@ -601,19 +431,8 @@ Usuń
 
 </div>
 
-`;
 
-
-
-});
-
-
-}
-
-
-
-
-results.appendChild(div);
+`).join("");
 
 
 
@@ -623,71 +442,30 @@ results.appendChild(div);
 
 
 
-
-
-
-
 // ===============================
-// LATA
+// ROZWIJANIE
 // ===============================
 
 
-function createYears(){
+window.toggleLocation=function(location){
 
 
-const select =
-document.getElementById(
-"yearFilter"
+const box=document.getElementById(
+"content-"+location
+);
+
+
+if(!box)return;
+
+
+
+box.classList.toggle(
+"hidden"
 );
 
 
 
-select.innerHTML=
-
-`
-<option value="">
-Wszystkie lata
-</option>
-`;
-
-
-
-
-[
-...new Set(
-documents
-.map(
-d=>d.rok
-)
-.filter(Boolean)
-)
-
-]
-
-.sort(
-(a,b)=>b-a
-)
-
-.forEach(
-year=>{
-
-
-select.innerHTML+=
-
-`
-<option value="${year}">
-${year}
-</option>
-`;
-
-
-});
-
-
-}
-
-
-
+};
 
 
 
@@ -698,25 +476,20 @@ ${year}
 // ===============================
 
 
-window.deleteDocument =
-async function(id){
+window.deleteDocument=async function(id){
 
 
-if(
-!confirm(
+if(!confirm(
 "Usunąć dokument?"
-)
-)
+))
+
 return;
 
 
 
 const {
 error
-}
-
-=
-await supabaseClient
+}=await supabaseClient
 
 .from("dokumenty")
 
@@ -742,24 +515,113 @@ return;
 loadDocuments();
 
 
+
 };
 
 
 
 
 
+// ===============================
+// KONTRAHENCI DO FORMULARZA
+// ===============================
 
 
-function documentLabel(n){
+async function loadContractorsToForm(){
 
 
-if(n===1)
-return "dokument";
+const select=document.getElementById(
+"contractor"
+);
 
-if(n>=2 && n<=4)
-return "dokumenty";
 
-return "dokumentów";
+if(!select)return;
+
+
+
+
+const {
+data,
+error
+}=await supabaseClient
+
+.from("kontrahenci")
+
+.select("*")
+
+.order(
+"nazwa"
+);
+
+
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+
+
+
+select.innerHTML=`
+
+<option value="">
+Wybierz kontrahenta
+</option>
+
+`;
+
+
+
+
+data.forEach(c=>{
+
+
+select.innerHTML +=`
+
+<option value="${c.id}">
+${c.nazwa}
+</option>
+
+`;
+
+
+});
+
+
+}
+
+
+
+
+// ===============================
+// FILTRY
+// ===============================
+
+
+function setupFilters(){
+
+
+const search =
+document.getElementById(
+"searchInput"
+);
+
+
+if(search){
+
+
+search.addEventListener(
+"input",
+renderDocuments
+);
+
+
+}
+
 
 
 }
