@@ -1,72 +1,49 @@
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+// ===============================
+// MENU.JS
+// ===============================
 
+document.addEventListener("DOMContentLoaded", () => {
 
-const btn =
-document.getElementById(
-"menuBtn"
-);
+    const menuBtn = document.getElementById("menuBtn");
+    const menuList = document.getElementById("menuList");
 
+    if (!menuBtn || !menuList) return;
 
-const menu =
-document.getElementById(
-"menuList"
-);
+    // menu startowo zamknięte
+    menuList.classList.add("hidden");
 
+    // otwieranie / zamykanie
+    menuBtn.addEventListener("click", (e) => {
 
+        e.stopPropagation();
 
+        menuList.classList.toggle("hidden");
 
+    });
 
-if(!btn || !menu)
-return;
+    // kliknięcie poza menu zamyka menu
+    document.addEventListener("click", (e) => {
 
+        if (
+            !menuList.contains(e.target) &&
+            !menuBtn.contains(e.target)
+        ) {
 
+            menuList.classList.add("hidden");
 
+        }
 
+    });
 
-btn.onclick=()=>{
+    // kliknięcie w pozycję menu również je zamyka
+    menuList.querySelectorAll("button").forEach(button => {
 
+        button.addEventListener("click", () => {
 
-menu.classList.toggle(
-"hidden"
-);
+            menuList.classList.add("hidden");
 
+        });
 
-};
-
-
-
-
-
-
-
-document.addEventListener(
-"click",
-(e)=>{
-
-
-if(
-
-!menu.contains(e.target)
-
-&&
-
-!btn.contains(e.target)
-
-){
-
-
-menu.classList.add(
-"hidden"
-);
-
-
-}
-
-
-});
-
-
+    });
 
 });
