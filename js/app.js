@@ -11,7 +11,7 @@
 let documents = [];
 let currentLocation = "";
 
-const locations = [
+const locations = window.LOCATIONS || [
     "OKĘCIE",
     "MODLIN",
     "RADOM",
@@ -27,7 +27,6 @@ const locations = [
     "FRANCJA",
     "SONATA"
 ];
-
 
 
 // ===============================
