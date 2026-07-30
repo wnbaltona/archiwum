@@ -11,6 +11,23 @@ let openedLocations = [];
 
 
 
+const locations = [
+"OKĘCIE",
+"MODLIN",
+"RADOM",
+"RZESZÓW",
+"ŚWINOUJŚCIE",
+"POZNAŃ",
+"WROCŁAW",
+"KATOWICE",
+"ZIELONA GÓRA",
+"KRAKÓW",
+"GDAŃSK",
+"GDYNIA",
+"FRANCJA",
+"SONATA"
+];
+
 
 
 
@@ -23,9 +40,25 @@ document.addEventListener(
 loadDocuments();
 
 
+document
+.getElementById("searchInput")
+?.addEventListener(
+"input",
+renderDocuments
+);
+
+
+
+document
+.getElementById("yearFilter")
+?.addEventListener(
+"change",
+renderDocuments
+);
+
+
+
 });
-
-
 
 
 
@@ -49,12 +82,35 @@ error
 }
 
 =
-
 await supabaseClient
 
 .from("dokumenty")
 
-.select("*")
+.select(`
+
+*,
+
+lokale!lokal_id(
+
+id,
+
+nazwa,
+
+mpk,
+
+lokalizacja
+
+),
+
+kontrahenci!kontrahent_id(
+
+id,
+
+nazwa
+
+)
+
+`)
 
 .order(
 "lokalizacja"
@@ -68,6 +124,10 @@ if(error){
 
 console.error(error);
 
+alert(
+"Błąd pobierania dokumentów"
+);
+
 return;
 
 }
@@ -76,15 +136,13 @@ return;
 
 
 
-documents = data || [];
+documents=data || [];
 
 
 
 createLocationButtons();
 
-
-fillYearFilter();
-
+createYears();
 
 renderDocuments();
 
@@ -101,7 +159,7 @@ renderDocuments();
 
 
 // ===============================
-// LOKALIZACJE
+// PRZYCISKI LOKALIZACJI
 // ===============================
 
 
@@ -115,135 +173,68 @@ document.getElementById(
 
 
 
-if(!box)
-return;
-
-
-
-const locations =
-
-[
-
-...new Set(
-
-documents.map(
-
-d=>d.lokalizacja
-
-)
-
-)
-
-];
-
-
-
-
-
 box.innerHTML="";
 
 
 
 
 
-locations.forEach(location=>{
+locations.forEach(
+location=>{
 
 
 const count =
-
 documents.filter(
-
 d=>d.lokalizacja===location
-
-).length;
+)
+.length;
 
 
 
 
 
 const button =
-
 document.createElement(
 "button"
 );
 
 
 
-button.className =
-"location-card";
+button.className="location-card";
 
 
 
-button.innerHTML =
+button.innerHTML=
 
 `
-
 <strong>
 ${location}
 </strong>
 
 <span>
-${count} dokumentów
+${count} ${documentLabel(count)}
 </span>
-
 `;
 
 
 
 
 
-button.onclick = ()=>{
+button.onclick=()=>{
 
 
-if(selectedLocation===location){
-
-
-selectedLocation="";
-
-
-button.classList.remove(
-"active"
-);
+selectedLocation =
+selectedLocation===location
+?
+""
+:
+location;
 
 
 
-}
-
-else{
-
-
-selectedLocation=location;
-
-
-
-document
-
-.querySelectorAll(
-".location-card"
-)
-
-.forEach(
-
-b=>b.classList.remove(
-"active"
-)
-
-);
-
-
-
-button.classList.add(
-"active"
-);
-
-
-
-}
-
-
+createLocationButtons();
 
 renderDocuments();
-
 
 
 };
@@ -269,8 +260,9 @@ box.appendChild(button);
 
 
 
+
 // ===============================
-// RENDER
+// WYŚWIETLANIE
 // ===============================
 
 
@@ -279,45 +271,27 @@ function renderDocuments(){
 
 
 const results =
-
 document.getElementById(
 "results"
 );
 
 
 
-if(!results)
-return;
+results.innerHTML="";
 
 
 
+let list=[...documents];
 
 
-
-let filtered = [...documents];
-
-
-
-
-
-
-
-// lokalizacja
 
 
 if(selectedLocation){
 
 
-filtered =
-
-filtered.filter(
-
-d=>
-
-d.lokalizacja===selectedLocation
-
+list=list.filter(
+d=>d.lokalizacja===selectedLocation
 );
-
 
 
 }
@@ -325,21 +299,11 @@ d.lokalizacja===selectedLocation
 
 
 
-
-
-// wyszukiwarka
-
-
 const search =
-
-document
-
-.getElementById(
+document.getElementById(
 "searchInput"
 )
-
-?.value
-
+.value
 .toLowerCase();
 
 
@@ -349,20 +313,14 @@ document
 if(search){
 
 
-filtered =
-
-filtered.filter(
-
+list=list.filter(
 d=>
 
 JSON.stringify(d)
-
 .toLowerCase()
-
 .includes(search)
 
 );
-
 
 
 }
@@ -370,21 +328,11 @@ JSON.stringify(d)
 
 
 
-
-
-
-// rok
-
-
 const year =
-
-document
-
-.getElementById(
+document.getElementById(
 "yearFilter"
 )
-
-?.value;
+.value;
 
 
 
@@ -393,10 +341,7 @@ document
 if(year){
 
 
-filtered =
-
-filtered.filter(
-
+list=list.filter(
 d=>
 
 String(d.rok)===year
@@ -404,7 +349,6 @@ String(d.rok)===year
 );
 
 
-
 }
 
 
@@ -413,98 +357,29 @@ String(d.rok)===year
 
 
 
-// status
+locations.forEach(
+location=>{
 
 
-const status =
-
-document
-
-.getElementById(
-"statusFilter"
+if(
+selectedLocation &&
+location!==selectedLocation
 )
-
-?.value;
-
+return;
 
 
 
 
-if(status){
-
-
-filtered =
-
-filtered.filter(
-
-d=>
-
-d.status===status
-
+const docs =
+list.filter(
+d=>d.lokalizacja===location
 );
 
 
 
-}
-
-
-
-
-
-
-
-
-results.innerHTML="";
-
-
-
-
-
-
-const grouped = {};
-
-
-
-
-
-filtered.forEach(doc=>{
-
-
-if(!grouped[doc.lokalizacja]){
-
-
-grouped[doc.lokalizacja]=[];
-
-}
-
-
-grouped[doc.lokalizacja].push(doc);
-
-
-
-});
-
-
-
-
-
-
-
-
-
-Object.keys(grouped)
-
-.sort()
-
-.forEach(location=>{
-
-
-createLocationBlock(
-
+renderLocation(
 location,
-
-grouped[location]
-
+docs
 );
 
 
@@ -523,12 +398,7 @@ grouped[location]
 
 
 
-// ===============================
-// ROZWIJANE LOKALIZACJE
-// ===============================
-
-
-function createLocationBlock(
+function renderLocation(
 location,
 docs
 ){
@@ -536,34 +406,13 @@ docs
 
 
 const results =
-
 document.getElementById(
 "results"
 );
 
 
 
-
-
-const wrapper =
-
-document.createElement(
-"div"
-);
-
-
-
-wrapper.className =
-"archive-location";
-
-
-
-
-
-
-
-const opened =
-
+const open =
 openedLocations.includes(
 location
 );
@@ -571,48 +420,52 @@ location
 
 
 
+const div =
+document.createElement(
+"div"
+);
 
 
 
-wrapper.innerHTML =
+div.className=
+"archive-location";
 
 
+
+
+div.innerHTML=
 
 `
 
 <div class="archive-header">
 
 
-<div class="arrow">
+<span class="arrow">
 
-${opened ? "▼" : "▶"}
+${open ? "▼":"▶"}
 
-</div>
-
+</span>
 
 
 <strong>
-
 ${location}
-
 </strong>
 
 
-<div class="counter">
+<span class="counter">
 
 ${docs.length}
+${documentLabel(docs.length)}
+
+</span>
+
 
 </div>
 
 
-</div>
-
-
-
-<div class="location-content ${opened ? "" : "hidden"}">
-
-</div>
-
+<div class="location-content ${
+open ? "" : "hidden"
+}"></div>
 
 `;
 
@@ -620,44 +473,26 @@ ${docs.length}
 
 
 
-
-const header =
-
-wrapper.querySelector(
-".archive-header"
-);
+div
+.querySelector(".archive-header")
+.onclick=()=>{
 
 
-
-
-
-header.onclick=()=>{
-
-
-if(
-openedLocations.includes(location)
-){
-
+if(open){
 
 openedLocations =
-
 openedLocations.filter(
-
 x=>x!==location
-
 );
-
 
 
 }
-
 else{
 
 
 openedLocations.push(
 location
 );
-
 
 
 }
@@ -677,8 +512,7 @@ renderDocuments();
 
 
 const content =
-
-wrapper.querySelector(
+div.querySelector(
 ".location-content"
 );
 
@@ -687,26 +521,27 @@ wrapper.querySelector(
 
 
 
+if(docs.length===0){
 
-docs
 
-.sort(
+content.innerHTML=
+`
+<p>
+Brak dokumentów
+</p>
+`;
 
-(a,b)=>
 
-(b.rok||0)
+}
 
--
+else{
 
-(a.rok||0)
 
-)
-
-.forEach(doc=>{
+docs.forEach(
+doc=>{
 
 
 content.innerHTML +=
-
 
 `
 
@@ -718,41 +553,50 @@ ${doc.nazwa}
 </h4>
 
 
-
 <p>
-Typ: ${doc.typ}
+Lokal:
+${doc.lokale?.nazwa || "-"}
 </p>
-
-
-
-<p>
-Lokal: ${doc.numer_lokalu}
-</p>
-
 
 
 <p>
 Kontrahent:
-${doc.nazwa_kontrahenta || "-"}
+${doc.kontrahenci?.nazwa || "-"}
 </p>
 
+
+<p>
+Typ:
+${doc.typ || "-"}
+</p>
+
+
+<p>
+Rok:
+${doc.rok || "-"}
+</p>
 
 
 <p>
 Status:
-${doc.status}
+${doc.status || "-"}
 </p>
 
 
-
-<button 
-class="edit"
+<button class="edit"
 onclick='openEditModal(${JSON.stringify(doc)})'>
 
 Edytuj
 
 </button>
 
+
+<button class="delete"
+onclick="deleteDocument('${doc.id}')">
+
+Usuń
+
+</button>
 
 
 </div>
@@ -764,12 +608,12 @@ Edytuj
 });
 
 
+}
 
 
 
 
-
-results.appendChild(wrapper);
+results.appendChild(div);
 
 
 
@@ -788,86 +632,56 @@ results.appendChild(wrapper);
 // ===============================
 
 
-function fillYearFilter(){
-
+function createYears(){
 
 
 const select =
-
-document
-
-.getElementById(
+document.getElementById(
 "yearFilter"
 );
 
 
 
-if(!select)
-return;
+select.innerHTML=
+
+`
+<option value="">
+Wszystkie lata
+</option>
+`;
 
 
 
-
-
-const years =
 
 [
-
 ...new Set(
-
 documents
-
 .map(
 d=>d.rok
 )
-
 .filter(Boolean)
-
 )
 
 ]
 
-.sort();
+.sort(
+(a,b)=>b-a
+)
+
+.forEach(
+year=>{
 
 
-
-
-
-
-select.innerHTML =
-
-
-`
-
-<option value="">
-Wszystkie lata
-</option>
-
-`;
-
-
-
-
-
-
-years.forEach(year=>{
-
-
-select.innerHTML +=
-
+select.innerHTML+=
 
 `
-
 <option value="${year}">
 ${year}
 </option>
-
 `;
 
 
-
 });
-
 
 
 }
@@ -879,54 +693,73 @@ ${year}
 
 
 
-
 // ===============================
-// FILTRY
+// USUWANIE DOKUMENTU
 // ===============================
 
 
-document.addEventListener(
-"input",
-e=>{
+window.deleteDocument =
+async function(id){
 
 
 if(
-
-e.target.id==="searchInput"
-
+!confirm(
+"Usunąć dokument?"
 )
-
-renderDocuments();
-
-
-
-});
-
-
-
-
-document.addEventListener(
-"change",
-e=>{
-
-
-if(
-
-[
-"yearFilter",
-"statusFilter"
-
-]
-
-.includes(
-e.target.id
-
 )
-
-)
-
-renderDocuments();
+return;
 
 
 
-});
+const {
+error
+}
+
+=
+await supabaseClient
+
+.from("dokumenty")
+
+.delete()
+
+.eq(
+"id",
+id
+);
+
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+
+loadDocuments();
+
+
+};
+
+
+
+
+
+
+
+function documentLabel(n){
+
+
+if(n===1)
+return "dokument";
+
+if(n>=2 && n<=4)
+return "dokumenty";
+
+return "dokumentów";
+
+
+}
