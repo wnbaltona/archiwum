@@ -5,6 +5,8 @@
 
 let documents = [];
 
+let locations = [];
+
 let selectedLocation = "";
 
 let expandedLocations = [];
@@ -12,7 +14,6 @@ let expandedLocations = [];
 
 
 
-// START
 
 document.addEventListener(
 "DOMContentLoaded",
@@ -20,6 +21,7 @@ document.addEventListener(
 
 
 loadDocuments();
+
 
 
 });
@@ -30,32 +32,40 @@ loadDocuments();
 
 
 
+
+
 // ===============================
-// POBIERANIE DOKUMENTÓW
+// POBIERANIE DANYCH
 // ===============================
 
 
 async function loadDocuments(){
 
 
+
 const {
-data,
-error
+data:docs,
+error:docError
 }
 
 =
 await supabaseClient
+
 .from("dokumenty")
+
 .select("*")
-.order("lokalizacja");
+
+.order(
+"lokalizacja"
+);
 
 
 
 
 
-if(error){
+if(docError){
 
-console.error(error);
+console.error(docError);
 
 return;
 
@@ -65,7 +75,73 @@ return;
 
 
 
-documents = data || [];
+
+
+const {
+data:locs,
+error:locError
+}
+
+=
+await supabaseClient
+
+.from("lokale")
+
+.select("lokalizacja")
+
+.order(
+"lokalizacja"
+);
+
+
+
+
+
+
+
+if(locError){
+
+console.error(locError);
+
+return;
+
+}
+
+
+
+
+
+
+
+documents = docs || [];
+
+
+
+
+
+
+
+locations = [
+
+...new Set(
+
+locs.map(
+
+x=>x.lokalizacja
+
+)
+
+)
+
+]
+
+.filter(Boolean)
+
+.sort();
+
+
+
+
 
 
 
@@ -86,18 +162,23 @@ renderDocuments();
 
 
 
+
 // ===============================
-// FILTRY LOKALIZACJI
+// KAFELKI LOKALIZACJI
 // ===============================
 
 
 function createLocationFilters(){
 
 
+
 const container =
+
 document.getElementById(
 "locationTabs"
 );
+
+
 
 
 
@@ -106,52 +187,70 @@ return;
 
 
 
+
+
 container.innerHTML="";
 
 
 
 
-const locations = [
-
-...new Set(
-
-documents.map(
-d=>d.lokalizacja
-)
-
-)
-
-]
-.filter(Boolean)
-.sort();
 
 
 
+locations.forEach(
+location=>{
 
-
-locations.forEach(location=>{
 
 
 const count =
 
 documents.filter(
-d=>d.lokalizacja===location
+
+d=>
+
+d.lokalizacja===location
+
 )
+
 .length;
 
 
 
 
 
+
+
 const button =
+
 document.createElement(
 "button"
 );
 
 
 
+
+
+
+
 button.className =
 "location-card";
+
+
+
+
+
+
+
+if(selectedLocation===location){
+
+button.classList.add(
+"active"
+);
+
+}
+
+
+
 
 
 
@@ -165,7 +264,7 @@ ${location}
 </strong>
 
 <span>
-${count} dokumentów
+${documentText(count)}
 </span>
 
 `;
@@ -179,15 +278,11 @@ ${count} dokumentów
 button.onclick = ()=>{
 
 
+
 if(selectedLocation===location){
 
 
 selectedLocation="";
-
-
-button.classList.remove(
-"active"
-);
 
 
 }
@@ -198,31 +293,12 @@ else{
 selectedLocation=location;
 
 
-
-document
-
-.querySelectorAll(
-".location-card"
-)
-
-.forEach(
-b=>
-b.classList.remove(
-"active"
-)
-);
-
-
-
-button.classList.add(
-"active"
-);
-
-
-
 }
 
 
+
+
+createLocationFilters();
 
 renderDocuments();
 
@@ -257,28 +333,35 @@ button
 
 
 // ===============================
-// RENDER
+// WYŚWIETLANIE
 // ===============================
 
 
 function renderDocuments(){
 
 
+
 const results =
+
 document.getElementById(
 "results"
 );
 
 
 
-if(!results)
-return;
+
+
+results.innerHTML="";
+
+
+
 
 
 
 
 
 let filtered =
+
 [...documents];
 
 
@@ -286,20 +369,21 @@ let filtered =
 
 
 
-// lokalizacja
-
 
 if(selectedLocation){
+
 
 
 filtered =
 
 filtered.filter(
-doc=>
 
-doc.lokalizacja===selectedLocation
+d=>
+
+d.lokalizacja===selectedLocation
 
 );
+
 
 
 }
@@ -308,7 +392,6 @@ doc.lokalizacja===selectedLocation
 
 
 
-// wyszukiwanie
 
 
 const search =
@@ -319,9 +402,12 @@ document
 "searchInput"
 )
 
-.value
+?.value
 
 .toLowerCase();
+
+
+
 
 
 
@@ -330,9 +416,11 @@ document
 if(search){
 
 
+
 filtered =
 
 filtered.filter(
+
 doc=>
 
 JSON.stringify(doc)
@@ -352,8 +440,6 @@ JSON.stringify(doc)
 
 
 
-// rok
-
 
 const year =
 
@@ -363,7 +449,10 @@ document
 "yearFilter"
 )
 
-.value;
+?.value;
+
+
+
 
 
 
@@ -372,14 +461,17 @@ document
 if(year){
 
 
+
 filtered =
 
 filtered.filter(
-doc=>
 
-String(doc.rok)===year
+d=>
+
+String(d.rok)===year
 
 );
+
 
 
 }
@@ -388,8 +480,6 @@ String(doc.rok)===year
 
 
 
-
-// status
 
 
 const status =
@@ -400,7 +490,9 @@ document
 "statusFilter"
 )
 
-.value;
+?.value;
+
+
 
 
 
@@ -409,12 +501,14 @@ document
 if(status){
 
 
+
 filtered =
 
 filtered.filter(
-doc=>
 
-doc.status===status
+d=>
+
+d.status===status
 
 );
 
@@ -428,54 +522,45 @@ doc.status===status
 
 
 
-results.innerHTML="";
+locations.forEach(
+location=>{
+
+
+
+const docs =
+
+filtered.filter(
+
+d=>
+
+d.lokalizacja===location
+
+);
 
 
 
 
 
 
-const grouped={};
 
+if(
+selectedLocation &&
+location!==selectedLocation
+){
 
-
-
-
-
-filtered.forEach(doc=>{
-
-
-if(!grouped[doc.lokalizacja]){
-
-grouped[doc.lokalizacja]=[];
+return;
 
 }
 
 
-grouped[doc.lokalizacja].push(doc);
 
 
 
-});
-
-
-
-
-
-
-
-Object
-
-.keys(grouped)
-
-.sort()
-
-.forEach(location=>{
 
 
 renderLocation(
 location,
-grouped[location]
+docs
 );
 
 
@@ -495,7 +580,7 @@ grouped[location]
 
 
 // ===============================
-// ROZWIJANE LOKALIZACJE
+// ROZWIJANE BLOKI
 // ===============================
 
 
@@ -507,9 +592,13 @@ docs
 
 
 const results =
+
 document.getElementById(
 "results"
 );
+
+
+
 
 
 
@@ -523,7 +612,10 @@ location
 
 
 
+
+
 const box =
+
 document.createElement(
 "div"
 );
@@ -538,8 +630,8 @@ box.className =
 
 
 
-
 box.innerHTML =
+
 
 `
 
@@ -555,16 +647,14 @@ ${opened ? "▼" : "▶"}
 
 
 <strong>
-
 ${location}
-
 </strong>
 
 
 
 <div class="counter">
 
-${docs.length}
+${documentText(docs.length)}
 
 </div>
 
@@ -573,7 +663,10 @@ ${docs.length}
 
 
 
-<div class="location-content ${opened ? "" : "hidden"}">
+<div class="location-content ${
+opened ? "" : "hidden"
+}">
+
 
 </div>
 
@@ -587,11 +680,13 @@ ${docs.length}
 
 
 box
+
 .querySelector(
 ".archive-header"
 )
 
-.onclick=()=>{
+.onclick = ()=>{
+
 
 
 if(
@@ -602,7 +697,11 @@ expandedLocations.includes(location)
 expandedLocations =
 
 expandedLocations.filter(
-x=>x!==location
+
+x=>
+
+x!==location
+
 );
 
 
@@ -631,6 +730,9 @@ renderDocuments();
 
 
 
+
+
+
 const content =
 
 box.querySelector(
@@ -643,7 +745,31 @@ box.querySelector(
 
 
 
-docs.forEach(doc=>{
+
+
+if(docs.length===0){
+
+
+content.innerHTML =
+
+`
+
+<p>
+Brak dokumentów
+</p>
+
+`;
+
+
+
+}
+
+else{
+
+
+
+docs.forEach(
+doc=>{
 
 
 content.innerHTML +=
@@ -656,21 +782,24 @@ content.innerHTML +=
 
 <h4>
 
-${doc.nazwa}
+${doc.nazwa || "Bez nazwy"}
 
 </h4>
 
 
+
 <p>
 Typ:
-${doc.typ}
+${doc.typ || "-"}
 </p>
+
 
 
 <p>
 Lokal:
-${doc.numer_lokalu}
+${doc.numer_lokalu || "-"}
 </p>
+
 
 
 <p>
@@ -679,10 +808,13 @@ ${doc.nazwa_kontrahenta || "-"}
 </p>
 
 
+
 <p>
 Status:
-${doc.status}
+${doc.status || "-"}
 </p>
+
+
 
 
 
@@ -695,8 +827,18 @@ Edytuj
 </button>
 
 
-</div>
 
+<button
+class="delete"
+onclick="deleteDocument('${doc.id}')">
+
+Usuń
+
+</button>
+
+
+
+</div>
 
 `;
 
@@ -706,9 +848,17 @@ Edytuj
 
 
 
+}
 
 
-results.appendChild(box);
+
+
+
+
+
+results.appendChild(
+box
+);
 
 
 
@@ -723,22 +873,28 @@ results.appendChild(box);
 
 
 // ===============================
-// FILTR LAT
+// LATA
 // ===============================
 
 
 function createYearFilter(){
 
 
+
 const select =
+
 document.getElementById(
 "yearFilter"
 );
 
 
 
+
+
 if(!select)
 return;
+
+
 
 
 
@@ -759,9 +915,11 @@ d=>d.rok
 )
 
 ]
+
 .sort(
 (a,b)=>b-a
 );
+
 
 
 
@@ -783,7 +941,10 @@ Wszystkie lata
 
 
 
-years.forEach(year=>{
+
+
+years.forEach(
+year=>{
 
 
 select.innerHTML +=
@@ -813,13 +974,89 @@ ${year}
 
 
 // ===============================
-// NASŁUCH FILTRÓW
+// USUWANIE DOKUMENTU
+// ===============================
+
+
+window.deleteDocument =
+
+async function(id){
+
+
+
+if(
+!confirm(
+"Usunąć dokument?"
+)
+
+)
+
+return;
+
+
+
+
+
+
+
+const {
+
+error
+
+}
+
+=
+
+await supabaseClient
+
+.from("dokumenty")
+
+.delete()
+
+.eq(
+"id",
+id
+);
+
+
+
+
+
+
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+
+loadDocuments();
+
+
+
+};
+
+
+
+
+
+
+
+
+
+// ===============================
+// FILTRY
 // ===============================
 
 
 document.addEventListener(
 "input",
-(e)=>{
+e=>{
 
 
 if(
@@ -841,7 +1078,7 @@ renderDocuments();
 
 document.addEventListener(
 "change",
-(e)=>{
+e=>{
 
 
 if(
@@ -859,10 +1096,55 @@ e.target.id
 
 ){
 
+
 renderDocuments();
+
+
 
 }
 
 
 
 });
+
+
+
+
+
+
+
+
+
+// ===============================
+// ODMIANA
+// ===============================
+
+
+function documentText(number){
+
+
+
+if(number===1){
+
+return "1 dokument";
+
+}
+
+
+
+if(
+number>=2 &&
+number<=4
+){
+
+return number+" dokumenty";
+
+}
+
+
+
+return number+" dokumentów";
+
+
+
+}
