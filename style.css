@@ -203,6 +203,44 @@ LOKALIZACJE
 
 }
 
+.location-card.active{
+
+    background:#2563eb;
+    color:white;
+
+}
+
+.location-card.active span{
+
+    color:#dbeafe;
+
+}
+
+.dashboard-stats{
+
+    display:grid;
+    grid-template-columns:repeat(4, minmax(120px, 1fr));
+    gap:15px;
+    padding:0 35px 20px;
+
+}
+
+.stat-card{
+
+    padding:16px 18px;
+    border-radius:14px;
+    background:#fff;
+    border-left:5px solid #64748b;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+
+}
+
+.stat-card span{ display:block; color:#64748b; font-size:13px; }
+.stat-card strong{ display:block; margin-top:5px; font-size:25px; }
+.stat-card.ok{ border-color:#16a34a; }
+.stat-card.pending{ border-color:#eab308; }
+.stat-card.missing{ border-color:#dc2626; }
+
 
 
 
@@ -408,7 +446,22 @@ ARCHIWUM
 
     margin-bottom:15px;
 
+    border:1px solid #edf0f6;
+
 }
+
+.document-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:15px; }
+.document h4{ font-size:18px; margin:5px 0 8px; }
+.archive-path{ margin:0; color:#2563eb; font-size:13px; font-weight:600; }
+.archive-path span{ color:#94a3b8; padding:0 3px; }
+.document-meta{ color:#64748b; margin:0 0 13px; font-size:14px; }
+.document details{ border-top:1px solid #e5e7eb; padding-top:10px; color:#475569; }
+.document summary{ cursor:pointer; color:#2563eb; font-weight:600; }
+.document-actions{ display:flex; gap:10px; margin-top:16px; }
+.status-chip{ display:inline-block; white-space:nowrap; border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700; background:#e2e8f0; color:#334155; }
+.status-ok{ background:#dcfce7; color:#166534; }
+.status-do-uzupełnienia{ background:#fef9c3; color:#854d0e; }
+.status-brak{ background:#fee2e2; color:#b91c1c; }
 
 
 
@@ -767,6 +820,10 @@ MOBILE
 
 
 @media(max-width:700px){
+
+    .dashboard-stats{ grid-template-columns:1fr 1fr; padding:0 20px 16px; }
+
+    .document-top{ flex-direction:column; }
 
 
 #locationTabs{
