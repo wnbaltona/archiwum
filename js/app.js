@@ -622,6 +622,371 @@ renderDocuments
 
 }
 
+// =====================================
+// DODAWANIE DOKUMENTU - MODAL
+// =====================================
 
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+
+const addBtn =
+document.getElementById("addBtn");
+
+
+const overlay =
+document.getElementById("modalOverlay");
+
+
+const close =
+document.getElementById("closeModal");
+
+
+
+if(addBtn){
+
+
+addBtn.addEventListener(
+"click",
+()=>{
+
+
+overlay.classList.remove("hidden");
+
+
+loadLocationsToForm();
+
+
+loadContractorsToForm();
+
+
+}
+
+);
+
+
+}
+
+
+
+if(close){
+
+
+close.addEventListener(
+"click",
+()=>{
+
+
+overlay.classList.add("hidden");
+
+
+}
+
+);
+
+
+}
+
+
+
+const locationSelect =
+document.getElementById("location");
+
+
+if(locationSelect){
+
+
+locationSelect.addEventListener(
+"change",
+()=>{
+
+
+loadLocalsForLocation(
+locationSelect.value
+);
+
+
+}
+
+);
+
+
+}
+
+
+
+const save =
+document.getElementById("saveBtn");
+
+
+if(save){
+
+
+save.addEventListener(
+"click",
+saveDocument
+);
+
+
+}
+
+
+
+});
+
+
+
+
+
+// =====================================
+// LOKALIZACJE DO FORMULARZA
+// =====================================
+
+
+async function loadLocationsToForm(){
+
+
+const select =
+document.getElementById("location");
+
+
+if(!select)return;
+
+
+
+select.innerHTML=`
+
+<option>
+Wybierz lokalizację
+</option>
+
+`;
+
+
+
+locations.forEach(loc=>{
+
+
+select.innerHTML +=`
+
+<option value="${loc}">
+${loc}
+</option>
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+// =====================================
+// LOKALE PO LOKALIZACJI
+// =====================================
+
+
+async function loadLocalsForLocation(location){
+
+
+const select =
+document.getElementById("local");
+
+
+
+if(!select)return;
+
+
+
+select.innerHTML=`
+
+<option>
+Ładowanie...
+</option>
+
+`;
+
+
+
+const {
+data,
+error
+}=await supabaseClient
+
+.from("lokale")
+
+.select("*")
+
+.eq(
+"lokalizacja",
+location
+)
+
+.order(
+"nazwa"
+);
+
+
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+
+
+select.innerHTML=`
+
+<option>
+Wybierz lokal
+</option>
+
+`;
+
+
+
+data.forEach(local=>{
+
+
+select.innerHTML +=`
+
+<option value="${local.id}">
+
+${local.nazwa}
+${local.mpk ? " - "+local.mpk : ""}
+
+</option>
+
+`;
+
+
+});
+
+
+}
+
+
+
+
+
+// =====================================
+// ZAPIS DOKUMENTU
+// =====================================
+
+
+async function saveDocument(){
+
+
+
+const data={
+
+
+lokal_id:
+document.getElementById("local").value || null,
+
+
+kontrahent_id:
+document.getElementById("contractor").value || null,
+
+
+nazwa:
+document.getElementById("name").value,
+
+
+typ:
+document.getElementById("type").value,
+
+
+rok:
+Number(document.getElementById("year").value) || null,
+
+
+regal:
+document.getElementById("shelf").value,
+
+
+polka:
+document.getElementById("level").value,
+
+
+segregator:
+document.getElementById("folder").value,
+
+
+status:
+document.getElementById("status").value,
+
+
+uwagi:
+document.getElementById("notes").value
+
+
+
+};
+
+
+
+
+if(!data.nazwa){
+
+alert(
+"Wpisz nazwę dokumentu"
+);
+
+return;
+
+}
+
+
+
+
+const {
+error
+}=await supabaseClient
+
+.from("dokumenty")
+
+.insert([data]);
+
+
+
+
+if(error){
+
+console.error(error);
+
+alert(error.message);
+
+return;
+
+}
+
+
+
+
+alert(
+"Dokument dodany"
+);
+
+
+
+document
+.getElementById("modalOverlay")
+.classList.add("hidden");
+
+
+
+loadDocuments();
+
+
+}
 
 }
