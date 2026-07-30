@@ -7,6 +7,33 @@ let editingDocumentId = null;
 
 
 
+const LOCATIONS = [
+
+"OKĘCIE",
+"MODLIN",
+"RADOM",
+"RZESZÓW",
+"ŚWINOUJŚCIE",
+"POZNAŃ",
+"WROCŁAW",
+"KATOWICE",
+"ZIELONA GÓRA",
+"KRAKÓW",
+"GDAŃSK",
+"GDYNIA",
+"FRANCJA",
+"SONATA"
+
+];
+
+
+
+
+// ===============================
+// START
+// ===============================
+
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
@@ -43,15 +70,16 @@ document
 .getElementById("location")
 ?.addEventListener(
 "change",
-(e)=>{
+function(){
 
-loadLocals(e.target.value);
+loadLocals(this.value);
+
+});
+
+
 
 });
 
-
-
-});
 
 
 
@@ -59,7 +87,7 @@ loadLocals(e.target.value);
 
 
 // ===============================
-// OTWÓRZ FORMULARZ
+// OTWÓRZ DOKUMENT
 // ===============================
 
 
@@ -70,6 +98,7 @@ editingDocumentId=null;
 
 
 clearForm();
+
 
 
 document.getElementById(
@@ -100,9 +129,8 @@ document
 
 
 
-
 // ===============================
-// POBIERANIE LOKALIZACJI
+// LOKALIZACJE
 // ===============================
 
 
@@ -116,57 +144,7 @@ document.getElementById(
 
 
 
-const {
-data,
-error
-}
-
-=
-await supabaseClient
-
-.from("lokale")
-
-.select(
-"lokalizacja"
-)
-
-.order(
-"lokalizacja"
-);
-
-
-
-
-
-if(error){
-
-console.error(error);
-
-alert(error.message);
-
-return;
-
-}
-
-
-
-
-
-const locations =
-[
-...new Set(
-data
-.map(x=>x.lokalizacja)
-.filter(Boolean)
-)
-
-];
-
-
-
-
-
-select.innerHTML=
+select.innerHTML =
 
 `
 <option value="">
@@ -176,9 +154,7 @@ Wybierz lokalizację
 
 
 
-
-
-locations.forEach(
+LOCATIONS.forEach(
 location=>{
 
 
@@ -188,13 +164,11 @@ select.innerHTML +=
 <option value="${location}">
 ${location}
 </option>
-
 `;
 
 
 
 });
-
 
 
 }
@@ -205,10 +179,8 @@ ${location}
 
 
 
-
-
 // ===============================
-// LOKALE PO LOKALIZACJI
+// LOKALE
 // ===============================
 
 
@@ -223,7 +195,26 @@ document.getElementById(
 
 
 
-select.innerHTML=
+if(!location){
+
+
+select.innerHTML =
+
+`
+<option>
+Najpierw wybierz lokalizację
+</option>
+`;
+
+return;
+
+}
+
+
+
+
+
+select.innerHTML =
 
 `
 <option>
@@ -235,28 +226,12 @@ select.innerHTML=
 
 
 
-if(!location){
-
-select.innerHTML=
-
-`
-<option>
-Najpierw wybierz lokalizację
-</option>
-
-`;
-
-return;
-
-}
-
-
-
-
-
 const {
+
 data,
+
 error
+
 }
 
 =
@@ -281,9 +256,19 @@ location
 
 
 
+
+
 if(error){
 
 console.error(error);
+
+select.innerHTML =
+
+`
+<option>
+Błąd pobierania lokali
+</option>
+`;
 
 return;
 
@@ -293,13 +278,34 @@ return;
 
 
 
-select.innerHTML=
+
+
+select.innerHTML =
 
 `
 <option value="">
 Wybierz lokal
 </option>
 `;
+
+
+
+
+
+if(!data || data.length===0){
+
+
+select.innerHTML +=
+
+`
+<option>
+Brak lokali dla tej lokalizacji
+</option>
+`;
+
+return;
+
+}
 
 
 
@@ -315,10 +321,9 @@ select.innerHTML +=
 <option value="${lokal.id}">
 
 ${lokal.nazwa}
-${lokal.mpk ? " ("+lokal.mpk+")":""}
+${lokal.mpk ? " - "+lokal.mpk:""}
 
 </option>
-
 `;
 
 
@@ -354,8 +359,11 @@ document.getElementById(
 
 
 const {
+
 data,
+
 error
+
 }
 
 =
@@ -375,6 +383,8 @@ await supabaseClient
 
 
 
+
+
 if(error){
 
 console.error(error);
@@ -387,13 +397,14 @@ return;
 
 
 
-select.innerHTML=
+
+
+select.innerHTML =
 
 `
 <option value="">
 Wybierz kontrahenta
 </option>
-
 `;
 
 
@@ -410,7 +421,6 @@ select.innerHTML +=
 <option value="${item.id}">
 ${item.nazwa}
 </option>
-
 `;
 
 
@@ -438,7 +448,7 @@ async function saveDocument(){
 
 
 
-const data = {
+const documentData = {
 
 
 lokalizacja:
@@ -483,11 +493,9 @@ document
 
 rok:
 
-Number(
 document
 .getElementById("year")
-.value
-) || null,
+.value || null,
 
 
 
@@ -539,8 +547,9 @@ document
 
 
 
-
 let result;
+
+
 
 
 
@@ -548,11 +557,12 @@ if(editingDocumentId){
 
 
 result =
+
 await supabaseClient
 
 .from("dokumenty")
 
-.update(data)
+.update(documentData)
 
 .eq(
 "id",
@@ -567,15 +577,19 @@ else{
 
 
 result =
+
 await supabaseClient
 
 .from("dokumenty")
 
-.insert(data);
+.insert(
+documentData
+);
 
 
 
 }
+
 
 
 
@@ -584,12 +598,13 @@ await supabaseClient
 
 if(result.error){
 
-alert(result.error.message);
+alert(
+result.error.message
+);
 
 return;
 
 }
-
 
 
 
@@ -615,131 +630,13 @@ loadDocuments();
 
 
 
-
 // ===============================
-// EDYCJA
+// CZYSZCZENIE
 // ===============================
-
-
-window.openEditModal =
-async function(doc){
-
-
-editingDocumentId =
-doc.id;
-
-
-
-await loadLocations();
-
-await loadContractors();
-
-
-
-
-document
-.getElementById("location")
-.value =
-doc.lokalizacja;
-
-
-
-await loadLocals(
-doc.lokalizacja
-);
-
-
-
-
-document
-.getElementById("local")
-.value =
-doc.lokal_id || "";
-
-
-
-document
-.getElementById("contractor")
-.value =
-doc.kontrahent_id || "";
-
-
-
-document
-.getElementById("name")
-.value =
-doc.nazwa || "";
-
-
-
-document
-.getElementById("type")
-.value =
-doc.typ || "";
-
-
-
-document
-.getElementById("year")
-.value =
-doc.rok || "";
-
-
-
-document
-.getElementById("shelf")
-.value =
-doc.regal || "";
-
-
-
-document
-.getElementById("level")
-.value =
-doc.polka || "";
-
-
-
-document
-.getElementById("folder")
-.value =
-doc.segregator || "";
-
-
-
-document
-.getElementById("status")
-.value =
-doc.status || "OK";
-
-
-
-document
-.getElementById("notes")
-.value =
-doc.uwagi || "";
-
-
-
-
-document
-.getElementById("modalOverlay")
-.classList
-.remove("hidden");
-
-
-
-};
-
-
-
-
-
-
-
 
 
 function clearForm(){
+
 
 
 document
@@ -748,8 +645,24 @@ document
 )
 
 .forEach(
-x=>x.value=""
+el=>el.value=""
 );
+
+
+
+
+
+document
+.getElementById("location")
+.innerHTML=
+
+`
+<option>
+Wybierz lokalizację
+</option>
+`;
+
+
 
 
 
@@ -761,7 +674,6 @@ document
 <option>
 Najpierw wybierz lokalizację
 </option>
-
 `;
 
 
@@ -772,6 +684,11 @@ Najpierw wybierz lokalizację
 
 
 
+
+
+// ===============================
+// ZAMKNIĘCIE
+// ===============================
 
 
 function closeModal(){
