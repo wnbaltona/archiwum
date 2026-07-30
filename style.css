@@ -1,684 +1,652 @@
-/* =========================
-RESET
-========================= */
+<!DOCTYPE html>
+<html lang="pl">
 
-*{
-    box-sizing:border-box;
-}
+<head>
 
+<meta charset="UTF-8">
 
-body{
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    margin:0;
-    padding:0;
+<title>Archiwum dokumentów</title>
 
-    font-family:Arial, Helvetica, sans-serif;
+<link rel="stylesheet" href="style.css">
 
-    background:#f5f6fa;
+</head>
 
-    color:#222;
 
-}
 
+<body>
 
 
-/* =========================
-HEADER
-========================= */
+<header class="topbar">
 
 
-.topbar{
+<div class="logo">
 
-    background:white;
+Archiwum dokumentów
 
-    padding:18px 30px;
+</div>
 
-    display:flex;
 
-    justify-content:space-between;
 
-    align-items:center;
 
-    box-shadow:
-    0 2px 10px rgba(0,0,0,.08);
+<div class="menu-wrapper">
 
-}
 
+<button 
+id="menuBtn"
+class="menu-button">
 
+☰
 
-.logo{
+</button>
 
-    font-size:22px;
 
-    font-weight:700;
 
-}
+<div 
+id="menuList"
+class="menu-list hidden">
 
 
+<button id="addBtn">
 
-/* =========================
-MENU
-========================= */
+Dodaj dokument
 
+</button>
 
-.menu-wrapper{
 
-    position:relative;
 
-}
+<button id="settingsBtn">
 
+Ustawienia
 
+</button>
 
-.menu-button{
 
-    border:none;
 
-    background:none;
+<button id="exportBtn">
 
-    font-size:30px;
+Eksport
 
-    cursor:pointer;
+</button>
 
-}
 
+</div>
 
 
-.menu-list{
+</div>
 
-    position:absolute;
 
-    right:0;
+</header>
 
-    top:45px;
 
-    background:white;
 
-    padding:10px;
 
-    width:200px;
 
-    border-radius:14px;
 
-    box-shadow:
-    0 5px 20px rgba(0,0,0,.15);
 
-    display:flex;
 
-    flex-direction:column;
+<section class="filters">
 
-    gap:10px;
 
-    z-index:2000;
 
-}
+<div 
+id="locationTabs"
+class="location-tabs">
 
+</div>
 
 
-.menu-list button{
 
-    border:none;
 
-    padding:12px;
 
-    border-radius:10px;
+<div class="filter-box">
 
-    background:#f2f3f7;
 
-    cursor:pointer;
+<input 
+id="searchInput"
+placeholder="Szukaj dokumentu...">
 
-}
 
 
 
-.hidden{
 
-    display:none !important;
+<select id="yearFilter">
 
-}
 
+<option value="">
 
+Wszystkie lata
 
+</option>
 
 
-/* =========================
-FILTRY
-========================= */
+</select>
 
 
-.filters{
 
-    background:white;
 
-    padding:25px 30px;
 
-}
+<select id="statusFilter">
 
 
+<option value="">
 
-.location-tabs{
+Wszystkie statusy
 
-    display:flex;
+</option>
 
-    flex-wrap:wrap;
 
-    gap:15px;
+<option value="OK">
 
-    margin-bottom:20px;
+OK
 
-}
+</option>
 
 
+<option value="DO UZUPEŁNIENIA">
 
-.location-card{
+DO UZUPEŁNIENIA
 
-    border:none;
+</option>
 
-    background:white;
 
-    padding:18px 22px;
+<option value="BRAK">
 
-    min-width:150px;
+BRAK
 
-    border-radius:16px;
+</option>
 
-    cursor:pointer;
 
-    box-shadow:
-    0 4px 12px rgba(0,0,0,.08);
+</select>
 
-    display:flex;
 
-    flex-direction:column;
+</div>
 
-    gap:8px;
 
-}
 
+</section>
 
 
-.location-card:hover{
 
-    transform:translateY(-2px);
 
-}
 
 
 
-.location-card.active{
+<main id="results">
 
-    background:#222;
+</main>
 
-    color:white;
 
-}
 
 
 
-.location-card span{
 
-    color:#777;
 
-    font-size:13px;
 
-}
 
+<!-- =========================
+DODAJ / EDYTUJ DOKUMENT
+========================= -->
 
 
-.location-card.active span{
+<div
 
-    color:white;
+id="modalOverlay"
 
-}
+class="overlay hidden">
 
 
 
+<div class="modal document-modal">
 
-.filter-box{
 
-    display:flex;
+<button
 
-    flex-wrap:wrap;
+id="closeModal"
 
-    gap:15px;
+class="close-button">
 
-}
+X
 
+</button>
 
 
-.filter-box input,
-.filter-box select{
 
-    padding:12px;
+<h2 id="modalTitle">
 
-    border-radius:10px;
+Dodaj dokument
 
-    border:1px solid #ddd;
+</h2>
 
-    min-width:200px;
 
-}
 
 
 
+<div class="form-grid">
 
 
-/* =========================
-ARCHIWUM
-========================= */
 
+<div class="form-group">
 
-#results{
+<label>
 
-    padding:25px 30px;
+Lokalizacja
 
-}
+</label>
 
 
+<select id="location">
 
-.archive-location{
 
-    background:white;
+<option value="">
 
-    border-radius:18px;
+Wybierz lokalizację
 
-    margin-bottom:20px;
+</option>
 
-    overflow:hidden;
 
-    box-shadow:
-    0 4px 15px rgba(0,0,0,.08);
+</select>
 
-}
 
+</div>
 
 
-.archive-header{
 
-    display:flex;
 
-    align-items:center;
 
-    gap:15px;
+<div class="form-group">
 
-    padding:20px 25px;
 
-    cursor:pointer;
+<label>
 
-}
+Lokal
 
+</label>
 
 
-.archive-header:hover{
 
-    background:#fafafa;
+<select id="local">
 
-}
 
+<option>
 
+Najpierw wybierz lokalizację
 
-.arrow{
+</option>
 
-    font-size:20px;
 
-    width:25px;
+</select>
 
-}
 
+</div>
 
 
-.counter{
 
-    margin-left:auto;
 
-    color:#777;
 
-}
 
+<div class="form-group">
 
 
-.location-content{
+<label>
 
-    padding:0 25px 25px;
+Nazwa dokumentu
 
-}
+</label>
 
 
 
+<input id="name">
 
-/* =========================
-DOKUMENTY
-========================= */
 
+</div>
 
-.document{
 
-    background:#f8f9fc;
 
-    border-radius:15px;
 
-    padding:20px;
 
-    margin-bottom:15px;
+<div class="form-group">
 
-}
 
+<label>
 
+Typ dokumentu
 
-.document h4{
+</label>
 
-    margin-top:0;
 
-}
+<input id="type">
 
 
+</div>
 
-.document p{
 
-    margin:8px 0;
 
-}
 
 
+<div class="form-group">
 
-.edit,
-.delete{
 
-    border:none;
+<label>
 
-    padding:9px 15px;
+Rok
 
-    border-radius:8px;
+</label>
 
-    cursor:pointer;
 
-}
+<input 
+id="year"
+type="number">
 
 
+</div>
 
-.edit{
 
-    background:#e7efff;
 
-}
 
 
+<div class="form-group">
 
-.delete{
 
-    background:#ffe7e7;
+<label>
 
-}
+Kontrahent
 
+</label>
 
 
+<select id="contractor">
 
 
-/* =========================
-MODALE
-========================= */
+<option>
 
+Wybierz kontrahenta
 
-.overlay{
+</option>
 
-    position:fixed;
 
-    inset:0;
+</select>
 
-    background:rgba(0,0,0,.45);
 
-    align-items:center;
+</div>
 
-    justify-content:center;
 
-    z-index:1000;
 
-}
 
 
 
-.overlay:not(.hidden){
+<div class="form-group">
 
-    display:flex;
 
-}
+<label>
 
+Regał
 
+</label>
 
-.modal{
 
-    background:white;
+<input id="shelf">
 
-    width:900px;
 
-    max-width:95%;
+</div>
 
-    max-height:90vh;
 
-    overflow:auto;
 
-    border-radius:20px;
 
-    padding:30px;
 
-}
+<div class="form-group">
 
 
+<label>
 
-.close-button{
+Półka
 
-    float:right;
+</label>
 
-    border:none;
 
-    background:none;
+<input id="level">
 
-    cursor:pointer;
 
-    font-size:20px;
+</div>
 
-}
 
 
 
 
+<div class="form-group">
 
-/* =========================
-FORMULARZ
-========================= */
 
+<label>
 
-.form-grid{
+Segregator
 
-    display:grid;
+</label>
 
-    grid-template-columns:1fr 1fr;
 
-    gap:20px;
+<input id="folder">
 
-}
 
+</div>
 
 
-.form-group{
 
-    display:flex;
 
-    flex-direction:column;
 
-    gap:8px;
+<div class="form-group">
 
-}
 
+<label>
 
+Status
 
-.form-group input,
-.form-group select,
-.form-group textarea{
+</label>
 
-    padding:12px;
 
-    border-radius:10px;
+<select id="status">
 
-    border:1px solid #ddd;
 
-}
+<option>
 
+OK
 
+</option>
 
-.full-width{
 
-    grid-column:1 / 3;
+<option>
 
-}
+DO UZUPEŁNIENIA
 
+</option>
 
 
-textarea{
+<option>
 
-    min-height:120px;
+BRAK
 
-}
+</option>
 
 
+</select>
 
-.primary-button{
 
-    background:#222;
+</div>
 
-    color:white;
 
-    border:none;
 
-    padding:14px;
 
-    border-radius:10px;
 
-    cursor:pointer;
+<div class="form-group full-width">
 
-}
 
+<label>
 
+Uwagi
 
+</label>
 
 
-/* =========================
+<textarea id="notes"></textarea>
+
+
+</div>
+
+
+
+
+
+
+<button
+
+id="saveBtn"
+
+class="primary-button full-width">
+
+
+Zapisz dokument
+
+
+</button>
+
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- =========================
 USTAWIENIA
-========================= */
+========================= -->
 
 
-.settings-modal{
+<div
 
-    width:550px;
+id="settingsOverlay"
 
-}
+class="overlay hidden">
 
 
 
-.settings-buttons{
+<div class="modal settings-modal">
 
-    display:grid;
 
-    grid-template-columns:1fr 1fr;
+<button
 
-    gap:15px;
+id="closeSettings"
 
-}
+class="close-button">
 
+X
 
+</button>
 
-.settings-buttons button{
 
-    border:none;
 
-    padding:18px;
 
-    border-radius:14px;
+<h2>
 
-    cursor:pointer;
+Ustawienia
 
-    background:#f1f3f8;
+</h2>
 
-}
 
 
 
+<div class="settings-buttons">
 
 
-.setting-row{
 
-    display:flex;
+<button id="showAddContractor">
 
-    justify-content:space-between;
+Dodaj kontrahenta
 
-    align-items:center;
+</button>
 
-    padding:15px;
 
-    margin-top:10px;
 
-    background:#f7f7f7;
 
-    border-radius:12px;
+<button id="showContractors">
 
-}
+Lista kontrahentów
 
+</button>
 
 
 
-/* =========================
-RESPONSIVE
-========================= */
 
+<button id="showAddLocal">
 
-@media(max-width:700px){
+Dodaj lokal
 
+</button>
 
-.form-grid{
 
-    grid-template-columns:1fr;
 
-}
 
+<button id="showLocals">
 
+Lista lokali
 
-.full-width{
+</button>
 
-    grid-column:1;
 
-}
 
+</div>
 
 
-.filter-box{
 
-    flex-direction:column;
 
-}
+<div id="settingsContent">
 
+</div>
 
 
-.location-tabs{
 
-    flex-direction:column;
+</div>
 
-}
 
+</div>
 
 
-.location-card{
 
-    width:100%;
 
-}
 
 
 
-.settings-buttons{
 
-    grid-template-columns:1fr;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-}
 
+<script src="js/config.js"></script>
 
+<script src="js/supabase.js"></script>
 
-}
+<script src="js/app.js"></script>
+
+<script src="js/admin.js"></script>
+
+<script src="js/settings.js"></script>
+
+<script src="js/menu.js"></script>
+
+<script src="js/export.js"></script>
+
+
+
+</body>
+
+
+</html>
