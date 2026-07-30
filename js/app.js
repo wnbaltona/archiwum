@@ -1,37 +1,19 @@
-// =====================================
+// ======================================
 // APP.JS
-// ARCHIWUM DOKUMENTÓW
-// =====================================
+// STRONA GŁÓWNA ARCHIWUM
+// ======================================
 
-
-// ===============================
-// ZMIENNE
-// ===============================
 
 let documents = [];
-let currentLocation = "";
 
-const locations = window.LOCATIONS || [
-    "OKĘCIE",
-    "MODLIN",
-    "RADOM",
-    "RZESZÓW",
-    "ŚWINOUJŚCIE",
-    "POZNAŃ",
-    "WROCŁAW",
-    "KATOWICE",
-    "ZIELONA GÓRA",
-    "KRAKÓW",
-    "GDAŃSK",
-    "GDYNIA",
-    "FRANCJA",
-    "SONATA"
-];
+let activeLocation = "";
 
 
-// ===============================
+
+
+// ======================================
 // START
-// ===============================
+// ======================================
 
 document.addEventListener(
 "DOMContentLoaded",
@@ -39,21 +21,15 @@ document.addEventListener(
 
     loadDocuments();
 
-    createLocationButtons();
-
-    loadContractorsToForm();
-
-    setupFilters();
-
 });
 
 
 
 
 
-// ===============================
+// ======================================
 // POBIERANIE DOKUMENTÓW
-// ===============================
+// ======================================
 
 
 async function loadDocuments(){
@@ -62,7 +38,7 @@ async function loadDocuments(){
 const {
 data,
 error
-}=await supabaseClient
+}= await supabaseClient
 
 .from("dokumenty")
 
@@ -70,14 +46,14 @@ error
 
 *,
 
-lokale(
+lokale (
     id,
-    nazwa,
     mpk,
+    nazwa,
     lokalizacja
 ),
 
-kontrahenci(
+kontrahenci (
     id,
     nazwa
 )
@@ -93,11 +69,12 @@ ascending:false
 
 
 
-
-
 if(error){
 
-console.error(error);
+console.error(
+"Dokumenty:",
+error
+);
 
 return;
 
@@ -105,10 +82,11 @@ return;
 
 
 
+documents = data || [];
 
-documents=data || [];
 
 
+renderLocationCards();
 
 renderDocuments();
 
@@ -118,20 +96,45 @@ renderDocuments();
 
 
 
-// ===============================
-// LOKALIZACJE NA GÓRZE
-// ===============================
 
 
-function createLocationButtons(){
+// ======================================
+// KARTY LOKALIZACJI
+// ======================================
 
 
-const box=document.getElementById(
+function renderLocationCards(){
+
+
+const box =
+document.getElementById(
 "locationTabs"
 );
 
 
-if(!box)return;
+if(!box)
+return;
+
+
+
+const locations = [
+
+"OKĘCIE",
+"MODLIN",
+"RADOM",
+"RZESZÓW",
+"ŚWINOUJŚCIE",
+"POZNAŃ",
+"WROCŁAW",
+"KATOWICE",
+"ZIELONA GÓRA",
+"KRAKÓW",
+"GDAŃSK",
+"GDYNIA",
+"FRANCJA",
+"SONATA"
+
+];
 
 
 
@@ -142,17 +145,17 @@ box.innerHTML="";
 locations.forEach(location=>{
 
 
-const count =
-documents.filter(d=>
+const count = documents.filter(doc=>
 
-d.lokale?.lokalizacja===location
+doc.lokale &&
+doc.lokale.lokalizacja === location
 
 ).length;
 
 
 
-
 box.innerHTML += `
+
 
 <button 
 class="location-card"
@@ -165,11 +168,12 @@ ${location}
 
 
 <span>
-${documentText(count)}
+${formatDocuments(count)}
 </span>
 
 
 </button>
+
 
 `;
 
@@ -183,40 +187,27 @@ ${documentText(count)}
 
 
 
-// ===============================
-// LICZNIK
-// ===============================
 
 
-function documentText(number){
-
-
-if(number===1)
-return "1 dokument";
-
-
-if(number>1 && number<5)
-return number+" dokumenty";
-
-
-return number+" dokumentów";
-
-
-}
-
-
-
-
-
-// ===============================
+// ======================================
 // FILTR LOKALIZACJI
-// ===============================
+// ======================================
 
 
 window.filterLocation=function(location){
 
 
-currentLocation=location;
+if(activeLocation===location){
+
+activeLocation="";
+
+}
+else{
+
+activeLocation=location;
+
+}
+
 
 
 renderDocuments();
@@ -228,20 +219,25 @@ renderDocuments();
 
 
 
-// ===============================
-// RENDER
-// ===============================
+
+// ======================================
+// WYŚWIETLANIE ARCHIWUM
+// ======================================
 
 
 function renderDocuments(){
 
 
-const box=document.getElementById(
+
+const box =
+document.getElementById(
 "results"
 );
 
 
-if(!box)return;
+
+if(!box)
+return;
 
 
 
@@ -249,17 +245,19 @@ let data=[...documents];
 
 
 
-if(currentLocation){
+if(activeLocation){
 
 
-data=data.filter(d=>
+data=data.filter(doc=>
 
-d.lokale?.lokalizacja===currentLocation
+doc.lokale &&
+doc.lokale.lokalizacja===activeLocation
 
 );
 
 
 }
+
 
 
 
@@ -268,26 +266,23 @@ const grouped={};
 
 
 
-locations.forEach(l=>{
-
-grouped[l]=[];
-
-});
-
-
-
 data.forEach(doc=>{
 
 
-const loc=
-doc.lokale?.lokalizacja;
+const location =
+doc.lokale?.lokalizacja || "BRAK LOKALIZACJI";
 
 
-if(loc){
 
-grouped[loc].push(doc);
+if(!grouped[location]){
+
+grouped[location]=[];
 
 }
+
+
+
+grouped[location].push(doc);
 
 
 
@@ -301,17 +296,21 @@ box.innerHTML="";
 
 
 
-locations.forEach(location=>{
+Object.keys(grouped)
+.forEach(location=>{
 
 
-const docs=
+
+const docs =
 grouped[location];
 
 
 
 box.innerHTML += `
 
+
 <div class="archive-location">
+
 
 
 <div 
@@ -330,26 +329,31 @@ ${location}
 
 
 <span class="counter">
-${documentText(docs.length)}
+${formatDocuments(docs.length)}
 </span>
 
 
+
 </div>
+
 
 
 
 <div 
-id="content-${location}"
+id="location-${location}"
 class="location-content hidden">
 
 
-${renderDocs(docs)}
+${renderDocumentList(docs)}
 
 
 </div>
 
 
+
 </div>
+
+
 
 `;
 
@@ -359,21 +363,21 @@ ${renderDocs(docs)}
 
 
 
-createLocationButtons();
-
-
 }
 
 
 
 
 
-// ===============================
-// DOKUMENTY
-// ===============================
 
 
-function renderDocs(list){
+// ======================================
+// LISTA DOKUMENTÓW
+// ======================================
+
+
+function renderDocumentList(list){
+
 
 
 if(!list.length)
@@ -383,15 +387,19 @@ return "<p>Brak dokumentów</p>";
 
 
 
-return list.map(doc=>`
+return list.map(doc=>{
+
+
+return `
 
 
 <div class="document">
 
 
 <h4>
-${doc.nazwa || ""}
+${doc.nazwa || "Bez nazwy"}
 </h4>
+
 
 
 <p>
@@ -400,16 +408,26 @@ ${doc.lokale?.nazwa || "-"}
 </p>
 
 
+
+<p>
+MPK:
+${doc.lokale?.mpk || "-"}
+</p>
+
+
+
 <p>
 Kontrahent:
 ${doc.kontrahenci?.nazwa || "-"}
 </p>
 
 
+
 <p>
 Rok:
 ${doc.rok || "-"}
 </p>
+
 
 
 <p>
@@ -419,7 +437,7 @@ ${doc.status || "-"}
 
 
 
-<button 
+<button
 class="delete"
 onclick="deleteDocument('${doc.id}')">
 
@@ -428,10 +446,15 @@ Usuń
 </button>
 
 
+
 </div>
 
 
-`).join("");
+`;
+
+
+
+}).join("");
 
 
 
@@ -441,551 +464,22 @@ Usuń
 
 
 
-// ===============================
-// ROZWIJANIE
-// ===============================
+
+
+// ======================================
+// ROZWIJANIE LOKALIZACJI
+// ======================================
 
 
 window.toggleLocation=function(location){
 
 
-const box=document.getElementById(
-"content-"+location
-);
 
-
-if(!box)return;
-
-
-
-box.classList.toggle(
-"hidden"
-);
-
-
-
-};
-
-
-
-
-
-// ===============================
-// USUWANIE DOKUMENTU
-// ===============================
-
-
-window.deleteDocument=async function(id){
-
-
-if(!confirm(
-"Usunąć dokument?"
-))
-
-return;
-
-
-
-const {
-error
-}=await supabaseClient
-
-.from("dokumenty")
-
-.delete()
-
-.eq(
-"id",
-id
-);
-
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-
-loadDocuments();
-
-
-
-};
-
-
-
-
-
-// ===============================
-// KONTRAHENCI DO FORMULARZA
-// ===============================
-
-
-async function loadContractorsToForm(){
-
-
-const select=document.getElementById(
-"contractor"
-);
-
-
-if(!select)return;
-
-
-
-
-const {
-data,
-error
-}=await supabaseClient
-
-.from("kontrahenci")
-
-.select("*")
-
-.order(
-"nazwa"
-);
-
-
-
-if(error){
-
-console.error(error);
-
-return;
-
-}
-
-
-
-
-select.innerHTML=`
-
-<option value="">
-Wybierz kontrahenta
-</option>
-
-`;
-
-
-
-
-data.forEach(c=>{
-
-
-select.innerHTML +=`
-
-<option value="${c.id}">
-${c.nazwa}
-</option>
-
-`;
-
-
-});
-
-
-}
-
-
-
-
-// ===============================
-// FILTRY
-// ===============================
-
-
-function setupFilters(){
-
-
-const search =
+const box =
 document.getElementById(
-"searchInput"
-);
-
-
-if(search){
-
-
-search.addEventListener(
-"input",
-renderDocuments
-);
-
-
-}
-
-// =====================================
-// DODAWANIE DOKUMENTU - MODAL
-// =====================================
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-const addBtn =
-document.getElementById("addBtn");
-
-
-const overlay =
-document.getElementById("modalOverlay");
-
-
-const close =
-document.getElementById("closeModal");
-
-
-
-if(addBtn){
-
-
-addBtn.addEventListener(
-"click",
-()=>{
-
-
-overlay.classList.remove("hidden");
-
-
-loadLocationsToForm();
-
-
-loadContractorsToForm();
-
-
-}
-
-);
-
-
-}
-
-
-
-if(close){
-
-
-close.addEventListener(
-"click",
-()=>{
-
-
-overlay.classList.add("hidden");
-
-
-}
-
-);
-
-
-}
-
-
-
-const locationSelect =
-document.getElementById("location");
-
-
-if(locationSelect){
-
-
-locationSelect.addEventListener(
-"change",
-()=>{
-
-
-loadLocalsForLocation(
-locationSelect.value
-);
-
-
-}
-
-);
-
-
-}
-
-
-
-const save =
-document.getElementById("saveBtn");
-
-
-if(save){
-
-
-save.addEventListener(
-"click",
-saveDocument
-);
-
-
-}
-
-
-
-});
-
-
-
-
-
-// =====================================
-// LOKALIZACJE DO FORMULARZA
-// =====================================
-
-
-async function loadLocationsToForm(){
-
-
-const select =
-document.getElementById("location");
-
-
-if(!select)return;
-
-
-
-select.innerHTML=`
-
-<option>
-Wybierz lokalizację
-</option>
-
-`;
-
-
-
-locations.forEach(loc=>{
-
-
-select.innerHTML +=`
-
-<option value="${loc}">
-${loc}
-</option>
-
-`;
-
-});
-
-
-}
-
-
-
-
-
-// =====================================
-// LOKALE PO LOKALIZACJI
-// =====================================
-
-
-async function loadLocalsForLocation(location){
-
-
-const select =
-document.getElementById("local");
-
-
-
-if(!select)return;
-
-
-
-select.innerHTML=`
-
-<option>
-Ładowanie...
-</option>
-
-`;
-
-
-
-const {
-data,
-error
-}=await supabaseClient
-
-.from("lokale")
-
-.select("*")
-
-.eq(
-"lokalizacja",
-location
-)
-
-.order(
-"nazwa"
+"location-"+location
 );
 
 
 
-if(error){
-
-console.error(error);
-
-return;
-
-}
-
-
-
-select.innerHTML=`
-
-<option>
-Wybierz lokal
-</option>
-
-`;
-
-
-
-data.forEach(local=>{
-
-
-select.innerHTML +=`
-
-<option value="${local.id}">
-
-${local.nazwa}
-${local.mpk ? " - "+local.mpk : ""}
-
-</option>
-
-`;
-
-
-});
-
-
-}
-
-
-
-
-
-// =====================================
-// ZAPIS DOKUMENTU
-// =====================================
-
-
-async function saveDocument(){
-
-
-
-const data={
-
-
-lokal_id:
-document.getElementById("local").value || null,
-
-
-kontrahent_id:
-document.getElementById("contractor").value || null,
-
-
-nazwa:
-document.getElementById("name").value,
-
-
-typ:
-document.getElementById("type").value,
-
-
-rok:
-Number(document.getElementById("year").value) || null,
-
-
-regal:
-document.getElementById("shelf").value,
-
-
-polka:
-document.getElementById("level").value,
-
-
-segregator:
-document.getElementById("folder").value,
-
-
-status:
-document.getElementById("status").value,
-
-
-uwagi:
-document.getElementById("notes").value
-
-
-
-};
-
-
-
-
-if(!data.nazwa){
-
-alert(
-"Wpisz nazwę dokumentu"
-);
-
-return;
-
-}
-
-
-
-
-const {
-error
-}=await supabaseClient
-
-.from("dokumenty")
-
-.insert([data]);
-
-
-
-
-if(error){
-
-console.error(error);
-
-alert(error.message);
-
-return;
-
-}
-
-
-
-
-alert(
-"Dokument dodany"
-);
-
-
-
-document
-.getElementById("modalOverlay")
-.classList.add("hidden");
-
-
-
-loadDocuments();
-
-
-}
-
-}
+if(!box)
