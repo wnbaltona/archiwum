@@ -24,6 +24,7 @@ let locations = [
 
 ];
 
+
 let selectedLocation = "";
 
 let expandedLocations = [];
@@ -36,9 +37,7 @@ document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
-
 loadDocuments();
-
 
 
 });
@@ -50,9 +49,8 @@ loadDocuments();
 
 
 
-
 // ===============================
-// POBIERANIE DANYCH
+// POBIERANIE DOKUMENTÓW
 // ===============================
 
 
@@ -61,50 +59,45 @@ async function loadDocuments(){
 
 
 const {
-data:docs,
-error:docError
+
+data,
+
+error
+
 }
 
 =
+
 await supabaseClient
 
 .from("dokumenty")
 
-.select("*")
+.select(`
 
-.order(
-"lokalizacja"
-);
+*,
 
+lokale(
 
+id,
 
+nazwa,
 
+mpk,
 
-if(docError){
+lokalizacja
 
-console.error(docError);
-
-return;
-
-}
+),
 
 
+kontrahenci(
 
+id,
 
+nazwa
 
+)
 
-
-const {
-data:locs,
-error:locError
-}
-
-=
-await supabaseClient
-
-.from("lokale")
-
-.select("lokalizacja")
+`)
 
 .order(
 "lokalizacja"
@@ -116,9 +109,9 @@ await supabaseClient
 
 
 
-if(locError){
+if(error){
 
-console.error(locError);
+console.error(error);
 
 return;
 
@@ -128,46 +121,7 @@ return;
 
 
 
-
-
-documents = docs || [];
-
-
-
-
-
-
-
-const databaseLocations = [
-
-...new Set(
-
-locs.map(
-x=>x.lokalizacja
-)
-
-)
-
-]
-.filter(Boolean);
-
-
-
-locations = [
-
-...new Set(
-
-[
-...locations,
-...databaseLocations
-
-]
-
-)
-
-]
-
-.sort();
+documents = data || [];
 
 
 
@@ -192,7 +146,7 @@ renderDocuments();
 
 
 // ===============================
-// KAFELKI LOKALIZACJI
+// FILTRY LOKALIZACJI
 // ===============================
 
 
@@ -200,25 +154,14 @@ function createLocationFilters(){
 
 
 
-const container =
-
+const box =
 document.getElementById(
 "locationTabs"
 );
 
 
 
-
-
-if(!container)
-return;
-
-
-
-
-
-container.innerHTML="";
-
+box.innerHTML="";
 
 
 
@@ -229,11 +172,9 @@ locations.forEach(
 location=>{
 
 
-
 const count =
 
 documents.filter(
-
 d=>
 
 d.lokalizacja===location
@@ -248,42 +189,19 @@ d.lokalizacja===location
 
 
 
-const button =
-
+const btn =
 document.createElement(
 "button"
 );
 
 
 
-
-
-
-
-button.className =
+btn.className =
 "location-card";
 
 
 
-
-
-
-
-if(selectedLocation===location){
-
-button.classList.add(
-"active"
-);
-
-}
-
-
-
-
-
-
-
-button.innerHTML =
+btn.innerHTML =
 
 `
 
@@ -302,27 +220,20 @@ ${documentText(count)}
 
 
 
-
-button.onclick = ()=>{
-
+btn.onclick = ()=>{
 
 
 if(selectedLocation===location){
 
-
 selectedLocation="";
-
 
 }
 
 else{
 
-
 selectedLocation=location;
 
-
 }
-
 
 
 
@@ -340,9 +251,7 @@ renderDocuments();
 
 
 
-container.appendChild(
-button
-);
+box.appendChild(btn);
 
 
 
@@ -370,12 +279,9 @@ function renderDocuments(){
 
 
 const results =
-
 document.getElementById(
 "results"
 );
-
-
 
 
 
@@ -385,14 +291,7 @@ results.innerHTML="";
 
 
 
-
-
-
-let filtered =
-
-[...documents];
-
-
+let filtered=[...documents];
 
 
 
@@ -401,11 +300,9 @@ let filtered =
 if(selectedLocation){
 
 
-
 filtered =
 
 filtered.filter(
-
 d=>
 
 d.lokalizacja===selectedLocation
@@ -413,8 +310,8 @@ d.lokalizacja===selectedLocation
 );
 
 
-
 }
+
 
 
 
@@ -424,17 +321,13 @@ d.lokalizacja===selectedLocation
 
 const search =
 
-document
-
-.getElementById(
+document.getElementById(
 "searchInput"
 )
 
-?.value
+.value
 
 .toLowerCase();
-
-
 
 
 
@@ -444,14 +337,12 @@ document
 if(search){
 
 
-
 filtered =
 
 filtered.filter(
+d=>
 
-doc=>
-
-JSON.stringify(doc)
+JSON.stringify(d)
 
 .toLowerCase()
 
@@ -460,89 +351,8 @@ JSON.stringify(doc)
 );
 
 
-
 }
 
-
-
-
-
-
-
-const year =
-
-document
-
-.getElementById(
-"yearFilter"
-)
-
-?.value;
-
-
-
-
-
-
-
-
-if(year){
-
-
-
-filtered =
-
-filtered.filter(
-
-d=>
-
-String(d.rok)===year
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-const status =
-
-document
-
-.getElementById(
-"statusFilter"
-)
-
-?.value;
-
-
-
-
-
-
-
-if(status){
-
-
-
-filtered =
-
-filtered.filter(
-
-d=>
-
-d.status===status
-
-);
-
-
-
-}
 
 
 
@@ -554,17 +364,14 @@ locations.forEach(
 location=>{
 
 
-
 const docs =
 
 filtered.filter(
-
 d=>
 
 d.lokalizacja===location
 
 );
-
 
 
 
@@ -579,9 +386,6 @@ location!==selectedLocation
 return;
 
 }
-
-
-
 
 
 
@@ -608,7 +412,7 @@ docs
 
 
 // ===============================
-// ROZWIJANE BLOKI
+// BLOK LOKALIZACJI
 // ===============================
 
 
@@ -620,7 +424,6 @@ docs
 
 
 const results =
-
 document.getElementById(
 "results"
 );
@@ -629,8 +432,7 @@ document.getElementById(
 
 
 
-
-const opened =
+const open =
 
 expandedLocations.includes(
 location
@@ -640,38 +442,32 @@ location
 
 
 
-
-
-const box =
-
+const div =
 document.createElement(
 "div"
 );
 
 
 
-box.className =
+div.className =
 "archive-location";
 
 
 
 
 
-
-box.innerHTML =
+div.innerHTML =
 
 
 `
 
 <div class="archive-header">
 
+<span class="arrow">
 
-<div class="arrow">
+${open ? "▼":"▶"}
 
-${opened ? "▼" : "▶"}
-
-</div>
-
+</span>
 
 
 <strong>
@@ -679,24 +475,19 @@ ${location}
 </strong>
 
 
-
-<div class="counter">
+<span class="counter">
 
 ${documentText(docs.length)}
 
-</div>
+</span>
 
 
 </div>
-
 
 
 <div class="location-content ${
-opened ? "" : "hidden"
-}">
-
-
-</div>
+open ? "" : "hidden"
+}"></div>
 
 `;
 
@@ -707,29 +498,21 @@ opened ? "" : "hidden"
 
 
 
-box
-
+div
 .querySelector(
 ".archive-header"
 )
 
-.onclick = ()=>{
+.onclick=()=>{
 
 
-
-if(
-expandedLocations.includes(location)
-){
+if(open){
 
 
 expandedLocations =
 
 expandedLocations.filter(
-
-x=>
-
-x!==location
-
+x=>x!==location
 );
 
 
@@ -759,11 +542,9 @@ renderDocuments();
 
 
 
-
-
 const content =
 
-box.querySelector(
+div.querySelector(
 ".location-content"
 );
 
@@ -772,23 +553,16 @@ box.querySelector(
 
 
 
+if(!docs.length){
 
 
-
-if(docs.length===0){
-
-
-content.innerHTML =
+content.innerHTML=
 
 `
-
 <p>
 Brak dokumentów
 </p>
-
 `;
-
-
 
 }
 
@@ -809,10 +583,29 @@ content.innerHTML +=
 
 
 <h4>
-
-${doc.nazwa || "Bez nazwy"}
-
+${doc.nazwa}
 </h4>
+
+
+
+<p>
+Lokal:
+${doc.lokale?.nazwa || "-"}
+</p>
+
+
+
+<p>
+MPK:
+${doc.lokale?.mpk || "-"}
+</p>
+
+
+
+<p>
+Kontrahent:
+${doc.kontrahenci?.nazwa || "-"}
+</p>
 
 
 
@@ -824,25 +617,22 @@ ${doc.typ || "-"}
 
 
 <p>
-Lokal:
-${doc.numer_lokalu || "-"}
-</p>
-
-
-
-<p>
-Kontrahent:
-${doc.nazwa_kontrahenta || "-"}
+Rok:
+${doc.rok || "-"}
 </p>
 
 
 
 <p>
 Status:
-${doc.status || "-"}
+${doc.status}
 </p>
 
 
+
+<p>
+${doc.uwagi || ""}
+</p>
 
 
 
@@ -856,7 +646,7 @@ Edytuj
 
 
 
-<button
+<button 
 class="delete"
 onclick="deleteDocument('${doc.id}')">
 
@@ -865,8 +655,8 @@ Usuń
 </button>
 
 
-
 </div>
+
 
 `;
 
@@ -884,9 +674,7 @@ Usuń
 
 
 
-results.appendChild(
-box
-);
+results.appendChild(div);
 
 
 
@@ -910,25 +698,15 @@ function createYearFilter(){
 
 
 const select =
-
 document.getElementById(
 "yearFilter"
 );
 
 
 
+const years =
 
-
-if(!select)
-return;
-
-
-
-
-
-
-
-const years = [
+[
 
 ...new Set(
 
@@ -953,9 +731,7 @@ d=>d.rok
 
 
 
-
-
-select.innerHTML =
+select.innerHTML=
 
 `
 
@@ -964,8 +740,6 @@ Wszystkie lata
 </option>
 
 `;
-
-
 
 
 
@@ -1002,13 +776,11 @@ ${year}
 
 
 // ===============================
-// USUWANIE DOKUMENTU
+// USUWANIE
 // ===============================
 
 
-window.deleteDocument =
-
-async function(id){
+window.deleteDocument = async function(id){
 
 
 
@@ -1020,10 +792,6 @@ if(
 )
 
 return;
-
-
-
-
 
 
 
@@ -1052,7 +820,6 @@ id
 
 
 
-
 if(error){
 
 alert(error.message);
@@ -1060,6 +827,7 @@ alert(error.message);
 return;
 
 }
+
 
 
 
@@ -1077,9 +845,34 @@ loadDocuments();
 
 
 
-// ===============================
-// FILTRY
-// ===============================
+function documentText(number){
+
+
+if(number===1){
+
+return "1 dokument";
+
+}
+
+
+if(number>=2 && number<=4){
+
+return number+" dokumenty";
+
+}
+
+
+
+return number+" dokumentów";
+
+
+}
+
+
+
+
+
+
 
 
 document.addEventListener(
@@ -1096,9 +889,7 @@ renderDocuments();
 }
 
 
-
 });
-
 
 
 
@@ -1111,68 +902,16 @@ e=>{
 
 if(
 
-[
-"yearFilter",
-"statusFilter"
-
-]
-
-.includes(
-e.target.id
+e.target.id==="yearFilter"
 
 )
 
-){
-
+{
 
 renderDocuments();
-
-
 
 }
 
 
 
 });
-
-
-
-
-
-
-
-
-
-// ===============================
-// ODMIANA
-// ===============================
-
-
-function documentText(number){
-
-
-
-if(number===1){
-
-return "1 dokument";
-
-}
-
-
-
-if(
-number>=2 &&
-number<=4
-){
-
-return number+" dokumenty";
-
-}
-
-
-
-return number+" dokumentów";
-
-
-
-}
