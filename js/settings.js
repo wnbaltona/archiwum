@@ -94,6 +94,7 @@ document
 
 
 
+
 document
 
 .getElementById(
@@ -105,7 +106,6 @@ document
 
 
 }
-
 
 
 
@@ -149,13 +149,10 @@ document
 function showAddContractor(){
 
 
-
 const box =
 document.getElementById(
 "settingsContent"
 );
-
-
 
 
 
@@ -169,19 +166,28 @@ Dodaj kontrahenta
 </h3>
 
 
+<div class="settings-form">
+
+
+<label>
+Nazwa kontrahenta
+</label>
+
 
 <input 
 id="contractorName"
-placeholder="Nazwa kontrahenta">
+placeholder="np. Firma ABC">
 
 
 
 <button id="saveContractor">
 
-Zapisz
+Zapisz kontrahenta
 
 </button>
 
+
+</div>
 
 `;
 
@@ -208,7 +214,10 @@ addContractor;
 
 
 
+
+
 async function addContractor(){
+
 
 
 const name =
@@ -230,13 +239,12 @@ document
 if(!name){
 
 alert(
-"Wpisz nazwę"
+"Podaj nazwę kontrahenta"
 );
 
 return;
 
 }
-
 
 
 
@@ -276,17 +284,19 @@ return;
 
 
 
+
 alert(
 "Dodano kontrahenta"
 );
 
 
 
+showSettingsMenu();
+
+
+
 }
 
-
-
- 
 
 
 
@@ -313,7 +323,6 @@ document.getElementById(
 
 box.innerHTML =
 "Ładowanie...";
-
 
 
 
@@ -347,8 +356,7 @@ await supabaseClient
 
 if(error){
 
-box.innerHTML =
-error.message;
+box.innerHTML=error.message;
 
 return;
 
@@ -358,8 +366,8 @@ return;
 
 
 
-
 box.innerHTML =
+
 
 `
 
@@ -375,7 +383,29 @@ Lista kontrahentów
 
 
 
-data.forEach(item=>{
+if(!data.length){
+
+
+box.innerHTML +=
+
+`
+
+<p>
+Brak kontrahentów
+</p>
+
+`;
+
+return;
+
+}
+
+
+
+
+
+data.forEach(
+item=>{
 
 
 box.innerHTML +=
@@ -394,7 +424,9 @@ ${item.nazwa}
 
 
 
-<button onclick="deleteContractor('${item.id}')">
+<button 
+class="delete"
+onclick="deleteContractor('${item.id}')">
 
 Usuń
 
@@ -419,6 +451,8 @@ Usuń
 
 
 
+
+
 window.deleteContractor = async function(id){
 
 
@@ -431,6 +465,29 @@ if(
 )
 
 return;
+
+
+
+
+
+
+// najpierw odpinamy od dokumentów
+
+await supabaseClient
+
+.from("dokumenty")
+
+.update({
+
+nazwa_kontrahenta:null
+
+})
+
+.eq(
+"kontrahent_id",
+id
+);
+
 
 
 
@@ -469,6 +526,7 @@ alert(error.message);
 return;
 
 }
+
 
 
 
@@ -516,36 +574,54 @@ Dodaj lokal
 
 
 
-<input 
+<div class="settings-form">
+
+
+<label>
+MPK
+</label>
+
+
+<input
 id="localMPK"
-placeholder="MPK">
+placeholder="np. 12345">
 
 
 
-<input 
+<label>
+Nazwa lokalu
+</label>
+
+
+<input
 id="localName"
-placeholder="Nazwa lokalu">
+placeholder="np. Restauracja Centrum">
 
 
 
+<label>
+Lokalizacja
+</label>
 
 
-<input 
+<input
 id="localLocation"
-placeholder="Lokalizacja">
-
-
+placeholder="np. OKĘCIE">
 
 
 
 <button id="saveLocal">
 
-Zapisz
+Zapisz lokal
 
 </button>
 
 
+</div>
+
+
 `;
+
 
 
 
@@ -570,11 +646,14 @@ addLocal;
 
 
 
+
+
 async function addLocal(){
 
 
 
 const data={
+
 
 
 mpk:
@@ -597,7 +676,7 @@ lokalizacja:
 
 document.getElementById(
 "localLocation"
-).value
+).value.toUpperCase()
 
 
 
@@ -628,6 +707,8 @@ await supabaseClient
 
 
 
+
+
 if(error){
 
 alert(error.message);
@@ -639,9 +720,15 @@ return;
 
 
 
+
+
 alert(
 "Dodano lokal"
 );
+
+
+
+showSettingsMenu();
 
 
 
@@ -680,6 +767,7 @@ box.innerHTML =
 
 
 
+
 const {
 
 data,
@@ -708,12 +796,12 @@ await supabaseClient
 
 if(error){
 
-box.innerHTML =
-error.message;
+box.innerHTML=error.message;
 
 return;
 
 }
+
 
 
 
@@ -735,7 +823,9 @@ Lista lokali
 
 
 
-data.forEach(item=>{
+
+data.forEach(
+item=>{
 
 
 box.innerHTML +=
@@ -750,7 +840,9 @@ box.innerHTML +=
 
 ${item.nazwa}
 
-(${item.mpk})
+<br>
+
+${item.mpk}
 
 <br>
 
@@ -760,7 +852,10 @@ ${item.lokalizacja}
 
 
 
-<button onclick="deleteLocal('${item.id}')">
+
+<button 
+class="delete"
+onclick="deleteLocal('${item.id}')">
 
 Usuń
 
@@ -778,6 +873,7 @@ Usuń
 
 
 }
+
 
 
 
@@ -839,10 +935,34 @@ return;
 
 
 
-
-
 loadLocals();
 
 
 
 };
+
+
+
+
+
+
+
+
+
+// ===============================
+// POWRÓT DO MENU USTAWIEŃ
+// ===============================
+
+
+function showSettingsMenu(){
+
+
+document.getElementById(
+"settingsContent"
+)
+
+.innerHTML="";
+
+
+
+}
