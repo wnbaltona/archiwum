@@ -408,72 +408,108 @@ header{
    FILTERS
 ========================================================== */
 
+
 .filters{
 
-    padding:22px max(24px,calc((100% - 1180px)/2));
+    padding:
+        20px
+        max(24px,calc((100% - 1180px)/2));
 
-    background:rgba(255,255,255,.72);
+    background:
+        rgba(255,255,255,.72);
 
-    border-top:1px solid var(--line);
-    border-bottom:1px solid var(--line);
+    border-top:
+        1px solid var(--line);
+
+    border-bottom:
+        1px solid var(--line);
 
 }
 
 
-/* ---------- Filter Grid ---------- */
+
+/* ==========================================================
+   FILTER GRID
+========================================================== */
+
 
 .filter-box{
 
     display:grid;
 
     grid-template-columns:
-        minmax(250px,2fr)
-        repeat(4,minmax(140px,1fr));
+        minmax(240px,2fr)
+        repeat(4,minmax(130px,1fr));
 
-    gap:12px;
+    gap:10px;
 
     align-items:center;
 
 }
 
 
-/* ---------- Inputs ---------- */
+
+/* ==========================================================
+   INPUTS + SELECTS
+========================================================== */
+
 
 .filter-box input,
 .filter-box select{
 
     width:100%;
 
-    height:44px;
+    height:40px;
 
-    padding:0 14px;
+    padding:
+        0 12px;
 
-    border:1px solid var(--line);
 
-    border-radius:12px;
+    border:
+        1px solid var(--line);
 
-    background:#fff;
 
-    color:var(--ink);
+    border-radius:
+        10px;
+
+
+    background:
+        #ffffff;
+
+
+    color:
+        var(--ink);
+
+
+    font-size:
+        13px;
+
 
     transition:
-        border-color .2s,
-        box-shadow .2s,
-        background .2s;
+
+        border-color .2s ease,
+
+        box-shadow .2s ease,
+
+        background .2s ease;
 
 }
 
 
-/* ---------- Placeholder ---------- */
+
+/* Placeholder */
 
 .filter-box input::placeholder{
 
     color:#98a6a1;
 
+    font-size:13px;
+
 }
 
 
-/* ---------- Hover ---------- */
+
+/* Hover */
 
 .filter-box input:hover,
 .filter-box select:hover{
@@ -483,72 +519,167 @@ header{
 }
 
 
-/* ---------- Focus ---------- */
+
+/* Focus */
 
 .filter-box input:focus,
-.filter-box select:focus,
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
+.filter-box select:focus{
 
     outline:none;
 
     border-color:#6da891;
 
     box-shadow:
+
         0 0 0 3px rgba(97,167,145,.18);
 
 }
 
 
-/* ---------- Clear Button ---------- */
+
+/* ==========================================================
+   CLEAR BUTTON
+========================================================== */
+
 
 .clear-filters{
 
-    height:44px;
+    height:40px;
 
-    padding:0 16px;
 
-    border:1px solid #b9d7cd;
+    padding:
+        0 14px;
 
-    border-radius:12px;
 
-    background:#f4faf7;
+    border:
+        1px solid #b9d7cd;
 
-    color:var(--pine);
 
-    font-size:13px;
+    border-radius:
+        10px;
 
-    font-weight:700;
 
-    white-space:nowrap;
+    background:
+        #f4faf7;
+
+
+    color:
+        var(--pine);
+
+
+    font-size:
+        12px;
+
+
+    font-weight:
+        700;
+
+
+    white-space:
+        nowrap;
+
 
     transition:
-        background .2s,
-        border-color .2s;
+
+        background .2s ease,
+
+        border-color .2s ease;
 
 }
+
+
 
 .clear-filters:hover{
 
-    background:var(--mint);
+    background:
+        var(--mint);
 
-    border-color:#8fbcac;
+
+    border-color:
+        #8fbcac;
 
 }
 
 
-/* ---------- Helper Text ---------- */
+
+/* ==========================================================
+   FILTER HELP TEXT
+========================================================== */
+
 
 .filter-help{
 
-    margin-top:12px;
+    margin:
+        10px 2px 0;
 
-    text-align:center;
 
-    color:var(--muted);
+    color:
+        var(--muted);
 
-    font-size:12px;
+
+    font-size:
+        12px;
+
+
+    text-align:
+        center;
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE FILTERS
+========================================================== */
+
+
+@media(max-width:1000px){
+
+
+    .filter-box{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+
+    .filter-box input{
+
+        grid-column:
+            1 / -1;
+
+    }
+
+}
+
+
+
+@media(max-width:760px){
+
+
+    .filters{
+
+        padding:
+            16px;
+
+    }
+
+
+    .filter-box{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .clear-filters{
+
+        width:
+            100%;
+
+    }
 
 }
 
