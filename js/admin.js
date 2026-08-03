@@ -43,7 +43,7 @@ async function loadDocumentContractors(selectedId = "") {
 }
 
 async function saveDocument() {
-    const documentData = { lokal_id: document.getElementById("local").value || null, kontrahent_id: document.getElementById("contractor").value || null, nazwa: document.getElementById("name").value.trim(), typ: document.getElementById("type").value.trim(), rok: Number(document.getElementById("year").value) || null, regal: document.getElementById("shelf").value.trim(), polka: document.getElementById("level").value.trim(), segregator: document.getElementById("folder").value.trim(), status: document.getElementById("status").value, uwagi: document.getElementById("notes").value.trim() };
+    const documentData = { lokal_id: document.getElementById("local").value || null, kontrahent_id: document.getElementById("contractor").value || null, miasto: document.getElementById("location").value, nazwa: document.getElementById("name").value.trim(), typ: document.getElementById("type").value.trim(), rok: Number(document.getElementById("year").value) || null, regal: document.getElementById("shelf").value.trim(), polka: document.getElementById("level").value.trim(), segregator: document.getElementById("folder").value.trim(), status: document.getElementById("status").value, uwagi: document.getElementById("notes").value.trim() };
     if (!document.getElementById("location").value || !documentData.lokal_id || !documentData.nazwa) return alert("Wybierz lokalizację i lokal oraz podaj nazwę dokumentu.");
     const request = editingDocumentId ? supabaseClient.from("dokumenty").update(documentData).eq("id", editingDocumentId) : supabaseClient.from("dokumenty").insert(documentData);
     const { error } = await request; if (error) return alert(error.message);
