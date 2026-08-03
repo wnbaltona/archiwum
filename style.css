@@ -867,24 +867,22 @@ header{
 
 
 /* ==========================================================
-   FILTER GRID
-   Wszystkie filtry w jednej linii
+   FILTER GRID - ALL IN ONE LINE
 ========================================================== */
 
 
 .filter-box{
 
-
     display:grid;
-
 
     grid-template-columns:
 
-        2.2fr
+        2fr
         1fr
         1fr
         .8fr
-        1fr;
+        1fr
+        auto;
 
 
     gap:
@@ -895,9 +893,9 @@ header{
     align-items:center;
 
 
+    width:100%;
+
 }
-
-
 
 /* ==========================================================
    FILTER INPUTS
@@ -993,7 +991,7 @@ header{
 
 
 /* ==========================================================
-   CLEAR BUTTON
+   CLEAR BUTTON ALIGNMENT
 ========================================================== */
 
 
@@ -1005,11 +1003,9 @@ header{
         38px;
 
 
-
     padding:
 
-        0 12px;
-
+        0 14px;
 
 
     border:
@@ -1017,11 +1013,9 @@ header{
         1px solid #b9d7cd;
 
 
-
     border-radius:
 
         10px;
-
 
 
     background:
@@ -1029,11 +1023,9 @@ header{
         #f4faf7;
 
 
-
     color:
 
         var(--pine);
-
 
 
     font-size:
@@ -1041,16 +1033,26 @@ header{
         12px;
 
 
-
     font-weight:
 
         700;
 
 
+    white-space:
+
+        nowrap;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
 
 }
-
-
 
 /* ==========================================================
    FILTER HELP
@@ -2552,19 +2554,28 @@ header{
 
 
 
-    .filter-box input{
+    @media(max-width:1000px){
 
+    .filter-box{
 
-        grid-column:
-
-            1 / -1;
-
+        grid-template-columns:
+            repeat(3,1fr);
 
     }
 
-
 }
 
+
+@media(max-width:760px){
+
+    .filter-box{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
 
 
 /* ==========================================================
