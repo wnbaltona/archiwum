@@ -29,7 +29,7 @@ function clearFilters() {
     renderDocuments();
 }
 
-async function loadDocuments() {
+async function loadDocuments() {renderDashboard(data)
     const { data, error } = await supabaseClient.from("dokumenty")
         .select("*, lokale (id, mpk, nazwa, lokalizacja), kontrahenci (id, nazwa)")
         .order("created_at", { ascending: false });
@@ -97,7 +97,43 @@ function renderDocuments() {
 }
 
 function renderLocationGroup(location, list, isActive) { return `<details class="location-group" ${isActive ? "open" : ""}><summary><span class="group-arrow">›</span><strong>${escapeHtml(location)}</strong><span class="group-count">${documentCount(list.length)}</span></summary><div class="group-documents">${list.map(renderDocumentCard).join("")}</div></details>`; }
-function renderDashboard(data) { const box = document.getElementById("dashboardStats"); if (!box) return; const count = status => data.filter(doc => doc.status === status).length; box.innerHTML = `<div class="stat-card"><span>Wyniki</span><strong>${data.length}</strong></div><div class="stat-card ok"><span>OK</span><strong>${count("OK")}</strong></div><div class="stat-card pending"><span>Do uzupełnienia</span><strong>${count("DO UZUPEŁNIENIA")}</strong></div><div class="stat-card missing"><span>Brak</span><strong>${count("BRAK")}</strong></div>`; }
+function renderDashboard(data) {
+    const box = document.getElementById("dashboardStats");
+    if (!box) return;
+
+    const count = status => data.filter(doc => doc.status === status).length;
+
+    const currentStatus = document.getElementById("statusFilter")?.value || "";
+
+    box.innerHTML = `
+        <button class="stat-card ${currentStatus === "" ? "active" : ""}" data-status="">
+            <span>Wyniki</span>
+            <strong>${data.length}</strong>
+        </button>
+
+        <button class="stat-card ok ${currentStatus === "OK" ? "active" : ""}" data-status="OK">
+            <span>OK</span>
+            <strong>${count("OK")}</strong>
+        </button>
+
+        <button class="stat-card pending ${currentStatus === "DO UZUPEŁNIENIA" ? "active" : ""}" data-status="DO UZUPEŁNIENIA">
+            <span>Do uzupełnienia</span>
+            <strong>${count("DO UZUPEŁNIENIA")}</strong>
+        </button>
+
+        <button class="stat-card missing ${currentStatus === "BRAK" ? "active" : ""}" data-status="BRAK">
+            <span>Brak</span>
+            <strong>${count("BRAK")}</strong>
+        </button>
+    `;
+
+    box.querySelectorAll("[data-status]").forEach(button => {
+        button.addEventListener("click", () => {
+            document.getElementById("statusFilter").value = button.dataset.status;
+            renderDocuments();
+        });
+    });
+}
 function renderDocumentCard(doc) { const path = [doc.lokale?.lokalizacja, doc.lokale?.nazwa, doc.regal && `Regał ${doc.regal}`, doc.polka && `Półka ${doc.polka}`, doc.segregator && `Segregator ${doc.segregator}`].filter(Boolean).map(escapeHtml).join(" <span>›</span> "); const status = escapeHtml(doc.status || "BRAK STATUSU"); return `<article class="document"><div class="document-top"><div><p class="archive-path">${path || "Brak przypisanej lokalizacji"}</p><h4>${escapeHtml(doc.nazwa || "Bez nazwy")}</h4></div><span class="status-chip status-${status.toLowerCase().replaceAll(" ", "-")}">${status}</span></div><p class="document-meta">${escapeHtml(doc.typ || "Bez typu")} · Rok: ${escapeHtml(doc.rok || "-")} · Kontrahent: ${escapeHtml(doc.kontrahenci?.nazwa || "-")}</p><details><summary>Pokaż szczegóły</summary><p>MPK: ${escapeHtml(doc.lokale?.mpk || "-")}</p><p>Uwagi: ${escapeHtml(doc.uwagi || "Brak")}</p></details><div class="document-actions"><button type="button" class="edit" data-action="edit" data-document-id="${doc.id}">Edytuj</button><button type="button" class="delete" data-action="delete" data-document-id="${doc.id}">Usuń</button></div></article>`; }
 
 async function deleteDocument(id) {
