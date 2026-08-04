@@ -1,11 +1,13 @@
 let documents = [];
-
 let activeLocation = "";
 
-let activeStatusCard = "";
 
+/* =========================================================
+   START APLIKACJI
+========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
 
     [
         "searchInput",
@@ -16,9 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ].forEach(id => {
 
-        document
-            .getElementById(id)
-            ?.addEventListener(
+        const element =
+            document.getElementById(id);
+
+
+        if(element){
+
+            element.addEventListener(
 
                 id === "searchInput"
                     ? "input"
@@ -28,82 +34,81 @@ document.addEventListener("DOMContentLoaded", () => {
 
             );
 
+        }
+
     });
 
 
 
-    const filterBox =
-        document.querySelector(".filter-box");
-
-
-
-    if (
-        filterBox &&
-        !document.getElementById("clearFilters")
-    ) {
-
-        const clearButton =
-            document.createElement("button");
-
-
-        clearButton.type = "button";
-
-        clearButton.id = "clearFilters";
-
-        clearButton.className =
-            "clear-filters";
-
-
-        clearButton.textContent =
-            "Wyczyść filtry";
-
-
-        clearButton.style.cssText =
-
-            "height:42px;" +
-            "padding:0 13px;" +
-            "border:1px solid #b9d7cd;" +
-            "border-radius:12px;" +
-            "background:#f4faf7;" +
-            "color:#35645c;" +
-            "font-size:13px;" +
-            "font-weight:700;";
-
-
-        filterBox.appendChild(clearButton);
-
-    }
-
-
-
-    document
-
-        .getElementById("clearFilters")
-
-        ?.addEventListener(
-
-            "click",
-
-            clearFilters
-
-        );
-
+    createClearButton();
 
 
     loadDocuments();
+
 
 });
 
 
 
 
+function createClearButton(){
 
-function clearFilters() {
+
+    const filterBox =
+        document.querySelector(".filter-box");
+
+
+    if(
+        !filterBox ||
+        document.getElementById("clearFilters")
+    ){
+
+        return;
+
+    }
+
+
+
+    const button =
+        document.createElement("button");
+
+
+    button.id =
+        "clearFilters";
+
+
+    button.type =
+        "button";
+
+
+    button.className =
+        "clear-filters";
+
+
+    button.textContent =
+        "Wyczyść filtry";
+
+
+    filterBox.appendChild(button);
+
+
+
+    button.onclick =
+        clearFilters;
+
+
+}
+
+
+
+
+
+
+
+function clearFilters(){
 
 
     activeLocation = "";
-
-    activeStatusCard = "";
 
 
     [
@@ -139,13 +144,22 @@ function clearFilters() {
 
     renderDocuments();
 
+
 }
 
 
 
 
 
-async function loadDocuments() {
+
+
+/* =========================================================
+   POBIERANIE DANYCH SUPABASE
+========================================================= */
+
+
+async function loadDocuments(){
+
 
 
     const {
@@ -160,7 +174,17 @@ async function loadDocuments() {
 
         .select(
 
-            "*, lokale (id, mpk, nazwa, lokalizacja), kontrahenci (id, nazwa)"
+            `*,
+            lokale (
+                id,
+                mpk,
+                nazwa,
+                lokalizacja
+            ),
+            kontrahenci (
+                id,
+                nazwa
+            )`
 
         )
 
@@ -176,16 +200,24 @@ async function loadDocuments() {
 
 
 
+
     if(error){
 
+
         console.error(
+
             "Błąd pobierania dokumentów:",
+
             error
+
         );
+
 
         return;
 
     }
+
+
 
 
 
@@ -201,13 +233,23 @@ async function loadDocuments() {
     renderDocuments();
 
 
+
 }
 
 
 
 
 
-function populateFilters() {
+
+
+
+/* =========================================================
+   FILTRY
+========================================================= */
+
+
+function populateFilters(){
+
 
 
     fillSelect(
@@ -215,6 +257,7 @@ function populateFilters() {
         "yearFilter",
 
         [
+
             ...new Set(
 
                 documents
@@ -251,7 +294,9 @@ function populateFilters() {
 
 
 
+
     const contractors =
+
 
         uniqueBy(
 
@@ -270,11 +315,15 @@ function populateFilters() {
             (a,b)=>
 
                 a.nazwa.localeCompare(
+
                     b.nazwa,
+
                     "pl"
+
                 )
 
         );
+
 
 
 
@@ -297,16 +346,21 @@ function populateFilters() {
     );
 
 
+
 }
 
 
 
 
 
-function populateLocalFilter() {
+
+
+function populateLocalFilter(){
+
 
 
     const locals =
+
 
         uniqueBy(
 
@@ -321,6 +375,7 @@ function populateLocalFilter() {
                     item &&
 
                     (
+
                         !activeLocation ||
 
                         item.lokalizacja === activeLocation
@@ -333,16 +388,23 @@ function populateLocalFilter() {
 
         )
 
+
+
         .sort(
 
             (a,b)=>
 
                 a.nazwa.localeCompare(
+
                     b.nazwa,
+
                     "pl"
+
                 )
 
         );
+
+
 
 
 
@@ -365,7 +427,10 @@ function populateLocalFilter() {
     );
 
 
+
 }
+
+
 
 
 
@@ -384,6 +449,7 @@ function fillSelect(
 ){
 
 
+
     const select =
         document.getElementById(id);
 
@@ -394,6 +460,7 @@ function fillSelect(
         return;
 
     }
+
 
 
 
@@ -410,7 +477,9 @@ function fillSelect(
 
 
 
+
     items.forEach(item => {
+
 
 
         const [
@@ -423,11 +492,15 @@ function fillSelect(
 
 
 
+
         select.add(
 
             new Option(
+
                 label,
+
                 value
+
             )
 
         );
@@ -441,7 +514,10 @@ function fillSelect(
         selected;
 
 
+
 }
+
+
 
 
 
@@ -449,20 +525,27 @@ function fillSelect(
 
 function uniqueBy(items,key){
 
+
     return [
 
         ...new Map(
 
             items.map(
+
                 item => [
+
                     key(item),
+
                     item
+
                 ]
+
             )
 
         ).values()
 
     ];
+
 
 }
 
@@ -471,7 +554,7 @@ function uniqueBy(items,key){
 ========================================================= */
 
 
-function renderLocationCards() {
+function renderLocationCards(){
 
 
     const box =
@@ -493,6 +576,7 @@ function renderLocationCards() {
     LOCATIONS.forEach(location => {
 
 
+
         const count =
 
             documents.filter(
@@ -507,6 +591,7 @@ function renderLocationCards() {
 
 
 
+
         const button =
             document.createElement("button");
 
@@ -514,9 +599,7 @@ function renderLocationCards() {
 
         button.className =
 
-            "location-card"
-
-            +
+            "location-card" +
 
             (
 
@@ -537,11 +620,16 @@ function renderLocationCards() {
         button.innerHTML = `
 
             <strong>
+
                 ${escapeHtml(location)}
+
             </strong>
 
+
             <span>
+
                 ${documentCount(count)}
+
             </span>
 
         `;
@@ -559,6 +647,7 @@ function renderLocationCards() {
         box.appendChild(button);
 
 
+
     });
 
 
@@ -568,7 +657,7 @@ function renderLocationCards() {
 
 
 
-window.filterLocation = function(location){
+function filterLocation(location){
 
 
     activeLocation =
@@ -592,7 +681,13 @@ window.filterLocation = function(location){
     renderDocuments();
 
 
-};
+}
+
+
+window.filterLocation =
+    filterLocation;
+
+
 
 
 
@@ -600,90 +695,80 @@ window.filterLocation = function(location){
 
 
 /* =========================================================
-   FILTROWANIE DOKUMENTÓW
+   POBIERANIE FILTROWANYCH DOKUMENTÓW
 ========================================================= */
 
 
 function getFilteredDocuments(){
 
 
+
     const query =
 
-        document
-
-        .getElementById("searchInput")
-
+        document.getElementById("searchInput")
         ?.value
-
         .trim()
-
-        .toLocaleLowerCase("pl")
+        .toLowerCase()
 
         ||
 
         "";
+
 
 
 
     const year =
 
-        document
-
-        .getElementById("yearFilter")
-
+        document.getElementById("yearFilter")
         ?.value
 
         ||
 
         "";
+
 
 
 
     const status =
 
-        document
-
-        .getElementById("statusFilter")
-
+        document.getElementById("statusFilter")
         ?.value
 
         ||
 
         "";
+
 
 
 
     const localId =
 
-        document
-
-        .getElementById("localFilter")
-
+        document.getElementById("localFilter")
         ?.value
 
         ||
 
         "";
+
 
 
 
     const contractorId =
 
-        document
-
-        .getElementById("contractorFilter")
-
+        document.getElementById("contractorFilter")
         ?.value
 
         ||
 
         "";
+
 
 
 
 
 
     return documents.filter(doc => {
+
 
 
         const searchable = [
@@ -708,11 +793,13 @@ function getFilteredDocuments(){
             doc.kontrahenci?.nazwa
 
 
+
         ]
 
         .join(" ")
 
-        .toLocaleLowerCase("pl");
+        .toLowerCase();
+
 
 
 
@@ -724,7 +811,9 @@ function getFilteredDocuments(){
                 doc.lokale?.lokalizacja === activeLocation)
 
 
+
             &&
+
 
 
             (!query ||
@@ -732,7 +821,9 @@ function getFilteredDocuments(){
                 searchable.includes(query))
 
 
+
             &&
+
 
 
             (!year ||
@@ -740,7 +831,9 @@ function getFilteredDocuments(){
                 String(doc.rok) === year)
 
 
+
             &&
+
 
 
             (!status ||
@@ -748,29 +841,36 @@ function getFilteredDocuments(){
                 doc.status === status)
 
 
+
             &&
+
 
 
             (!localId ||
 
-                doc.lokal_id === localId)
+                String(doc.lokal_id) === String(localId))
+
 
 
             &&
 
 
+
             (!contractorId ||
 
-                doc.kontrahent_id === contractorId)
+                String(doc.kontrahent_id) === String(contractorId))
 
 
         );
 
 
+
     });
 
 
+
 }
+
 
 
 
@@ -786,8 +886,10 @@ function getFilteredDocuments(){
 function renderDocuments(){
 
 
+
     const box =
         document.getElementById("results");
+
 
 
     if(!box){
@@ -798,12 +900,16 @@ function renderDocuments(){
 
 
 
+
+
     const data =
         getFilteredDocuments();
 
 
 
+
     renderDashboard(data);
+
 
 
 
@@ -812,17 +918,23 @@ function renderDocuments(){
         <div class="results-heading">
 
             <h2>
+
                 Dokumenty
+
             </h2>
 
 
             <span>
+
                 ${documentCount(data.length)}
+
             </span>
+
 
         </div>
 
     `;
+
 
 
 
@@ -832,9 +944,7 @@ function renderDocuments(){
 
         box.innerHTML =
 
-            heading
-
-            +
+            heading +
 
             `
 
@@ -847,9 +957,12 @@ function renderDocuments(){
             `;
 
 
+
         return;
 
+
     }
+
 
 
 
@@ -867,17 +980,19 @@ function renderDocuments(){
 
                     ||
 
-                    doc.miasto
-
-                    ||
-
                     "Brak lokalizacji";
 
 
 
-                (result[location] ||= [])
+                if(!result[location]){
 
-                    .push(doc);
+                    result[location] = [];
+
+                }
+
+
+
+                result[location].push(doc);
 
 
 
@@ -893,11 +1008,12 @@ function renderDocuments(){
 
 
 
+
+
+
     box.innerHTML =
 
-        heading
-
-        +
+        heading +
 
         Object.entries(groups)
 
@@ -923,6 +1039,7 @@ function renderDocuments(){
 
 
 
+
     box
 
     .querySelectorAll("[data-document-id]")
@@ -941,23 +1058,23 @@ function renderDocuments(){
 
                     item =>
 
-                        item.id ===
+                        String(item.id) ===
 
-                        button.dataset.documentId
+                        String(button.dataset.documentId)
 
                 );
+
+
 
 
 
             if(!doc){
 
-                return alert(
-
-                    "Nie znaleziono dokumentu."
-
-                );
+                return;
 
             }
+
+
 
 
 
@@ -969,25 +1086,27 @@ function renderDocuments(){
 
                 window.editDocument(doc);
 
-
             }
 
-            else {
-
+            else{
 
                 deleteDocument(doc.id);
 
-
             }
+
 
 
         };
 
 
+
     });
 
 
+
 }
+
+
 
 
 
@@ -1003,6 +1122,7 @@ function renderLocationGroup(
     isActive
 
 ){
+
 
 
     return `
@@ -1027,11 +1147,13 @@ function renderLocationGroup(
             </span>
 
 
+
             <strong>
 
                 ${escapeHtml(location)}
 
             </strong>
+
 
 
             <span class="group-count">
@@ -1041,7 +1163,9 @@ function renderLocationGroup(
             </span>
 
 
+
         </summary>
+
 
 
 
@@ -1066,21 +1190,33 @@ function renderLocationGroup(
     </details>
 
 
+
     `;
+
 
 
 }
 
+
+
+
+
+
+
+
 /* =========================================================
-   KAFELKI STATUSÓW - FILTROWANIE PO KLIKNIĘCIU
+   DASHBOARD - KLIKANE STATUSY
 ========================================================= */
 
 
-function renderDashboard(data) {
+function renderDashboard(data){
+
 
 
     const box =
+
         document.getElementById("dashboardStats");
+
 
 
     if(!box){
@@ -1091,11 +1227,15 @@ function renderDashboard(data) {
 
 
 
+
     const count = status =>
 
         data.filter(
 
-            doc => doc.status === status
+            doc =>
+
+                String(doc.status)
+                .toUpperCase() === status
 
         )
 
@@ -1104,12 +1244,10 @@ function renderDashboard(data) {
 
 
 
+
     const currentStatus =
 
-        document
-
-        .getElementById("statusFilter")
-
+        document.getElementById("statusFilter")
         ?.value
 
         ||
@@ -1119,92 +1257,120 @@ function renderDashboard(data) {
 
 
 
+
+
     box.innerHTML = `
 
 
-        <button
 
-            type="button"
+        <button
 
             class="stat-card ${currentStatus === "" ? "active" : ""}"
 
             data-status="">
 
-                <span>
-                    Wszystkie
-                </span>
 
-                <strong>
-                    ${data.length}
-                </strong>
+            <span>
+
+                Wszystkie
+
+            </span>
+
+
+            <strong>
+
+                ${data.length}
+
+            </strong>
+
 
         </button>
 
 
 
 
-        <button
 
-            type="button"
+        <button
 
             class="stat-card ok ${currentStatus === "OK" ? "active" : ""}"
 
             data-status="OK">
 
-                <span>
-                    OK
-                </span>
 
-                <strong>
-                    ${count("OK")}
-                </strong>
+            <span>
+
+                OK
+
+            </span>
+
+
+            <strong>
+
+                ${count("OK")}
+
+            </strong>
+
 
         </button>
 
 
 
 
-        <button
 
-            type="button"
+        <button
 
             class="stat-card pending ${currentStatus === "DO UZUPEŁNIENIA" ? "active" : ""}"
 
             data-status="DO UZUPEŁNIENIA">
 
-                <span>
-                    Do uzupełnienia
-                </span>
 
-                <strong>
-                    ${count("DO UZUPEŁNIENIA")}
-                </strong>
+            <span>
+
+                Do uzupełnienia
+
+            </span>
+
+
+            <strong>
+
+                ${count("DO UZUPEŁNIENIA")}
+
+            </strong>
+
 
         </button>
+
 
 
 
 
         <button
 
-            type="button"
-
             class="stat-card missing ${currentStatus === "BRAK" ? "active" : ""}"
 
             data-status="BRAK">
 
-                <span>
-                    Brak
-                </span>
 
-                <strong>
-                    ${count("BRAK")}
-                </strong>
+            <span>
+
+                Brak
+
+            </span>
+
+
+            <strong>
+
+                ${count("BRAK")}
+
+            </strong>
+
 
         </button>
 
 
     `;
+
+
 
 
 
@@ -1219,11 +1385,6 @@ function renderDashboard(data) {
         button.onclick = () => {
 
 
-            const selectedStatus =
-
-                button.dataset.status;
-
-
 
             const filter =
 
@@ -1234,20 +1395,19 @@ function renderDashboard(data) {
             if(filter){
 
 
-                if(
-                    filter.value === selectedStatus
-                ){
 
-                    filter.value = "";
+                filter.value =
 
-                }
+                    filter.value === button.dataset.status
 
-                else {
+                    ?
 
-                    filter.value =
-                        selectedStatus;
+                    ""
 
-                }
+                    :
+
+                    button.dataset.status;
+
 
 
             }
@@ -1255,6 +1415,7 @@ function renderDashboard(data) {
 
 
             renderDocuments();
+
 
 
         };
@@ -1266,13 +1427,6 @@ function renderDashboard(data) {
 
 }
 
-
-
-
-
-
-
-
 /* =========================================================
    KARTA DOKUMENTU
 ========================================================= */
@@ -1281,29 +1435,26 @@ function renderDashboard(data) {
 function renderDocumentCard(doc){
 
 
+    const path = [
 
-    const path =
+        doc.lokale?.lokalizacja,
 
-        [
+        doc.lokale?.nazwa,
 
-            doc.lokale?.lokalizacja,
+        doc.regal && `Regał ${doc.regal}`,
 
-            doc.lokale?.nazwa,
+        doc.polka && `Półka ${doc.polka}`,
 
-            doc.regal && `Regał ${doc.regal}`,
-
-            doc.polka && `Półka ${doc.polka}`,
-
-            doc.segregator && `Segregator ${doc.segregator}`
+        doc.segregator && `Segregator ${doc.segregator}`
 
 
-        ]
+    ]
 
-        .filter(Boolean)
+    .filter(Boolean)
 
-        .map(escapeHtml)
+    .map(escapeHtml)
 
-        .join(" <span>›</span> ");
+    .join(" <span>›</span> ");
 
 
 
@@ -1313,9 +1464,7 @@ function renderDocumentCard(doc){
 
         escapeHtml(
 
-            doc.status ||
-
-            "BRAK"
+            doc.status || "BRAK"
 
         );
 
@@ -1326,120 +1475,146 @@ function renderDocumentCard(doc){
     return `
 
 
-
-    <article class="document">
-
+<article class="document">
 
 
-        <div class="document-top">
+    <div class="document-top">
 
 
-            <div>
+        <div>
 
 
-                <p class="archive-path">
+            <p class="archive-path">
 
-                    ${
+                ${
 
-                        path ||
+                    path ||
 
-                        "Brak lokalizacji"
+                    "Brak przypisanej lokalizacji"
 
-                    }
+                }
 
-
-                </p>
+            </p>
 
 
 
-                <h4>
+            <h4>
 
-                    ${
+                ${
 
-                        escapeHtml(
+                    escapeHtml(
 
-                            doc.nazwa ||
+                        doc.nazwa ||
 
-                            "Bez nazwy"
+                        "Bez nazwy"
 
-                        )
+                    )
 
-                    }
+                }
 
-
-                </h4>
-
-
-            </div>
-
-
-
-            <span
-
-                class="status-chip status-${
-
-                    status
-
-                    .toLowerCase()
-
-                    .replaceAll(" ","-")
-
-                }">
-
-
-                ${status}
-
-
-            </span>
-
+            </h4>
 
 
         </div>
 
 
 
+        <span class="status-chip status-${
+
+            status
+
+            .toLowerCase()
+
+            .replaceAll(" ","-")
+
+        }">
 
 
-        <p class="document-meta">
+            ${status}
 
+
+        </span>
+
+
+    </div>
+
+
+
+
+
+    <p class="document-meta">
+
+
+        ${
+
+            escapeHtml(
+
+                doc.typ ||
+
+                "Bez typu"
+
+            )
+
+        }
+
+
+        · Rok:
+
+        ${
+
+            escapeHtml(
+
+                doc.rok ||
+
+                "-"
+
+            )
+
+        }
+
+
+
+        · Kontrahent:
+
+        ${
+
+            escapeHtml(
+
+                doc.kontrahenci?.nazwa ||
+
+                "-"
+
+            )
+
+        }
+
+
+    </p>
+
+
+
+
+
+    <details>
+
+
+        <summary>
+
+            Pokaż szczegóły
+
+        </summary>
+
+
+
+        <p>
+
+            MPK:
 
             ${
 
                 escapeHtml(
 
-                    doc.typ ||
-
-                    "Bez typu"
-
-                )
-
-            }
-
-
-
-            · Rok:
-
-            ${
-
-                escapeHtml(
-
-                    doc.rok ||
-
-                    "-"
-
-                )
-
-            }
-
-
-
-            · Kontrahent:
-
-            ${
-
-                escapeHtml(
-
-                    doc.kontrahenci?.nazwa ||
+                    doc.lokale?.mpk ||
 
                     "-"
 
@@ -1452,113 +1627,81 @@ function renderDocumentCard(doc){
 
 
 
+        <p>
 
+            Uwagi:
 
-        <details>
+            ${
 
+                escapeHtml(
 
-            <summary>
+                    doc.uwagi ||
 
-                Pokaż szczegóły
+                    "Brak"
 
-            </summary>
+                )
 
+            }
 
 
-            <p>
+        </p>
 
-                MPK:
 
-                ${
 
-                    escapeHtml(
+    </details>
 
-                        doc.lokale?.mpk ||
 
-                        "-"
 
-                    )
 
-                }
 
-            </p>
+    <div class="document-actions">
 
 
+        <button
 
+            type="button"
 
-            <p>
+            class="edit"
 
-                Uwagi:
+            data-action="edit"
 
-                ${
+            data-document-id="${doc.id}">
 
-                    escapeHtml(
 
-                        doc.uwagi ||
+            Edytuj
 
-                        "Brak"
 
-                    )
+        </button>
 
-                }
 
 
-            </p>
 
+        <button
 
-        </details>
+            type="button"
 
+            class="delete"
 
+            data-action="delete"
 
+            data-document-id="${doc.id}">
 
 
-        <div class="document-actions">
+            Usuń
 
 
-            <button
+        </button>
 
-                type="button"
 
-                class="edit"
+    </div>
 
-                data-action="edit"
 
-                data-document-id="${doc.id}">
 
+</article>
 
-                Edytuj
 
+`;
 
-            </button>
-
-
-
-
-            <button
-
-                type="button"
-
-                class="delete"
-
-                data-action="delete"
-
-                data-document-id="${doc.id}">
-
-
-                Usuń
-
-
-            </button>
-
-
-        </div>
-
-
-
-    </article>
-
-
-    `;
 
 
 }
@@ -1568,23 +1711,31 @@ function renderDocumentCard(doc){
 
 
 
+
+
+
 /* =========================================================
-   USUWANIE
+   USUWANIE DOKUMENTU
 ========================================================= */
 
 
 async function deleteDocument(id){
 
 
+
     if(!id){
 
-        return alert(
+        alert(
 
             "Brak identyfikatora dokumentu."
 
         );
 
+        return;
+
     }
+
+
 
 
 
@@ -1601,6 +1752,7 @@ async function deleteDocument(id){
         return;
 
     }
+
 
 
 
@@ -1626,12 +1778,15 @@ async function deleteDocument(id){
 
 
 
+
+
     if(error){
 
 
-        return alert(
 
-            "Nie udało się usunąć: "
+        alert(
+
+            "Nie udało się usunąć dokumentu: "
 
             +
 
@@ -1640,11 +1795,18 @@ async function deleteDocument(id){
         );
 
 
+        return;
+
+
     }
 
 
 
+
+
+
     await loadDocuments();
+
 
 
 }
@@ -1654,12 +1816,17 @@ async function deleteDocument(id){
 
 
 
+
+
+
 /* =========================================================
-   POMOCNICZE
+   FUNKCJE POMOCNICZE
 ========================================================= */
 
 
+
 function documentCount(number){
+
 
 
     if(number === 1){
@@ -1669,11 +1836,19 @@ function documentCount(number){
     }
 
 
-    if(number >= 2 && number <= 4){
+
+    if(
+
+        number >= 2 &&
+
+        number <= 4
+
+    ){
 
         return `${number} dokumenty`;
 
     }
+
 
 
     return `${number} dokumentów`;
@@ -1683,15 +1858,23 @@ function documentCount(number){
 
 
 
+
+
+
 function escapeHtml(value){
 
 
+
     const div =
+
         document.createElement("div");
 
 
+
     div.textContent =
+
         value ?? "";
+
 
 
     return div.innerHTML;
