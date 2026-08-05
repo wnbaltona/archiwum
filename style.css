@@ -2830,4 +2830,13 @@ header{
     box-shadow: 0 0 0 3px rgba(31,111,235,.15);
 }
 
+   .theme-toggle {
+
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 8px;
+
+}
 }
