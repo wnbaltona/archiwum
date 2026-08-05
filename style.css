@@ -2840,83 +2840,119 @@ header{
 
 }
 
-   /* SUWAK MOTYWU */
+/* =========================
+   PRZEŁĄCZNIK MOTYWU
+========================= */
 
 .theme-switch {
 
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    gap: 6px;
+
+    background: #f4faf7;
+
+    border: 1px solid #d6e8df;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    height: 38px;
 
 }
+
+
+.theme-switch span {
+
+    font-size: 15px;
+
+    line-height: 1;
+
+}
+
 
 
 .switch {
 
     position: relative;
+
     display: inline-block;
-    width: 45px;
-    height: 24px;
+
+    width: 42px;
+
+    height: 22px;
 
 }
+
 
 
 .switch input {
 
     opacity: 0;
+
     width: 0;
+
     height: 0;
 
 }
 
 
+
 .slider {
 
     position: absolute;
+
     cursor: pointer;
+
     inset: 0;
 
-    background-color: #cbd5d1;
+    background: #b9d7cd;
 
     border-radius: 30px;
 
-    transition: .3s;
+    transition: 0.3s;
 
 }
 
 
-.slider:before {
+
+.slider::before {
 
     content: "";
 
     position: absolute;
 
-    height: 18px;
-    width: 18px;
+    height: 16px;
+
+    width: 16px;
 
     left: 3px;
-    bottom: 3px;
 
-    background:white;
+    top: 3px;
 
-    border-radius:50%;
+    background: white;
 
-    transition:.3s;
+    border-radius: 50%;
 
-}
+    transition: 0.3s;
 
-
-input:checked + .slider {
-
-    background-color:#35645c;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 
 }
 
 
-input:checked + .slider:before {
 
-    transform:translateX(21px);
+.switch input:checked + .slider {
+
+    background: #35645c;
 
 }
+
+
+
+.switch input:checked + .slider::before {
+
+    transform: translateX(20px);
+
 }
