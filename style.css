@@ -173,67 +173,38 @@ header {
 ========================================================== */
 
 
-.menu-wrapper {
-
+.menu-wrapper{
     position:relative;
 
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
-
 
 
 .menu-button {
 
-
     width:42px;
-
-
     height:42px;
-
-
-
-    border:
-
-        1px solid var(--line);
-
-
 
     border-radius:50%;
 
+    border:1px solid var(--line);
 
+    background:white;
 
-    background:
+    color:var(--pine);
 
-        var(--paper);
+    font-size:22px;
 
-
-
-    color:
-
-        var(--pine);
-
-
-
-    font-size:23px;
-
-
-
-    transition:.18s;
-
+    transition:.2s;
 }
-
-
 
 .menu-button:hover {
 
+    background:var(--mint);
 
-    background:
-
-        var(--mint);
-
-
-    transform:
-
-        rotate(4deg);
+    transform:scale(1.05);
 
 }
 
@@ -2094,43 +2065,19 @@ textarea {
 
 
 .theme-switch {
-
-
     display:flex;
-
-
     align-items:center;
-
-
     gap:8px;
 
-
-
     height:42px;
+    padding:0 10px;
 
+    border-radius:999px;
 
-    padding:
+    background:#ffffff;
+    border:1px solid var(--line);
 
-        0 12px;
-
-
-
-    border-radius:
-
-        22px;
-
-
-
-    background:
-
-        #f4faf7;
-
-
-
-    border:
-
-        1px solid #d6e8df;
-
+    box-shadow:0 2px 10px rgba(0,0,0,.04);
 }
 
 
@@ -2283,31 +2230,21 @@ textarea {
    CIEMNY MOTYW
 ========================================================== */
 
-
 body.dark-theme {
 
+    --cream:#0f1720;
+    --paper:#1b2631;
 
-    --ink:#eeeeee;
+    --ink:#eef2f5;
+    --muted:#a9b4be;
 
-    --muted:#aab5bb;
+    --line:#31404c;
 
-    --paper:#222a30;
+    --pine:#6ec7a9;
+    --pine-dark:#88dbc0;
 
-    --cream:#181c20;
-
-    --line:#37434b;
-
-    --pine:#7fc8b2;
-
-    --pine-dark:#9be0ca;
-
-
-
-    background:
-
-        #181c20;
-
-    color:white;
+    background:#0f1720;
+    color:#eef2f5;
 
 }
 
@@ -2316,67 +2253,50 @@ body.dark-theme {
 
 body.dark-theme header {
 
+    background:#18222c;
 
-    background:
-
-        #20262b;
-
-
-
-    border-color:
-
-        #30383f;
+    border-color:#2b3944;
 
 }
-
 
 
 body.dark-theme .document,
-body.dark-theme .location-card,
-body.dark-theme .stat-card,
 body.dark-theme .location-group,
-body.dark-theme .modal {
+body.dark-theme .modal{
 
+    background:#1b2631;
 
-    background:
-
-        #222a30;
-
-
-
-    color:white;
-
-
-
-    border-color:
-
-        #37434b;
+    border-color:#2f3e4b;
 
 }
 
+body.dark-theme .location-card,
+body.dark-theme .stat-card{
+
+    background:#22313c;
+
+    border-color:#334652;
+
+}
 
 
 body.dark-theme input,
 body.dark-theme select,
-body.dark-theme textarea {
+body.dark-theme textarea{
 
-
-    background:
-
-        #222a30;
-
-
+    background:#24323d;
 
     color:white;
 
-
-
-    border-color:
-
-        #46545c;
+    border:1px solid #3a4c59;
 
 }
 
+body.dark-theme .document details{
+
+    background:#22313b;
+
+}
 
 
 body.dark-theme .document-meta {
@@ -2389,24 +2309,28 @@ body.dark-theme .document-meta {
 }
 
 
+body.dark-theme .menu-button,
+body.dark-theme .theme-switch{
 
-body.dark-theme .theme-switch {
+    background:#22313b;
 
-
-    background:
-
-        #20262b;
-
-
-
-    border-color:
-
-        #37434b;
+    border-color:#374854;
 
 }
 
+body.dark-theme .logo{
 
+    color:#ffffff;
 
+}
+
+body.dark-theme .location-card.active{
+
+    background:#2d8f71;
+
+    border-color:#2d8f71;
+
+}
 
 
 /* ==========================================================
@@ -2498,5 +2422,32 @@ body.dark-theme .theme-switch {
     }
 
 
+
+}
+
+
+/* ==========================================================
+   PŁYNNA ZMIANA MOTYWU
+========================================================== */
+
+body,
+header,
+.document,
+.location-card,
+.stat-card,
+.modal,
+input,
+select,
+textarea,
+.menu-button,
+.theme-switch,
+.location-group{
+
+    transition:
+
+        background-color .25s ease,
+        color .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
 
 }
