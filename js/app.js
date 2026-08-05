@@ -1,13 +1,86 @@
 let documents = [];
+
 let activeLocation = "";
 
+let activeStatusCard = "";
 
-
-/* =========================================================
-   START APLIKACJI
-========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
+
+    /* =========================================================
+       MOTYW JASNY / CIEMNY
+    ========================================================= */
+
+
+    const themeToggle =
+        document.getElementById("themeToggle");
+
+
+    if (themeToggle) {
+
+
+        const savedTheme =
+            localStorage.getItem("theme");
+
+
+        if (savedTheme === "dark") {
+
+
+            document.body.classList.add(
+                "dark-theme"
+            );
+
+
+            themeToggle.checked = true;
+
+
+        }
+
+
+
+        themeToggle.addEventListener(
+            "change",
+            () => {
+
+
+                if (themeToggle.checked) {
+
+
+                    document.body.classList.add(
+                        "dark-theme"
+                    );
+
+
+                    localStorage.setItem(
+                        "theme",
+                        "dark"
+                    );
+
+
+                } else {
+
+
+                    document.body.classList.remove(
+                        "dark-theme"
+                    );
+
+
+                    localStorage.setItem(
+                        "theme",
+                        "light"
+                    );
+
+
+                }
+
+
+            }
+        );
+
+
+    }
+
 
 
     [
@@ -19,13 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ].forEach(id => {
 
-        const element =
-            document.getElementById(id);
 
-
-        if(element){
-
-            element.addEventListener(
+        document
+            .getElementById(id)
+            ?.addEventListener(
 
                 id === "searchInput"
                     ? "input"
@@ -35,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             );
 
-        }
 
     });
 
@@ -1887,47 +1956,3 @@ function escapeHtml(value){
    MOTYW JASNY / CIEMNY
 ========================================================= */
 
-const themeToggle = document.getElementById("themeToggle");
-
-
-if (themeToggle) {
-
-    const savedTheme = localStorage.getItem("theme");
-
-
-    if (savedTheme === "dark") {
-
-        document.body.classList.add("dark-theme");
-        themeToggle.checked = true;
-
-    }
-
-
-    themeToggle.addEventListener("change", () => {
-
-
-        if (themeToggle.checked) {
-
-            document.body.classList.add("dark-theme");
-
-            localStorage.setItem(
-                "theme",
-                "dark"
-            );
-
-
-        } else {
-
-            document.body.classList.remove("dark-theme");
-
-            localStorage.setItem(
-                "theme",
-                "light"
-            );
-
-        }
-
-
-    });
-
-}
