@@ -2840,74 +2840,68 @@ header{
 
 }
 
-/* =========================
-   PRZEŁĄCZNIK MOTYWU
-========================= */
+/* =========================================================
+   MOTYW - PRZEŁĄCZNIK SUWAKA
+========================================================= */
+
 
 .theme-switch {
-
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 8px;
+
+    height: 42px;
+    padding: 0 12px;
 
     background: #f4faf7;
-
     border: 1px solid #d6e8df;
-
-    padding: 6px 10px;
-
     border-radius: 20px;
 
-    height: 38px;
-
-}
-
-
-.theme-switch span {
-
     font-size: 15px;
-
-    line-height: 1;
-
 }
 
 
+/* ukrycie normalnego checkboxa */
+
+.theme-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+
+
+/* obudowa suwaka */
 
 .switch {
-
     position: relative;
 
     display: inline-block;
 
-    width: 42px;
+    width: 46px;
+    height: 24px;
 
-    height: 22px;
-
+    cursor: pointer;
 }
 
 
 
-.switch input {
-
-    opacity: 0;
-
-    width: 0;
-
-    height: 0;
-
-}
-
-
+/* tło suwaka */
 
 .slider {
 
     position: absolute;
 
-    cursor: pointer;
+    top: 0;
+    left: 0;
 
-    inset: 0;
+    right: 0;
+    bottom: 0;
 
-    background: #b9d7cd;
+
+    background-color: #b9d7cd;
 
     border-radius: 30px;
 
@@ -2917,46 +2911,134 @@ header{
 
 
 
+/* kółko */
+
 .slider::before {
 
     content: "";
 
     position: absolute;
 
-    height: 16px;
 
-    width: 16px;
+    width: 18px;
+    height: 18px;
+
 
     left: 3px;
-
     top: 3px;
+
 
     background: white;
 
     border-radius: 50%;
 
+
     transition: 0.3s;
 
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+
+
+/* aktywny ciemny */
+
+.theme-switch input:checked + .slider {
+
+    background-color: #35645c;
 
 }
 
 
 
-.switch input:checked + .slider {
+.theme-switch input:checked + .slider::before {
 
-    background: #35645c;
+    transform: translateX(22px);
+
+}
+
+
+
+
+
+
+/* =========================================================
+   MOTYW CIEMNY
+========================================================= */
+
+
+body.dark-theme {
+
+    background: #181c20;
+
+    color: #eeeeee;
 
 }
 
 
 
-.switch input:checked + .slider::before {
+/* górny pasek */
 
-    transform: translateX(20px);
+body.dark-theme .topbar {
+
+    background: #20262b;
+
+    border-color: #30383f;
 
 }
 
-   .theme-switch {
-    background: red !important;
+
+
+/* karty */
+
+body.dark-theme .document,
+
+body.dark-theme .location-card,
+
+body.dark-theme .stat-card {
+
+    background: #222a30;
+
+    color: #eeeeee;
+
+    border-color: #37434b;
+
+}
+
+
+
+/* pola */
+
+body.dark-theme input,
+
+body.dark-theme select {
+
+    background: #222a30;
+
+    color: white;
+
+    border-color: #46545c;
+
+}
+
+
+
+/* tekst pomocniczy */
+
+body.dark-theme .document-meta,
+
+body.dark-theme .archive-path {
+
+    color: #b9c3c8;
+
+}
+
+
+
+/* suwak */
+
+body.dark-theme .theme-switch {
+
+    background: #20262b;
+
+    border-color: #37434b;
+
 }
