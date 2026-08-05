@@ -3042,3 +3042,38 @@ body.dark-theme .theme-switch {
     border-color: #37434b;
 
 }
+/* TEST SUWAKA */
+
+.theme-switch {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+
+.theme-switch input {
+    display: none !important;
+}
+
+
+.slider {
+    display: block !important;
+    width: 46px !important;
+    height: 24px !important;
+    background: #b9d7cd !important;
+    border-radius: 30px !important;
+    position: relative !important;
+}
+
+
+.slider::before {
+    content: "" !important;
+    width: 18px !important;
+    height: 18px !important;
+    background: white !important;
+    border-radius: 50% !important;
+
+    position: absolute !important;
+    top: 3px !important;
+    left: 3px !important;
+}
