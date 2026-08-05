@@ -2956,3 +2956,7 @@ header{
     transform: translateX(20px);
 
 }
+
+   .theme-switch {
+    background: red !important;
+}
