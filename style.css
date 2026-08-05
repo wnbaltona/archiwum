@@ -1,8 +1,13 @@
 /* ==========================================================
+   ARCHIWUM DOKUMENTÓW - STYLE
+========================================================== */
+
+
+/* ==========================================================
    VARIABLES
 ========================================================== */
 
-:root{
+:root {
 
     --ink:#24302d;
     --muted:#72807b;
@@ -30,17 +35,17 @@
 ========================================================== */
 
 
-*{
+* {
 
     box-sizing:border-box;
 
 }
 
 
-body{
+
+body {
 
     margin:0;
-
 
     background:
         radial-gradient(
@@ -70,18 +75,20 @@ body{
 button,
 input,
 select,
-textarea{
+textarea {
 
     font:inherit;
 
 }
 
 
-button{
+
+button {
 
     cursor:pointer;
 
 }
+
 
 
 
@@ -90,21 +97,21 @@ button{
 ========================================================== */
 
 
-header{
+header {
 
 
     height:76px;
 
 
     padding:
-
-        0
-        max(24px,calc((100% - 1180px)/2));
+        0 max(24px,calc((100% - 1180px)/2));
 
 
     display:flex;
 
+
     justify-content:space-between;
+
 
     align-items:center;
 
@@ -116,64 +123,48 @@ header{
 
 
     border-bottom:
-
         1px solid rgba(220,230,226,.9);
 
 
 
     backdrop-filter:
-
         blur(12px);
 
 
 
     position:sticky;
 
+
     top:0;
 
 
     z-index:20;
 
-
 }
 
 
 
-
-.logo{
+.logo {
 
 
     font-family:
-
         Georgia,
         serif;
 
 
-
-    font-size:
-
-        25px;
+    font-size:25px;
 
 
-
-    font-weight:
-
-        700;
+    font-weight:700;
 
 
-
-    color:
-
-        var(--pine-dark);
+    color:var(--pine-dark);
 
 
-
-    letter-spacing:
-
-        -.5px;
-
+    letter-spacing:-.5px;
 
 }
+
 
 
 
@@ -182,7 +173,7 @@ header{
 ========================================================== */
 
 
-.menu-wrapper{
+.menu-wrapper {
 
     position:relative;
 
@@ -190,17 +181,13 @@ header{
 
 
 
-.menu-button{
+.menu-button {
 
 
-    width:
-
-        42px;
+    width:42px;
 
 
-    height:
-
-        42px;
+    height:42px;
 
 
 
@@ -210,9 +197,7 @@ header{
 
 
 
-    border-radius:
-
-        50%;
+    border-radius:50%;
 
 
 
@@ -228,22 +213,17 @@ header{
 
 
 
-    font-size:
-
-        23px;
+    font-size:23px;
 
 
 
-    transition:
-
-        .18s;
-
+    transition:.18s;
 
 }
 
 
 
-.menu-button:hover{
+.menu-button:hover {
 
 
     background:
@@ -251,17 +231,15 @@ header{
         var(--mint);
 
 
-
     transform:
 
         rotate(4deg);
-
 
 }
 
 
 
-.menu-list{
+.menu-list {
 
 
     position:absolute;
@@ -274,15 +252,11 @@ header{
 
 
 
-    width:
-
-        225px;
+    width:225px;
 
 
 
-    padding:
-
-        8px;
+    padding:8px;
 
 
 
@@ -292,9 +266,7 @@ header{
 
 
 
-    border-radius:
-
-        16px;
+    border-radius:16px;
 
 
 
@@ -308,66 +280,48 @@ header{
 
         var(--shadow);
 
+}
+
+
+
+.menu-list button {
+
+
+    width:100%;
+
+
+
+    padding:11px 12px;
+
+
+
+    border:0;
+
+
+
+    border-radius:10px;
+
+
+
+    background:transparent;
+
+
+
+    color:var(--ink);
+
+
+
+    text-align:left;
+
+
+
+    transition:.18s;
 
 }
 
 
 
-.menu-list button{
-
-
-    width:
-
-        100%;
-
-
-
-    padding:
-
-        11px 12px;
-
-
-
-    border:
-
-        0;
-
-
-
-    border-radius:
-
-        10px;
-
-
-
-    background:
-
-        transparent;
-
-
-
-    color:
-
-        var(--ink);
-
-
-
-    text-align:
-
-        left;
-
-
-
-    transition:
-
-        .18s;
-
-
-}
-
-
-
-.menu-list button:hover{
+.menu-list button:hover {
 
 
     background:
@@ -380,6 +334,133 @@ header{
 
         var(--pine-dark);
 
+}
+
+
+
+/* ==========================================================
+   THEME SWITCH
+========================================================== */
+
+
+.theme-switch {
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:8px;
+
+
+    margin-right:15px;
+
+
+}
+
+
+
+.switch {
+
+
+    position:relative;
+
+
+    display:inline-block;
+
+
+    width:46px;
+
+
+    height:24px;
+
+
+}
+
+
+
+.switch input {
+
+
+    display:none;
+
+}
+
+
+
+.slider {
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+    background:#b9d7cd;
+
+
+    border-radius:30px;
+
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+}
+
+
+
+.slider::before {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:18px;
+
+
+    height:18px;
+
+
+    left:3px;
+
+
+    top:3px;
+
+
+    background:white;
+
+
+    border-radius:50%;
+
+
+    transition:.3s;
+
+}
+
+
+
+.theme-switch input:checked + .slider {
+
+
+    background:#35645c;
+
+}
+
+
+
+.theme-switch input:checked + .slider::before {
+
+
+    transform:
+        translateX(22px);
 
 }
 
@@ -390,69 +471,46 @@ header{
 ========================================================== */
 
 
-#locationTabs{
+#locationTabs {
 
 
-    max-width:
-
-        1180px;
+    max-width:1180px;
 
 
-
-    margin:
-
-        0 auto;
+    margin:0 auto;
 
 
-
-    padding:
-
-        30px 24px 15px;
-
+    padding:30px 24px 15px;
 
 
     display:flex;
-
 
 
     justify-content:center;
 
 
-
     flex-wrap:wrap;
 
 
-
-    gap:
-
-        12px;
-
+    gap:12px;
 
 }
 
 
 
-.location-card{
+.location-card {
 
 
     display:flex;
 
 
-
     align-items:center;
 
 
-
-    gap:
-
-        8px;
+    gap:8px;
 
 
-
-    padding:
-
-        10px 14px;
-
+    padding:10px 14px;
 
 
     border:
@@ -461,9 +519,7 @@ header{
 
 
 
-    border-radius:
-
-        999px;
+    border-radius:999px;
 
 
 
@@ -473,76 +529,33 @@ header{
 
 
 
-    color:
-
-        #4a5b56;
+    color:#4a5b56;
 
 
 
-    transition:
-
-        .2s;
-
+    transition:.2s;
 
 }
 
 
 
-.location-card strong{
+.location-card:hover {
 
 
-    font-size:
-
-        13px;
+    border-color:#a9ccc0;
 
 
-}
-
-
-
-.location-card span{
-
-
-    font-size:
-
-        12px;
-
-
-
-    color:
-
-        var(--muted);
-
-
-}
-
-
-
-.location-card:hover{
-
-
-    border-color:
-
-        #a9ccc0;
-
-
-
-    background:
-
-        var(--paper);
-
+    background:white;
 
 
     transform:
-
         translateY(-2px);
-
 
 }
 
 
 
-.location-card.active{
+.location-card.active {
 
 
     background:
@@ -550,63 +563,51 @@ header{
         var(--pine);
 
 
-
     border-color:
 
         var(--pine);
 
 
-
-    color:
-
-        white;
-
-
-
-    box-shadow:
-
-        0 8px 18px rgba(53,100,92,.2);
-
+    color:white;
 
 }
 
 
 
-.location-card.active span{
+.location-card strong {
 
 
-    color:
-
-        #dcefe8;
-
+    font-size:13px;
 
 }
 
 
+
+.location-card span {
+
+
+    font-size:12px;
+
+
+    color:var(--muted);
+
+}
 
 /* ==========================================================
    DASHBOARD
 ========================================================== */
 
 
-.dashboard-stats{
+.dashboard-stats {
 
 
-    max-width:
-
-        1180px;
+    max-width:1180px;
 
 
-
-    margin:
-
-        0 auto;
+    margin:0 auto;
 
 
-
-    padding:
-
-        10px 24px 30px;
+    padding:10px 24px 30px;
 
 
 
@@ -615,47 +616,35 @@ header{
 
 
     grid-template-columns:
-
         repeat(auto-fit,minmax(220px,1fr));
 
 
 
-    gap:
-
-        16px;
+    gap:16px;
 
 
 }
 
 
 
-.stat-card{
+
+.stat-card {
 
 
-    min-height:
-
-        95px;
+    min-height:95px;
 
 
-
-    padding:
-
-        18px;
+    padding:18px;
 
 
 
     display:flex;
 
 
-
-    flex-direction:
-
-        column;
-
+    flex-direction:column;
 
 
     justify-content:center;
-
 
 
     align-items:center;
@@ -672,9 +661,7 @@ header{
 
 
 
-    border-radius:
-
-        18px;
+    border-radius:18px;
 
 
 
@@ -690,16 +677,13 @@ header{
 
 
 
-    transition:
-
-        .2s;
-
+    transition:.2s;
 
 }
 
 
 
-.stat-card:hover{
+.stat-card:hover {
 
 
     transform:
@@ -712,12 +696,11 @@ header{
 
         0 10px 24px rgba(35,61,54,.08);
 
-
 }
 
 
 
-.stat-card span{
+.stat-card span {
 
 
     color:
@@ -748,12 +731,11 @@ header{
 
         uppercase;
 
-
 }
 
 
 
-.stat-card strong{
+.stat-card strong {
 
 
     margin-top:
@@ -768,22 +750,32 @@ header{
 
 
 
-    line-height:
-
-        1;
-
-
-
     color:
 
         var(--pine-dark);
-
 
 }
 
 
 
-.stat-card.ok{
+.stat-card.active {
+
+
+    border:
+
+        2px solid #1f6feb;
+
+
+
+    box-shadow:
+
+        0 0 0 3px rgba(31,111,235,.15);
+
+}
+
+
+
+.stat-card.ok {
 
 
     background:
@@ -796,12 +788,11 @@ header{
 
         #cce8d4;
 
-
 }
 
 
 
-.stat-card.pending{
+.stat-card.pending {
 
 
     background:
@@ -814,12 +805,11 @@ header{
 
         #f0dfab;
 
-
 }
 
 
 
-.stat-card.missing{
+.stat-card.missing {
 
 
     background:
@@ -832,20 +822,24 @@ header{
 
         #f3d4cf;
 
-
 }
+
+
+
+
 
 /* ==========================================================
    FILTERS
 ========================================================== */
 
 
-.filters{
+.filters {
+
 
     padding:
 
-        18px
-        max(24px,calc((100% - 1180px)/2));
+        18px max(24px,calc((100% - 1180px)/2));
+
 
 
     background:
@@ -853,9 +847,11 @@ header{
         rgba(255,255,255,.72);
 
 
+
     border-top:
 
         1px solid var(--line);
+
 
 
     border-bottom:
@@ -866,16 +862,16 @@ header{
 
 
 
-/* ==========================================================
-   FILTER GRID - ALL IN ONE LINE
-========================================================== */
 
+.filter-box {
 
-.filter-box{
 
     display:grid;
 
+
+
     grid-template-columns:
+
 
         2fr
         1fr
@@ -885,25 +881,20 @@ header{
         auto;
 
 
-    gap:
 
-        10px;
+    gap:10px;
+
 
 
     align-items:center;
 
-
-    width:100%;
-
 }
 
-/* ==========================================================
-   FILTER INPUTS
-========================================================== */
+
 
 
 .filter-box input,
-.filter-box select{
+.filter-box select {
 
 
     width:100%;
@@ -930,49 +921,27 @@ header{
 
 
 
-    background:
-
-        white;
+    background:white;
 
 
 
-    color:
-
-        var(--ink);
+    color:var(--ink);
 
 
 
-    font-size:
-
-        12px;
-
+    font-size:12px;
 
 }
 
-
-
-.filter-box input::placeholder{
-
-
-    font-size:
-
-        12px;
-
-
-    color:
-
-        #98a6a1;
-
-
-}
 
 
 
 .filter-box input:focus,
-.filter-box select:focus{
+.filter-box select:focus {
 
 
     outline:none;
+
 
 
     border-color:
@@ -985,22 +954,15 @@ header{
 
         0 0 0 3px rgba(97,167,145,.15);
 
-
 }
 
 
 
-/* ==========================================================
-   CLEAR BUTTON ALIGNMENT
-========================================================== */
+
+.clear-filters {
 
 
-.clear-filters{
-
-
-    height:
-
-        38px;
+    height:38px;
 
 
     padding:
@@ -1008,9 +970,11 @@ header{
         0 14px;
 
 
+
     border:
 
         1px solid #b9d7cd;
+
 
 
     border-radius:
@@ -1018,9 +982,11 @@ header{
         10px;
 
 
+
     background:
 
         #f4faf7;
+
 
 
     color:
@@ -1028,38 +994,19 @@ header{
         var(--pine);
 
 
-    font-size:
 
-        12px;
-
-
-    font-weight:
-
-        700;
+    font-size:12px;
 
 
-    white-space:
 
-        nowrap;
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
+    font-weight:700;
 
 }
 
-/* ==========================================================
-   FILTER HELP
-========================================================== */
 
 
-.filter-help{
+
+.filter-help {
 
 
     margin:
@@ -1074,18 +1021,15 @@ header{
 
 
 
-    font-size:
-
-        11px;
+    font-size:11px;
 
 
 
-    text-align:
-
-        center;
-
+    text-align:center;
 
 }
+
+
 
 
 
@@ -1094,65 +1038,45 @@ header{
 ========================================================== */
 
 
-#results{
+#results {
 
 
-    max-width:
-
-        1180px;
+    max-width:1180px;
 
 
-
-    margin:
-
-        0 auto;
-
+    margin:0 auto;
 
 
     padding:
 
         35px 24px 70px;
 
-
 }
 
 
 
-.results-heading{
+.results-heading {
 
 
     display:flex;
 
 
-
-    justify-content:
-
-        space-between;
+    justify-content:space-between;
 
 
-
-    align-items:
-
-        baseline;
+    align-items:baseline;
 
 
-
-    margin-bottom:
-
-        18px;
-
+    margin-bottom:18px;
 
 }
 
 
 
-.results-heading h2{
+.results-heading h2 {
 
 
-    margin:
-
-        0;
-
+    margin:0;
 
 
     color:
@@ -1172,12 +1096,11 @@ header{
 
         24px;
 
-
 }
 
 
 
-.results-heading span{
+.results-heading span {
 
 
     color:
@@ -1190,17 +1113,13 @@ header{
 
         13px;
 
-
 }
 
 
 
-/* ==========================================================
-   EMPTY RESULT
-========================================================== */
 
 
-.empty{
+.empty {
 
 
     padding:
@@ -1233,12 +1152,11 @@ header{
 
 
 
-    text-align:
-
-        center;
-
+    text-align:center;
 
 }
+
+
 
 
 
@@ -1247,7 +1165,7 @@ header{
 ========================================================== */
 
 
-.location-group{
+.location-group {
 
 
     margin-bottom:
@@ -1268,9 +1186,7 @@ header{
 
 
 
-    overflow:
-
-        hidden;
+    overflow:hidden;
 
 
 
@@ -1284,26 +1200,21 @@ header{
 
         0 4px 14px rgba(35,61,54,.04);
 
-
 }
 
 
 
-.location-group > summary{
+
+.location-group summary {
 
 
     display:flex;
 
 
-
     align-items:center;
 
 
-
-    gap:
-
-        12px;
-
+    gap:12px;
 
 
     padding:
@@ -1325,66 +1236,28 @@ header{
     cursor:pointer;
 
 
-
-    list-style:none;
-
-
 }
 
 
 
-.location-group > summary::-webkit-details-marker{
-
-    display:none;
-
-}
-
-
-
-.location-group > summary strong{
-
-
-    color:
-
-        var(--pine-dark);
-
-
-
-    font-size:
-
-        16px;
-
-
-}
-
-
-
-.group-arrow{
+.group-arrow {
 
 
     display:grid;
-
 
 
     place-items:center;
 
 
 
-    width:
-
-        26px;
+    width:26px;
 
 
-
-    height:
-
-        26px;
+    height:26px;
 
 
 
-    border-radius:
-
-        50%;
+    border-radius:50%;
 
 
 
@@ -1400,32 +1273,27 @@ header{
 
 
 
-    transition:
-
-        .2s;
-
+    transition:.2s;
 
 }
 
 
 
-.location-group[open] .group-arrow{
+.location-group[open] .group-arrow {
 
 
     transform:
 
         rotate(90deg);
 
-
 }
 
 
 
-.group-count{
+.group-count {
 
 
     margin-left:auto;
-
 
 
     color:
@@ -1434,24 +1302,19 @@ header{
 
 
 
-    font-size:
-
-        12px;
-
+    font-size:12px;
 
 }
 
 
 
-.group-documents{
+.group-documents {
 
 
-    padding:
-
-        12px;
-
+    padding:12px;
 
 }
+
 
 
 
@@ -1460,7 +1323,7 @@ header{
 ========================================================== */
 
 
-.document{
+.document {
 
 
     margin-bottom:
@@ -1487,34 +1350,17 @@ header{
 
 
 
-    background:
-
-        white;
+    background:white;
 
 
 
-    transition:
-
-        .2s;
-
+    transition:.2s;
 
 }
 
 
 
-.document:last-child{
-
-
-    margin-bottom:
-
-        0;
-
-
-}
-
-
-
-.document:hover{
+.document:hover {
 
 
     transform:
@@ -1533,40 +1379,26 @@ header{
 
         0 8px 20px rgba(35,61,54,.07);
 
-
 }
 
 
 
-.document-top{
+.document-top {
 
 
     display:flex;
 
 
-
-    justify-content:
-
-        space-between;
+    justify-content:space-between;
 
 
-
-    align-items:
-
-        flex-start;
-
-
-
-    gap:
-
-        20px;
-
+    gap:20px;
 
 }
 
 
 
-.document h4{
+.document h4 {
 
 
     margin:
@@ -1581,21 +1413,16 @@ header{
 
 
 
-    font-size:
-
-        18px;
-
+    font-size:18px;
 
 }
 
 
 
-.archive-path{
+.archive-path {
 
 
-    margin:
-
-        0;
+    margin:0;
 
 
 
@@ -1605,46 +1432,17 @@ header{
 
 
 
-    font-size:
-
-        12px;
+    font-size:12px;
 
 
 
-    font-weight:
-
-        700;
-
+    font-weight:700;
 
 }
 
 
 
-.archive-path span{
-
-
-    padding:
-
-        0 4px;
-
-
-
-    color:
-
-        #aac2ba;
-
-
-}
-
-
-
-.document-meta{
-
-
-    margin:
-
-        0;
-
+.document-meta {
 
 
     color:
@@ -1653,27 +1451,19 @@ header{
 
 
 
-    font-size:
-
-        13px;
-
+    font-size:13px;
 
 }
 
-
-
 /* ==========================================================
-   STATUS
+   STATUS CHIP
 ========================================================== */
 
 
-.status-chip{
+.status-chip {
 
 
-    flex-shrink:
-
-        0;
-
+    flex-shrink:0;
 
 
     padding:
@@ -1722,12 +1512,11 @@ header{
 
         uppercase;
 
-
 }
 
 
 
-.status-ok{
+.status-ok {
 
 
     background:
@@ -1740,12 +1529,11 @@ header{
 
         #297346;
 
-
 }
 
 
 
-.status-do-uzupełnienia{
+.status-do-uzupelnienia {
 
 
     background:
@@ -1758,12 +1546,11 @@ header{
 
         #916b05;
 
-
 }
 
 
 
-.status-brak{
+.status-brak {
 
 
     background:
@@ -1776,8 +1563,9 @@ header{
 
         #ae4839;
 
-
 }
+
+
 
 
 
@@ -1786,7 +1574,7 @@ header{
 ========================================================== */
 
 
-.document details{
+.document details {
 
 
     margin-top:
@@ -1813,90 +1601,57 @@ header{
 
 
 
-    color:
-
-        #5f706b;
-
-
-
     font-size:
 
         13px;
-
 
 }
 
 
 
-.document summary{
+.document summary {
+
+
+    cursor:pointer;
+
+
+    font-weight:700;
 
 
     color:
 
         var(--pine);
 
-
-
-    font-weight:
-
-        700;
-
-
-
-    cursor:pointer;
-
-
 }
 
-
-
-.document details p{
-
-
-    margin:
-
-        8px 0 0;
-
-
-}
 
 
 
 /* ==========================================================
-   ACTION BUTTONS
+   BUTTONS
 ========================================================== */
 
 
-.document-actions{
+.document-actions {
 
 
     display:flex;
 
 
-
-    justify-content:
-
-        flex-end;
+    justify-content:flex-end;
 
 
-
-    gap:
-
-        10px;
+    gap:10px;
 
 
-
-    margin-top:
-
-        16px;
-
+    margin-top:16px;
 
 }
 
 
 
 .edit,
-.delete{
+.delete {
 
 
     padding:
@@ -1917,17 +1672,13 @@ header{
 
 
 
-    font-weight:
-
-        700;
-
-
+    font-weight:700;
 
 }
 
 
 
-.edit{
+.edit {
 
 
     border:
@@ -1946,12 +1697,11 @@ header{
 
         #2d7564;
 
-
 }
 
 
 
-.delete{
+.delete {
 
 
     border:
@@ -1970,38 +1720,28 @@ header{
 
         #b04c3e;
 
-
 }
 
 
 
-.edit:hover{
 
-    background:#dff2ea;
-
-}
-
-
-
-.delete:hover{
-
-    background:#fff0ed;
-
-}
 
 /* ==========================================================
-   MODAL OVERLAY
+   MODALE
 ========================================================== */
 
 
-.overlay{
+.overlay {
+
 
     position:fixed;
+
 
     inset:0;
 
 
     z-index:1000;
+
 
 
     display:flex;
@@ -2013,12 +1753,15 @@ header{
     align-items:center;
 
 
+
     padding:20px;
+
 
 
     background:
 
         rgba(27,51,45,.42);
+
 
 
     backdrop-filter:
@@ -2029,12 +1772,7 @@ header{
 
 
 
-/* ==========================================================
-   MODAL WINDOW
-========================================================== */
-
-
-.modal{
+.modal {
 
 
     width:
@@ -2042,9 +1780,11 @@ header{
         900px;
 
 
+
     max-width:
 
         100%;
+
 
 
     max-height:
@@ -2052,9 +1792,9 @@ header{
         90vh;
 
 
-    overflow-y:
 
-        auto;
+    overflow:auto;
+
 
 
     padding:
@@ -2062,9 +1802,11 @@ header{
         32px;
 
 
+
     border-radius:
 
         22px;
+
 
 
     background:
@@ -2072,41 +1814,38 @@ header{
         white;
 
 
+
     box-shadow:
 
-        0 24px 60px rgba(27,51,45,.22);
-
+        0 24px 60px rgba(0,0,0,.25);
 
 }
 
 
 
-.settings-modal{
+.settings-modal {
 
 
     width:
 
         560px;
 
-
 }
 
 
 
-/* ==========================================================
-   CLOSE BUTTON
-========================================================== */
 
-
-.close-button{
+.close-button {
 
 
     float:right;
 
 
+
     width:
 
         36px;
+
 
 
     height:
@@ -2114,18 +1853,9 @@ header{
         36px;
 
 
-    display:flex;
 
+    border:0;
 
-    justify-content:center;
-
-
-    align-items:center;
-
-
-    border:
-
-        0;
 
 
     border-radius:
@@ -2133,9 +1863,11 @@ header{
         50%;
 
 
+
     background:
 
         #eff5f2;
+
 
 
     color:
@@ -2143,33 +1875,23 @@ header{
         var(--pine);
 
 
+
     font-weight:
 
         800;
 
-
 }
 
 
-
-.close-button:hover{
-
-
-    background:
-
-        var(--mint);
-
-
-}
 
 
 
 /* ==========================================================
-   FORM GRID
+   FORMULARZE
 ========================================================== */
 
 
-.form-grid{
+.form-grid {
 
 
     display:grid;
@@ -2180,16 +1902,16 @@ header{
         repeat(2,1fr);
 
 
+
     gap:
 
         20px;
-
 
 }
 
 
 
-.form-group{
+.form-group {
 
 
     display:flex;
@@ -2198,47 +1920,15 @@ header{
     flex-direction:column;
 
 
-    gap:
-
-        8px;
-
+    gap:8px;
 
 }
 
-
-
-.form-group label{
-
-
-    font-size:
-
-        13px;
-
-
-    font-weight:
-
-        700;
-
-
-    color:
-
-        #4c615a;
-
-
-}
-
-
-
-/* ==========================================================
-   FORM INPUTS
-========================================================== */
 
 
 .form-group input,
 .form-group select,
-.form-group textarea,
-.settings-form input,
-.settings-form select{
+.form-group textarea {
 
 
     width:100%;
@@ -2246,7 +1936,8 @@ header{
 
     padding:
 
-        12px 13px;
+        12px;
+
 
 
     border:
@@ -2254,70 +1945,49 @@ header{
         1px solid var(--line);
 
 
+
     border-radius:
 
         12px;
 
 
-    background:
 
-        white;
-
-
-    color:
-
-        var(--ink);
-
+    background:white;
 
 }
 
 
 
-.form-group textarea{
+textarea {
 
 
     min-height:
 
         110px;
 
-
-    resize:
-
-        vertical;
-
-
 }
 
 
 
-/* ==========================================================
-   FULL WIDTH
-========================================================== */
-
-
-.full-width{
+.full-width {
 
 
     grid-column:
 
         1 / 3;
 
-
 }
 
 
 
-/* ==========================================================
-   PRIMARY BUTTON
-========================================================== */
 
-
-.primary-button{
+.primary-button {
 
 
     padding:
 
-        13px 18px;
+        13px;
+
 
 
     border:
@@ -2325,9 +1995,11 @@ header{
         0;
 
 
+
     border-radius:
 
         12px;
+
 
 
     background:
@@ -2335,43 +2007,25 @@ header{
         var(--pine);
 
 
-    color:
 
-        white;
-
-
-    font-weight:
-
-        700;
+    color:white;
 
 
-    box-shadow:
 
-        0 8px 18px rgba(53,100,92,.18);
-
+    font-weight:700;
 
 }
 
 
-
-.primary-button:hover{
-
-
-    background:
-
-        var(--pine-dark);
-
-
-}
 
 
 
 /* ==========================================================
-   SETTINGS
+   USTAWIENIA
 ========================================================== */
 
 
-.settings-buttons{
+.settings-buttons {
 
 
     display:grid;
@@ -2382,21 +2036,14 @@ header{
         repeat(2,1fr);
 
 
-    gap:
 
-        12px;
-
-
-    margin-bottom:
-
-        24px;
-
+    gap:12px;
 
 }
 
 
 
-.settings-buttons button{
+.settings-buttons button {
 
 
     padding:
@@ -2404,9 +2051,11 @@ header{
         15px;
 
 
+
     border:
 
         1px solid var(--line);
+
 
 
     border-radius:
@@ -2414,59 +2063,37 @@ header{
         12px;
 
 
-    background:
 
-        white;
-
-
-    color:
-
-        #486058;
-
-
-    text-align:left;
-
+    background:white;
 
 }
 
 
 
-.settings-buttons button:hover{
 
 
-    border-color:
-
-        #accdbf;
-
-
-    background:
-
-        #f5fbf8;
+/* ==========================================================
+   UKRYWANIE
+========================================================== */
 
 
-}
+.hidden {
 
 
-
-.settings-form{
-
-
-    display:flex;
-
-
-    flex-direction:column;
-
-
-    gap:
-
-        12px;
-
+    display:none!important;
 
 }
 
 
 
-.setting-row{
+
+
+/* ==========================================================
+   PRZEŁĄCZNIK MOTYWU
+========================================================== */
+
+
+.theme-switch {
 
 
     display:flex;
@@ -2475,605 +2102,401 @@ header{
     align-items:center;
 
 
-    justify-content:space-between;
+    gap:8px;
 
 
-    gap:
 
-        15px;
+    height:42px;
 
 
     padding:
 
-        14px;
+        0 12px;
 
-
-    border:
-
-        1px solid var(--line);
 
 
     border-radius:
 
-        12px;
+        22px;
+
 
 
     background:
 
-        white;
+        #f4faf7;
+
+
+
+    border:
+
+        1px solid #d6e8df;
+
+}
+
+
+
+.switch {
+
+
+    position:relative;
+
+
+
+    width:
+
+        46px;
+
+
+
+    height:
+
+        24px;
+
+
+
+    display:inline-block;
 
 
 }
 
 
 
+.switch input {
+
+
+    opacity:0;
+
+
+    width:0;
+
+
+    height:0;
+
+}
+
+
+
+.slider {
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+
+    background:
+
+        #b9d7cd;
+
+
+
+    border-radius:
+
+        30px;
+
+
+
+    transition:.3s;
+
+}
+
+
+
+.slider:before {
+
+
+    content:"";
+
+
+
+    position:absolute;
+
+
+
+    width:
+
+        18px;
+
+
+
+    height:
+
+        18px;
+
+
+
+    left:
+
+        3px;
+
+
+
+    top:
+
+        3px;
+
+
+
+    background:white;
+
+
+
+    border-radius:
+
+        50%;
+
+
+
+    transition:.3s;
+
+}
+
+
+
+.theme-switch input:checked + .slider {
+
+
+    background:
+
+        #35645c;
+
+}
+
+
+
+.theme-switch input:checked + .slider:before {
+
+
+    transform:
+
+        translateX(22px);
+
+}
+
+
+
+
+
 /* ==========================================================
-   HIDDEN
+   CIEMNY MOTYW
 ========================================================== */
 
 
-.hidden{
+body.dark-theme {
 
 
-    display:none!important;
+    --ink:#eeeeee;
 
+    --muted:#aab5bb;
+
+    --paper:#222a30;
+
+    --cream:#181c20;
+
+    --line:#37434b;
+
+    --pine:#7fc8b2;
+
+    --pine-dark:#9be0ca;
+
+
+
+    background:
+
+        #181c20;
+
+    color:white;
 
 }
 
 
 
+
+body.dark-theme header {
+
+
+    background:
+
+        #20262b;
+
+
+
+    border-color:
+
+        #30383f;
+
+}
+
+
+
+body.dark-theme .document,
+body.dark-theme .location-card,
+body.dark-theme .stat-card,
+body.dark-theme .location-group,
+body.dark-theme .modal {
+
+
+    background:
+
+        #222a30;
+
+
+
+    color:white;
+
+
+
+    border-color:
+
+        #37434b;
+
+}
+
+
+
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+
+
+    background:
+
+        #222a30;
+
+
+
+    color:white;
+
+
+
+    border-color:
+
+        #46545c;
+
+}
+
+
+
+body.dark-theme .document-meta {
+
+
+    color:
+
+        #b9c3c8;
+
+}
+
+
+
+body.dark-theme .theme-switch {
+
+
+    background:
+
+        #20262b;
+
+
+
+    border-color:
+
+        #37434b;
+
+}
+
+
+
+
+
 /* ==========================================================
-   RESPONSIVE TABLET
+   RESPONSYWNOŚĆ
 ========================================================== */
 
 
 @media(max-width:1000px){
 
 
-    .dashboard-stats{
+    .filter-box {
 
 
         grid-template-columns:
 
             repeat(2,1fr);
 
-
     }
 
-
-
-    .filter-box{
-
-
-        grid-template-columns:
-
-            repeat(2,1fr);
-
-
-    }
-
-
-
-    @media(max-width:1000px){
-
-    .filter-box{
-
-        grid-template-columns:
-            repeat(3,1fr);
-
-    }
 
 }
 
-
-@media(max-width:760px){
-
-    .filter-box{
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-}
-
-
-/* ==========================================================
-   RESPONSIVE MOBILE
-========================================================== */
 
 
 @media(max-width:760px){
 
 
-    header{
-
-
-        height:
-
-            66px;
+    header {
 
 
         padding:
 
             0 16px;
 
-
     }
 
 
 
-    .logo{
+    .logo {
 
 
         font-size:
 
             20px;
 
-
     }
 
 
 
-    #locationTabs{
-
-
-        padding:
-
-            20px 16px 12px;
-
-
-    }
-
-
-
-    .location-card{
-
-
-        width:
-
-            100%;
-
-
-        justify-content:center;
-
-
-    }
-
-
-
-    .dashboard-stats{
+    .filter-box,
+    .form-grid {
 
 
         grid-template-columns:
 
             1fr;
 
+    }
 
-        padding:
 
-            10px 16px 20px;
 
+    .full-width {
+
+
+        grid-column:auto;
 
     }
 
 
 
-    .filters{
-
-
-        padding:
-
-            16px;
-
-
-    }
-
-
-
-    .filter-box{
-
-
-        grid-template-columns:
-
-            1fr;
-
-
-    }
-
-
-
-    .clear-filters{
-
-
-        width:
-
-            100%;
-
-
-    }
-
-
-
-    #results{
-
-
-        padding:
-
-            25px 16px 45px;
-
-
-    }
-
-
-
-    .results-heading{
+    .document-top {
 
 
         flex-direction:
 
             column;
 
-
-        gap:
-
-            5px;
-
-
     }
 
 
 
-    .document{
-
-
-        padding:
-
-            16px;
-
-
-    }
-
-
-
-    .document-top{
-
-
-        flex-direction:
-
-            column;
-
-
-    }
-
-
-
-    .document-actions{
-
-
-        justify-content:
-
-            flex-start;
-
-
-        flex-wrap:
-
-            wrap;
-
-
-    }
-
-
-
-    .modal{
-
-
-        padding:
-
-            22px;
-
-
-        border-radius:
-
-            18px;
-
-
-    }
-
-
-
-    .form-grid{
+    .settings-buttons {
 
 
         grid-template-columns:
 
             1fr;
 
-
     }
 
 
 
-    .full-width{
-
-
-        grid-column:
-
-            auto;
-
-
-    }
-
-
-
-    .settings-buttons{
-
-
-        grid-template-columns:
-
-            1fr;
-
-
-    }
-
-.stat-card {
-    cursor: pointer;
-    transition: .2s;
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-}
-
-.stat-card.active {
-    border: 2px solid #1f6feb;
-    box-shadow: 0 0 0 3px rgba(31,111,235,.15);
-}
-
-   .theme-toggle {
-
-    background: transparent;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    padding: 8px;
-
-}
-
-/* =========================================================
-   MOTYW - PRZEŁĄCZNIK SUWAKA
-========================================================= */
-
-
-.theme-switch {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    height: 42px;
-    padding: 0 12px;
-
-    background: #f4faf7;
-    border: 1px solid #d6e8df;
-    border-radius: 20px;
-
-    font-size: 15px;
-}
-
-
-/* ukrycie normalnego checkboxa */
-
-.theme-switch input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-
-
-/* obudowa suwaka */
-
-.switch {
-    position: relative;
-
-    display: inline-block;
-
-    width: 46px;
-    height: 24px;
-
-    cursor: pointer;
-}
-
-
-
-/* tło suwaka */
-
-.slider {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    right: 0;
-    bottom: 0;
-
-
-    background-color: #b9d7cd;
-
-    border-radius: 30px;
-
-    transition: 0.3s;
-
-}
-
-
-
-/* kółko */
-
-.slider::before {
-
-    content: "";
-
-    position: absolute;
-
-
-    width: 18px;
-    height: 18px;
-
-
-    left: 3px;
-    top: 3px;
-
-
-    background: white;
-
-    border-radius: 50%;
-
-
-    transition: 0.3s;
-
-}
-
-
-
-/* aktywny ciemny */
-
-.theme-switch input:checked + .slider {
-
-    background-color: #35645c;
-
-}
-
-
-
-.theme-switch input:checked + .slider::before {
-
-    transform: translateX(22px);
-
-}
-
-
-
-
-
-
-/* =========================================================
-   MOTYW CIEMNY
-========================================================= */
-
-
-body.dark-theme {
-
-    background: #181c20;
-
-    color: #eeeeee;
-
-}
-
-
-
-/* górny pasek */
-
-body.dark-theme .topbar {
-
-    background: #20262b;
-
-    border-color: #30383f;
-
-}
-
-
-
-/* karty */
-
-body.dark-theme .document,
-
-body.dark-theme .location-card,
-
-body.dark-theme .stat-card {
-
-    background: #222a30;
-
-    color: #eeeeee;
-
-    border-color: #37434b;
-
-}
-
-
-
-/* pola */
-
-body.dark-theme input,
-
-body.dark-theme select {
-
-    background: #222a30;
-
-    color: white;
-
-    border-color: #46545c;
-
-}
-
-
-
-/* tekst pomocniczy */
-
-body.dark-theme .document-meta,
-
-body.dark-theme .archive-path {
-
-    color: #b9c3c8;
-
-}
-
-
-
-/* suwak */
-
-body.dark-theme .theme-switch {
-
-    background: #20262b;
-
-    border-color: #37434b;
-
-}
-/* TEST SUWAKA */
-
-.theme-switch {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-}
-
-
-.theme-switch input {
-    display: none !important;
-}
-
-
-.slider {
-    display: block !important;
-    width: 46px !important;
-    height: 24px !important;
-    background: #b9d7cd !important;
-    border-radius: 30px !important;
-    position: relative !important;
-}
-
-
-.slider::before {
-    content: "" !important;
-    width: 18px !important;
-    height: 18px !important;
-    background: white !important;
-    border-radius: 50% !important;
-
-    position: absolute !important;
-    top: 3px !important;
-    left: 3px !important;
 }
