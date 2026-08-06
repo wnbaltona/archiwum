@@ -1217,75 +1217,75 @@ function renderDocuments(){
 
 
     box
-    .querySelectorAll("[data-document-id]")
-    .forEach(button => {
+    box
+.querySelectorAll("[data-document-id]")
+.forEach(button => {
+
+    button.addEventListener("click", async () => {
 
 
-        button.onclick = async ()=>{
+        const id = button.dataset.documentId;
 
 
-            const id =
-                button.dataset.documentId;
+        console.log(
+            "Kliknięto:",
+            button.dataset.action,
+            id
+        );
 
 
-            const doc =
-                documents.find(
-                    item => item.id === id
+        const doc = documents.find(
+            item => item.id === id
+        );
+
+
+        if(!doc){
+
+            console.error(
+                "Nie znaleziono dokumentu",
+                id
+            );
+
+            return;
+
+        }
+
+
+
+        if(button.dataset.action === "edit"){
+
+
+            if(typeof window.editDocument === "function"){
+
+                window.editDocument(doc);
+
+            }
+            else{
+
+                console.error(
+                    "Brak funkcji editDocument()"
                 );
 
-
-            if(!doc){
-
-                alert(
-                    "Nie znaleziono dokumentu"
-                );
-
-                return;
-
             }
 
 
-
-            if(
-                button.dataset.action === "edit"
-            ){
-
-                if(
-                    typeof window.editDocument === "function"
-                ){
-
-                    window.editDocument(doc);
-
-                }
-                else{
-
-                    console.error(
-                        "Brak funkcji editDocument"
-                    );
-
-                }
-
-
-            }
+        }
 
 
 
-            if(
-                button.dataset.action === "delete"
-            ){
-
-                await deleteDocument(id);
-
-            }
+        if(button.dataset.action === "delete"){
 
 
-        };
+            await deleteDocument(id);
+
+
+        }
 
 
     });
 
 
-} 
+});
 
 
 
@@ -1851,37 +1851,25 @@ function renderDocumentCard(doc){
 
 
             <button
+    type="button"
+    class="edit"
+    data-action="edit"
+    data-document-id="${doc.id}">
 
-                class="edit"
+    Edytuj
 
-                data-action="edit"
-
-                data-document-id="${doc.id}">
-
-
-                Edytuj
-
-
-            </button>
+</button>
 
 
+<button
+    type="button"
+    class="delete"
+    data-action="delete"
+    data-document-id="${doc.id}">
 
+    Usuń
 
-
-            <button
-
-                class="delete"
-
-                data-action="delete"
-
-                data-document-id="${doc.id}">
-
-
-                Usuń
-
-
-            </button>
-
+</button>
 
 
         </div>
@@ -1913,78 +1901,37 @@ function renderDocumentCard(doc){
 async function deleteDocument(id){
 
 
-    if(!id){
+    if(!confirm("Usunąć dokument?")){
 
         return;
 
     }
 
 
-
-    if(
-
-        !confirm(
-
-            "Usunąć ten dokument?"
-
-        )
-
-    ){
-
-        return;
-
-    }
-
-
-
-
-
-
-    const {
-
-        error
-
-    } = await supabaseClient
-
+    const {error} = await supabaseClient
         .from("dokumenty")
-
         .delete()
-
-        .eq(
-
-            "id",
-
-            id
-
-        );
-
-
+        .eq("id", id);
 
 
 
     if(error){
 
+        console.error(error);
 
         alert(
-
-            error.message
-
+            "Błąd usuwania: " + error.message
         );
-
 
         return;
 
-
     }
-
 
 
     await loadDocuments();
 
 
-
 }
-
 
 
 
