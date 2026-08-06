@@ -1129,10 +1129,6 @@ function renderDocuments(){
     }
 
 
-
-
-
-
     const groups =
 
 
@@ -1290,12 +1286,6 @@ function renderDocuments(){
 
 
 } 
-
-
-function renderLocationGroup(
-
-
-
 
 
 
