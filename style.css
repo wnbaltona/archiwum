@@ -91,52 +91,35 @@ button {
 
 
 
-
 /* ==========================================================
    HEADER
 ========================================================== */
 
-
-header {
-
+.topbar {
 
     height:76px;
-
 
     padding:
         0 max(24px,calc((100% - 1180px)/2));
 
-
     display:flex;
-
 
     justify-content:space-between;
 
-
     align-items:center;
-
-
 
     background:
         rgba(255,255,255,.86);
 
-
-
     border-bottom:
-        1px solid rgba(220,230,226,.9);
-
-
+        1px solid var(--line);
 
     backdrop-filter:
         blur(12px);
 
-
-
     position:sticky;
 
-
     top:0;
-
 
     z-index:20;
 
@@ -146,25 +129,34 @@ header {
 
 .logo {
 
-
     font-family:
         Georgia,
         serif;
 
+    font-size:
+        25px;
 
-    font-size:25px;
+    font-weight:
+        700;
 
-
-    font-weight:700;
-
-
-    color:var(--pine-dark);
-
-
-    letter-spacing:-.5px;
+    color:
+        var(--pine-dark);
 
 }
 
+
+
+/* NOWE - elementy po prawej */
+
+.header-actions {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
 
 
 
@@ -173,7 +165,7 @@ header {
 ========================================================== */
 
 
-.menu-wrapper{
+.menu-wrapper {
     position:relative;
 
     display:flex;
@@ -309,110 +301,113 @@ header {
 
 
 
+
 /* ==========================================================
-   THEME SWITCH
+   SWITCH MOTYWU
 ========================================================== */
 
 
 .theme-switch {
 
-
     display:flex;
-
 
     align-items:center;
 
-
     gap:8px;
 
+    height:42px;
 
-    margin-right:15px;
+    padding:0 12px;
 
+    border-radius:22px;
+
+    background:#f4faf7;
+
+    border:1px solid var(--line);
 
 }
 
 
+
+.theme-icon {
+
+    font-size:15px;
+
+}
+
+
+
+/* ukrywamy checkbox */
+
+.theme-switch input {
+
+    opacity:0;
+
+    width:0;
+
+    height:0;
+
+}
+
+
+
+/* obudowa */
 
 .switch {
 
-
     position:relative;
-
-
-    display:inline-block;
-
 
     width:46px;
 
-
     height:24px;
 
-
-}
-
-
-
-.switch input {
-
-
-    display:none;
-
-}
-
-
-
-.slider {
-
-
-    position:absolute;
-
-
-    inset:0;
-
-
-    background:#b9d7cd;
-
-
-    border-radius:30px;
-
+    display:block;
 
     cursor:pointer;
 
+}
 
-    transition:.3s;
+
+
+/* pasek */
+
+.slider {
+
+    position:absolute;
+
+    inset:0;
+
+    background:#b9d7cd;
+
+    border-radius:30px;
+
+    transition:.25s;
 
 }
 
 
 
-.slider::before {
+/* kółko */
 
+.slider:before {
 
     content:"";
 
-
     position:absolute;
-
 
     width:18px;
 
-
     height:18px;
-
 
     left:3px;
 
-
     top:3px;
-
 
     background:white;
 
-
     border-radius:50%;
 
-
-    transition:.3s;
+    transition:.25s;
 
 }
 
@@ -420,22 +415,17 @@ header {
 
 .theme-switch input:checked + .slider {
 
-
     background:#35645c;
 
 }
 
 
 
-.theme-switch input:checked + .slider::before {
+.theme-switch input:checked + .slider:before {
 
-
-    transform:
-        translateX(22px);
+    transform:translateX(22px);
 
 }
-
-
 
 /* ==========================================================
    LOCATION TABS
@@ -2449,5 +2439,185 @@ textarea,
         color .25s ease,
         border-color .25s ease,
         box-shadow .25s ease;
+
+}
+
+/* ==========================================================
+   DARK MODE
+========================================================== */
+
+
+body.dark-theme {
+
+    background:#12171a;
+
+    color:#f1f5f4;
+
+}
+
+
+/* HEADER */
+
+body.dark-theme .topbar {
+
+    background:#1c2327;
+
+    border-color:#303a40;
+
+}
+
+
+
+body.dark-theme .logo {
+
+    color:#d8eee7;
+
+}
+
+
+/* SWITCH */
+
+body.dark-theme .theme-switch {
+
+    background:#20292e;
+
+    border-color:#3b474e;
+
+}
+
+
+
+/* KARTY */
+
+body.dark-theme .document,
+
+body.dark-theme .location-card,
+
+body.dark-theme .stat-card,
+
+body.dark-theme .location-group {
+
+    background:#20282d;
+
+    border-color:#38444b;
+
+    color:#f1f5f4;
+
+}
+
+
+
+/* nagłówki */
+
+body.dark-theme h2,
+
+body.dark-theme h4,
+
+body.dark-theme strong {
+
+    color:#ffffff;
+
+}
+
+
+
+/* opisy */
+
+body.dark-theme .document-meta,
+
+body.dark-theme .group-count,
+
+body.dark-theme .location-card span {
+
+    color:#b7c4ca;
+
+}
+
+
+
+/* pola */
+
+body.dark-theme input,
+
+body.dark-theme select,
+
+body.dark-theme textarea {
+
+    background:#1c2327;
+
+    color:white;
+
+    border-color:#46545c;
+
+}
+
+
+
+/* filtr */
+
+body.dark-theme .filters {
+
+    background:#171d21;
+
+    border-color:#303a40;
+
+}
+
+
+
+/* menu */
+
+body.dark-theme .menu-list {
+
+    background:#20282d;
+
+    border-color:#38444b;
+
+}
+
+
+
+body.dark-theme .menu-list button {
+
+    color:white;
+
+}
+
+
+body.dark-theme .menu-list button:hover {
+
+    background:#304047;
+
+}
+
+
+
+/* statusy */
+
+body.dark-theme .status-ok {
+
+    background:#164b2b;
+
+    color:#9ff0ba;
+
+}
+
+
+
+body.dark-theme .status-do-uzupełnienia {
+
+    background:#594600;
+
+    color:#ffe58a;
+
+}
+
+
+
+body.dark-theme .status-brak {
+
+    background:#5a2521;
+
+    color:#ffb3aa;
 
 }
