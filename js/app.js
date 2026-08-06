@@ -1217,7 +1217,6 @@ function renderDocuments(){
 
 
     box
-    box
 .querySelectorAll("[data-document-id]")
 .forEach(button => {
 
@@ -1287,7 +1286,7 @@ function renderDocuments(){
 
 });
 
-
+}
 
 function renderLocationGroup(
 
