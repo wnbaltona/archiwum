@@ -1484,7 +1484,7 @@ function renderDashboard(data){
 
         <button
 
-            class="stat-card status-box ok" ${currentStatus === "OK" ? "active" : ""}"
+            class="stat-card status-box ok ${currentStatus === "OK" ? "active" : ""}"
 
             data-status="OK">
 
@@ -1512,7 +1512,7 @@ function renderDashboard(data){
 
         <button
 
-            class="stat-card status-box pending" ${currentStatus === "DO UZUPEŁNIENIA" ? "active" : ""}"
+            class="stat-card status-box pending ${currentStatus === "DO UZUPEŁNIENIA" ? "active" : ""}"
 
             data-status="DO UZUPEŁNIENIA">
 
@@ -1540,7 +1540,7 @@ function renderDashboard(data){
 
         <button
 
-           class="stat-card status-box missing" ${currentStatus === "BRAK" ? "active" : ""}"
+           class="stat-card status-box missing ${currentStatus === "BRAK" ? "active" : ""}"
 
             data-status="BRAK">
 
