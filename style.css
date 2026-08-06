@@ -2621,3 +2621,37 @@ body.dark-theme .status-brak {
     color:#ffb3aa;
 
 }
+
+.status-box{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    gap:8px;
+
+}
+
+
+.status-box strong{
+
+    font-size:32px;
+
+    line-height:1;
+
+}
+
+
+.status-box span{
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
