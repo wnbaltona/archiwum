@@ -1052,7 +1052,6 @@ function renderDocuments(){
 
     }
 
-}
 
 
 
