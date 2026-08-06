@@ -11,7 +11,7 @@ let activeStatusCard = "";
 
 document.addEventListener("DOMContentLoaded", () => { 
    initTheme();
-
+ 
 
     /* =========================================================
        MOTYW JASNY / CIEMNY
