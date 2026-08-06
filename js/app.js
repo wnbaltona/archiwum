@@ -1052,6 +1052,8 @@ function renderDocuments(){
 
     }
 
+}
+
 
 
 
@@ -1219,74 +1221,81 @@ function renderDocuments(){
 
 
 
-
     box
-box.querySelectorAll("[data-document-id]")
-.forEach(button => {
+    .querySelectorAll("[data-document-id]")
+    .forEach(button => {
 
 
-    button.onclick = async ()=>{
+        button.onclick = async ()=>{
 
 
-        const id =
-            button.dataset.documentId;
+            const id =
+                button.dataset.documentId;
 
 
-        const doc =
-            documents.find(
-                item => item.id === id
-            );
-
-
-        if(!doc){
-
-            alert(
-                "Nie znaleziono dokumentu"
-            );
-
-            return;
-
-        }
-
-
-
-        if(
-            button.dataset.action === "edit"
-        ){
-
-            if(
-                typeof window.editDocument === "function"
-            ){
-
-                window.editDocument(doc);
-
-            }
-            else{
-
-                console.error(
-                    "Brak funkcji editDocument"
+            const doc =
+                documents.find(
+                    item => item.id === id
                 );
 
+
+            if(!doc){
+
+                alert(
+                    "Nie znaleziono dokumentu"
+                );
+
+                return;
+
             }
 
 
-        }
+
+            if(
+                button.dataset.action === "edit"
+            ){
+
+                if(
+                    typeof window.editDocument === "function"
+                ){
+
+                    window.editDocument(doc);
+
+                }
+                else{
+
+                    console.error(
+                        "Brak funkcji editDocument"
+                    );
+
+                }
+
+
+            }
 
 
 
-        if(
-            button.dataset.action === "delete"
-        ){
+            if(
+                button.dataset.action === "delete"
+            ){
 
-            await deleteDocument(id);
+                await deleteDocument(id);
 
-        }
-
-
-    };
+            }
 
 
-});
+        };
+
+
+    });
+
+
+} 
+
+
+function renderLocationGroup(
+
+
 
 
 
