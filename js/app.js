@@ -9,7 +9,8 @@ let activeStatusCard = "";
    START APLIKACJI
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => { 
+   initTheme();
 
 
     /* =========================================================
@@ -1220,93 +1221,72 @@ function renderDocuments(){
 
 
     box
-
-    .querySelectorAll(
-
-        "[data-document-id]"
-
-    )
-
-    .forEach(button => {
+box.querySelectorAll("[data-document-id]")
+.forEach(button => {
 
 
-
-        button.onclick = () => {
-
+    button.onclick = async ()=>{
 
 
-            const doc =
+        const id =
+            button.dataset.documentId;
 
 
-                documents.find(
+        const doc =
+            documents.find(
+                item => item.id === id
+            );
 
-                    item =>
 
-                        item.id ===
+        if(!doc){
 
-                        button.dataset.documentId
+            alert(
+                "Nie znaleziono dokumentu"
+            );
 
-                );
+            return;
 
+        }
 
 
 
-
-            if(!doc){
-
-
-                alert(
-
-                    "Nie znaleziono dokumentu."
-
-                );
-
-
-                return;
-
-
-            }
-
-
-
-
+        if(
+            button.dataset.action === "edit"
+        ){
 
             if(
-
-                button.dataset.action === "edit"
-
+                typeof window.editDocument === "function"
             ){
-
 
                 window.editDocument(doc);
 
-
-
             }
+            else{
 
-            else {
-
-
-                deleteDocument(doc.id);
-
-
+                console.error(
+                    "Brak funkcji editDocument"
+                );
 
             }
 
 
-
-        };
-
-
-
-    });
+        }
 
 
 
-}
+        if(
+            button.dataset.action === "delete"
+        ){
+
+            await deleteDocument(id);
+
+        }
 
 
+    };
 
+
+});
 
 
 
@@ -1506,7 +1486,7 @@ function renderDashboard(data){
 
         <button
 
-            class="stat-card ok ${currentStatus === "OK" ? "active" : ""}"
+            class="stat-card status-box ok" ${currentStatus === "OK" ? "active" : ""}"
 
             data-status="OK">
 
@@ -1534,7 +1514,7 @@ function renderDashboard(data){
 
         <button
 
-            class="stat-card pending ${currentStatus === "DO UZUPEŁNIENIA" ? "active" : ""}"
+            class="stat-card status-box pending" ${currentStatus === "DO UZUPEŁNIENIA" ? "active" : ""}"
 
             data-status="DO UZUPEŁNIENIA">
 
@@ -1562,7 +1542,7 @@ function renderDashboard(data){
 
         <button
 
-            class="stat-card missing ${currentStatus === "BRAK" ? "active" : ""}"
+           class="stat-card status-box missing" ${currentStatus === "BRAK" ? "active" : ""}"
 
             data-status="BRAK">
 
@@ -2073,62 +2053,70 @@ function escapeHtml(value){
 ========================================================== */
 
 
-document.addEventListener("DOMContentLoaded",()=>{
+function initTheme(){
+
+    const toggle =
+        document.getElementById("themeToggle");
 
 
-    const toggle = document.getElementById("themeToggle");
+    const saved =
+        localStorage.getItem("theme");
 
 
-    if(!toggle) return;
+    if(saved === "dark"){
 
+        document.body.classList.add(
+            "dark-theme"
+        );
 
+        if(toggle){
 
-    const savedTheme = localStorage.getItem("theme");
+            toggle.checked = true;
 
-
-    if(savedTheme === "dark"){
-
-        document.body.classList.add("dark-theme");
-
-        toggle.checked = true;
+        }
 
     }
 
 
 
-    toggle.addEventListener("change",()=>{
+    toggle?.addEventListener(
+        "change",
+        ()=>{
 
 
-        if(toggle.checked){
+            if(toggle.checked){
 
 
-            document.body.classList.add("dark-theme");
+                document.body.classList.add(
+                    "dark-theme"
+                );
 
 
-            localStorage.setItem(
-                "theme",
-                "dark"
-            );
+                localStorage.setItem(
+                    "theme",
+                    "dark"
+                );
+
+
+            }
+            else{
+
+
+                document.body.classList.remove(
+                    "dark-theme"
+                );
+
+
+                localStorage.setItem(
+                    "theme",
+                    "light"
+                );
+
+
+            }
 
 
         }
+    );
 
-        else{
-
-
-            document.body.classList.remove("dark-theme");
-
-
-            localStorage.setItem(
-                "theme",
-                "light"
-            );
-
-
-        }
-
-
-    });
-
-
-});
+}
